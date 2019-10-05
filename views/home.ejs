@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel= "stylesheet" href="/static/css/style_home.css" />
+</head>
+
+<body>
+
+    <header>
+        <div id="banner">
+            <p>DATA VISUALTION</p>
+        </div>
+    </header>
+    
+
+    <div id="controls">
+        <label><input id="Europe" type="radio" name="grouping" checked='true'>Europe</label>
+        <label><input id="Asie" type="radio" name="grouping">Asie</label>
+        <label><input id="NorthAmerica" type="radio" name="grouping">North America</label>
+        <label><input id="SouthAmerica" type="radio" name="grouping">South America</label>
+        <label><input id="Oceania" type="radio" name="grouping">Océania</label>
+        <label><input id="Africa" type="radio" name="grouping">Africa</label>
+        <label><input id="World" type="radio" name="grouping">World</label>
+        <label><input id="Top" type="radio" name="grouping">Top 10</label>
+    </div>
+
+    <div id="Legende">
+        <font color="#2ca02c">&#9632; Très peu polluant</font>
+        <font color="#1f77b4">&#9632; Peu polluant</font>
+        <font color="#ff7f0e">&#9632; Polluant</font>
+        <font color="#d62728">&#9632; Très polluant</font>
+        <font color="#8c564b">&#9632; Extrèmement polluant</font>
+        <font color="#581845">&#9632; Destructeur</font>
+    </div>
+   
+    <div id="chart"></div>
+
+    
+    <div id="MODE" data-row='<%= process.env.MODE %>'></div>
+
+
+<script src="http://d3js.org/queue.v1.min.js"></script>
+<script src="https://d3js.org/d3.v5.js"></script>
+<script type='module' src='/static/js/utils.js'></script>
+<script type='module' src="/static/js/script_home.js"></script>
+
+</body>
+</html>
+

@@ -1,0 +1,23 @@
+{
+  "name": "dataset",
+  "version": "1.0.0",
+  "description": "Projet L3 LIFPROJET",
+  "main": "dataset.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://forge.univ-lyon1.fr/p1509933/data_vis.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.1.0",
+    "ejs": "^2.7.1",
+    "express": "^4.17.1",
+    "firacode": "^2.0.0",
+    "mysql": "^2.17.1"
+  }
+}

@@ -1,0 +1,31 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel = "stylesheet" type = "text/css" href = "static/css/styles.css" />
+</head>
+
+<body>
+
+<h1> DATASET </h1>
+
+<select id="select">
+	<% countries.forEach(function(country) {%>
+		<OPTION> <%= country %> </OPTION> <%})%>
+<select> 
+
+<div id="chart">
+</div>
+
+</body>
+
+<script id="env" type="text/javascript">  const MODE = '<%= process.env.MODE %>'  </script>
+<script id='utils' type='text/javascript' src='static/js/utils.js'></script>
+<script id="d3" src="https://d3js.org/d3.v5.min.js"></script>
+<script id="main_js" type="text/javascript" src="static/js/script.js"> </script> 
+
+
+</html>

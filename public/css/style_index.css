@@ -1,0 +1,43 @@
+
+html,body{
+	height: 100%;
+	width: 100%;
+}
+
+
+#index{
+	background: url(/static/img/map.jpg) no-repeat 50% 50%;
+	display :table;
+	height: 100%;
+	width : 100%;
+	background-size: cover;
+}
+
+.index_text{
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+	font-weight:bold;
+	color:grey;
+}
+
+
+h1{
+	font-weight:bold;
+	color:black;
+	font-family: 'Alegreya sans',sans-serif;
+	font-size: 500%;
+}
+
+.btn-default{
+	background-color: #36342F;
+	color:#FFF;
+	font-size: 170%; 
+}
+
+.btn-default:hover{
+	color: green;
+	background-color: white;
+}
+
+
