@@ -1,8 +1,7 @@
 
 'use strict';
 
-
-
+import {dataURL, getData} from './utils.js';
 
 const deletePropertiesByName = (data, properties) => data
 	.map(el =>
@@ -111,7 +110,7 @@ const tooltipMouseOut = div => line =>
 const init = async () =>
 {
 	document.getElementById('select').selectedIndex = 0;
-	const data = await getData(`${dataURL}Afghanistan`);
+	const data = await getData(`${dataURL}pollution/bycountry/Afghanistan`);
 	drawChart(data);
 }
 
@@ -119,10 +118,8 @@ const init = async () =>
 const tests = async variable =>
 {
 	console.log('DOM Chargé');
-	console.log(`HOST is ${HOST}`);
-	const URL_Static_JSON = 'http://localhost:8080/static/json/PIB_citizen.json'
 
-	const data = await getData(dataURL);
+	//const data = await getData(dataURL);
 
 	return variable;
 };
@@ -136,7 +133,7 @@ const handlerSelected = selectTag => async () =>
 	d3.select('svg').transition().duration(2000).style("opacity", 0);
 	const oldChart = document.getElementById('svg');
 	if(oldChart) oldChart.remove(); 
-	const data = await getData(dataURL + selectTag.value);
+	const data = await getData(`${dataURL}pollution/bycountry/${selectTag.value}`);
 	drawChart(data);
 };
 
