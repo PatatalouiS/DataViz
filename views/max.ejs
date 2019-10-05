@@ -15,22 +15,13 @@
 <select id="select">
 	<% countries.forEach(function(country) {%>
 		<OPTION> <%= country %> </OPTION> <%})%>
-	</select> 
+</select> 
 
-<div id="chart">
-</div>
-
+<div id="chart"></div>
 
 
-
-<div id="MODE" data-row='<%= process.env.MODE %>'></div>
-
-
-<script src="http://d3js.org/queue.v1.min.js"></script>
-<script src="https://d3js.org/d3.v5.js"></script>
-<script type='module' src='/static/js/utils.js'></script>
+<%- include includes/scripts_env.ejs %>
 <script type='module' src="/static/js/max.js"></script>
 
-</body
-
+</body>
 </html>

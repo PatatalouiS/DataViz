@@ -7,13 +7,13 @@ const express      = require('express');
 const app          = express();
 const cors         = require('cors');
 const mysql        = require('./modules/mysql-promise')(process.env);
-const APIKEY       = 'LIFPROJET_DATASET';
+const nanoid       = require('nanoid');
 
 app.set('view engine', 'ejs');
 app.use('/static', express.static('public'));
 app.use(cors());
 
-// ------- Tests ------- //
+// <------- Tests ------- //
 
 // Page test pour BT
 app.get('/bt', async (req, res) => {
@@ -22,6 +22,7 @@ app.get('/bt', async (req, res) => {
 
 // Page test pour Max
 app.get('/max', async (req, res) => {
+	console.log(nanoid());
 	const countries = await mysql('SELECT DISTINCT name FROM Countries ORDER BY name');
 	res.render('max', { countries : countries.map(line => line.name)} );
 });
