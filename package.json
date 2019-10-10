@@ -4,6 +4,7 @@
   "description": "Projet L3 LIFPROJET",
   "main": "dataset.js",
   "scripts": {
+    "start": "nodemon --exec babel-node dataset.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,5 +21,11 @@
     "firacode": "^2.0.0",
     "mysql": "^2.17.1",
     "nanoid": "^2.1.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.6.3",
+    "@babel/core": "^7.6.3",
+    "@babel/node": "^7.6.3",
+    "@babel/preset-env": "^7.6.3"
   }
 }

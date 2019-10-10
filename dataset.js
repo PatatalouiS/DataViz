@@ -8,12 +8,16 @@ const app          = express();
 const cors         = require('cors');
 const mysql        = require('./modules/mysql-promise')(process.env);
 const nanoid       = require('nanoid');
+import {sendQueryJSON} from './modules/utils.js';
+
 
 app.set('view engine', 'ejs');
 app.use('/static', express.static('public'));
 app.use(cors());
 
-// <------- Tests ------- //
+
+// ------- Tests ------- //
+
 
 // Page test pour BT
 app.get('/bt', async (req, res) => {
@@ -52,20 +56,17 @@ app.get('/home', async (req, res) => {
 
 app.get('/data/pollution', async (req, res) => {
 	const queryResult = await mysql('SELECT * FROM countriespollution ORDER BY name, year');
-	res.setHeader('Content-Type', 'application/json');
-	res.end(JSON.stringify(queryResult));
+	sendQueryJSON(queryResult, res);
 })
 
 app.get('/data/pollution/bycountry/:country/', async (req, res) => {
-	const queryResult = await mysql(`SELECT * FROM countriespollution WHERE name = '${req.params.country}'`);
-	res.setHeader('Content-Type', 'application/json');
-	res.end(JSON.stringify(queryResult));
+	const queryResult = await mysql('SELECT * FROM countriespollution WHERE name = ?', [req.params.country] );
+	sendQueryJSON(queryResult, res);
 });
 
 app.get('/data/pollution/bycontinent/:continent', async (req, res) => {
-	const queryResult = await mysql(`SELECT name, year, value FROM countriespollution WHERE continent = '${req.params.continent}'`);
-	res.setHeader('Content-Type', 'application/json');
-	res.end(JSON.stringify(queryResult));
+	const queryResult = await mysql('SELECT name, year, value FROM countriespollution WHERE continent = ?', [req.params.continent]);
+	sendQueryJSON(queryResult, res);
 });
 
 // ----------  LISTEN ---------- //
