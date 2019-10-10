@@ -1,16 +1,41 @@
 
 'use strict';
 
+// ------------ IMPORT AND CONSTANTS ---------------- //
+
 import {dataURL, getData} from './utils.js';
 
-const continentHandler = continent => {
-    const svg = document.getElementById('svg');
-    if(svg) svg.remove();
-    drawChart(continent);
+const START_VALUES = {
+    continent : 'Europe',
+    year      : 2005
 };
 
-const createAxe = () => {
+// -------------  UTILS LOCAL FUNCTIONS ------------- //
+
+// return the ID of checked radio button identified by a classname string of radio buttons
+const getCheckedRadioButton = radioClass => {
+    return Array.from(document.getElementsByClassName(radioClass))
+        .map(button => button.checked ? button.getAttribute('id') : false)
+        .filter(val => val != false)[0];
 };
+
+// ------------------   HANDLERS ------------------ //
+
+const attachHandlers = () => {
+    Array.from(document.getElementsByClassName('radio'))
+    .forEach(radioButton => radioButton.addEventListener('click', paramsChangedHandler));
+};
+
+const paramsChangedHandler = () => {
+    const continent = getCheckedRadioButton('radio-c');
+    const year      = getCheckedRadioButton('radio-y');
+    const svg       = document.getElementById('svg');
+
+    if(svg) svg.remove();
+    drawChart(continent, year);
+};
+
+// ---------------  D3/GRAPH/DRAWING ------------- //
 
 const computeCircleColor = dataLine => {
     const {value} = dataLine;
@@ -41,9 +66,8 @@ const computeCicleRadius = dataLine => {
     else return value / chosen;
 }
 
-const drawChart = async continent => {
-    const data        = await getData(`${dataURL}pollution/bycontinent/${continent}`);
-    const data2005    = data.filter(d => d.year === 2005);
+const drawChart = async (continent, year) => {
+    const data        = await getData(`${dataURL}pollution/bycontinent/${continent}/${year}`);
     const width       = 1340;
     const height      = 500;
 
@@ -61,7 +85,7 @@ const drawChart = async continent => {
         .force('collide',d3.forceCollide(computeCicleRadius));
 
     const circles = svg.selectAll('.bdd')
-        .data(data2005)
+        .data(data)
         .enter()
             .append('g')
             .attr('id', 'cercle')
@@ -75,22 +99,22 @@ const drawChart = async continent => {
         .attr('color', 'black')
         .text(d => d.name);
     
-    simulation.nodes(data2005)
+    simulation.nodes(data)
         .on('tick', () => circles.attr('transform', d => `translate(${d.x},${d.y})`));
 };
 
-const init = () => {
-    const continents = ['Europe', 'Asie', 'Africa', 'NorthAmerica', 'SouthAmerica', 'Oceania'];
-    document.getElementById('Europe').checked = true;
+// ------------------- INIT FUNCTION ------------- //
 
-    continents.forEach(continent => {
-        document.getElementById(continent).addEventListener('click', () => continentHandler(continent));
-    });
+const init = () => {
+    const {continent, year}                    = START_VALUES;
+    document.getElementById(continent).checked = true;
+    document.getElementById(year).checked      = true;
+    drawChart(continent, year);
 };
 
-// ----------   MAIN   ------------ //
+// --------------------   MAIN   ------------------- //
 
 document.addEventListener('DOMContentLoaded', () => {
+    attachHandlers();
     init();
-    drawChart('Europe');
 });
