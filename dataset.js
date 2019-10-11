@@ -60,7 +60,7 @@ app.get('/data/pollution', async (req, res) => {
 })
 
 app.get('/data/pollution/bycountry/:country/', async (req, res) => {
-	const queryResult = await mysql('SELECT * FROM countriespollution WHERE name = ?', [req.params.country] );
+	const queryResult = await mysql('SELECT * FROM countriespollution WHERE name = ?', [req.params.country]);
 	sendQueryJSON(queryResult, res);
 });
 

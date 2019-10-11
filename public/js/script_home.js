@@ -16,14 +16,14 @@ const START_VALUES = {
 const getCheckedRadioButton = radioClass => {
     return Array.from(document.getElementsByClassName(radioClass))
         .map(button => button.checked ? button.getAttribute('id') : false)
-        .filter(val => val != false)[0];
+        .filter(val => val !== false)[0];
 };
 
 // ------------------   HANDLERS ------------------ //
 
 const attachHandlers = () => {
     Array.from(document.getElementsByClassName('radio'))
-    .forEach(radioButton => radioButton.addEventListener('click', paramsChangedHandler));
+        .forEach(radioButton => radioButton.addEventListener('click', paramsChangedHandler));
 };
 
 const paramsChangedHandler = () => {
@@ -103,7 +103,7 @@ const drawChart = async (continent, year) => {
         .on('tick', () => circles.attr('transform', d => `translate(${d.x},${d.y})`));
 };
 
-// ------------------- INIT FUNCTION ------------- //
+// ------------------- INIT FUNCTIONS ------------- //
 
 const init = () => {
     const {continent, year}                    = START_VALUES;
