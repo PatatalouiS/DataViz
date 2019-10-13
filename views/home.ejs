@@ -11,7 +11,7 @@
 
     <header>
         <div id="banner">
-            <p>DATA VISUALTION</p>
+            <p id ="titre">DATA VISUALTION</p>
         </div>
     </header>
     
@@ -54,17 +54,9 @@
         <label for="2014">2014</label>
     </div>
     
-
-    <div id="Legende">
-        <font color="#2ca02c">&#9632; Très peu polluant</font>
-        <font color="#1f77b4">&#9632; Peu polluant</font>
-        <font color="#ff7f0e">&#9632; Polluant</font>
-        <font color="#d62728">&#9632; Très polluant</font>
-        <font color="#8c564b">&#9632; Extrèmement polluant</font>
-        <font color="#581845">&#9632; Destructeur</font>
-    </div>
+    <p>Estimation des émissions de CO2 <br> Dues à la combustion de combustibles fossiles, à la production de ciment et au gaz brûlés à la torchère (milliers de tonnes de dioxyde de carbone) et par habitan</p>
    
-    <div id="chart"></div>
+    <div id="chart" class = "svg-container"></div>
 
     
     <%- include includes/scripts_env.ejs %>

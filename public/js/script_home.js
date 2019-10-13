@@ -53,7 +53,7 @@ const computeCircleColor = dataLine => {
 const computeCicleRadius = dataLine => {
     const {value} = dataLine;
     const ranges  = [ 50, 1000, 50000, 250000, 500000, 5000000];
-    const coeffs  = [ 5, 500, 2000, 5000, 5000, 5000];
+    const coeffs  = [ 5, 500, 2000, 5000, 5000, 60000];
     let chosen    = null;
 
     ranges.some((range, index) => {
@@ -66,41 +66,114 @@ const computeCicleRadius = dataLine => {
     else return value / chosen;
 }
 
+
 const drawChart = async (continent, year) => {
     const data        = await getData(`${dataURL}pollution/bycontinent/${continent}/${year}`);
     const width       = 1340;
-    const height      = 500;
+    const height      = 1000;
 
     const svg = d3.select('#chart')
         .append('svg')
-        .attr('height',height)
-        .attr('width',width)
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("viewBox", "0 0 1340 1000")
+        .classed("svg-content", true)
         .attr('id', 'svg')
         .append('g')
         .attr('transform','translate(2,2)');
-
+    
     const simulation = d3.forceSimulation()
         .force('x',d3.forceX(width/2).strength(0.05))
         .force('y',d3.forceY(height/2).strength(0.05))
         .force('collide',d3.forceCollide(computeCicleRadius));
+    
+    var div = svg.append("div")
+        .attr("class", "tooltip-donut")
+        .style("opacity", 0);
 
     const circles = svg.selectAll('.bdd')
         .data(data)
         .enter()
             .append('g')
             .attr('id', 'cercle')
+            .on('mouseover', function (d, i) {
+                d3.select(this).transition()
+                     .duration('50')
+                     .attr('opacity', '.85')
+                div.transition()
+                     .duration('50')
+                     .style("opacity", 1);
+                div.html(d.value)})
+                   
+            .on('mouseout', function (d, i) {
+                d3.select(this).transition()
+                     .duration('50')
+                     .attr('opacity', '1')
+                div.transition()
+                     .duration('50')
+                     .style("opacity", 0)})
+            
 
     circles.append('circle')
         .attr('class','Pays')
         .attr('r', computeCicleRadius)
         .attr('fill', computeCircleColor)
+        
 
     circles.append('text')
-        .attr('color', 'black')
-        .text(d => d.name);
+        .attr("dy", ".2em")
+        .style("text-anchor", "middle")
+        .attr("fill", "black")
+        .text(d => {
+            if(d.value > 100000) { return d.name; }
+            else return "";})
+        .style("font-weight", "bold");
     
+    circles.append('text')
+        .attr("dy", "1.3em")
+        .style("text-anchor", "middle")
+        .attr("fill", "white")
+        .text(d => {
+            if(d.value > 100000) { return d.value; }
+            else return "";});
+
+    circles.append('title')
+        .text(d => {return d.name} )
+        .text(d => {return d.value} )
+        
+
     simulation.nodes(data)
         .on('tick', () => circles.attr('transform', d => `translate(${d.x},${d.y})`));
+
+    const legende = svg
+        .append('g')
+        .attr('id', 'legende')
+    
+    let x = 220;
+    const posx = []
+    
+    const colors  = ["#2ca02c", "#1f77b4", "#ff7f0e", "#d62728","#8c564b", "#581845"];
+    const legendes = ["Pas polluant","Peu polluant","Polluant","Très polluant","Dangereux","Destructeur"]
+    
+    for ( let i = 0; i< 6; i++){
+        legende
+            .append('rect')
+            .attr("width", "150")
+            .attr("height", "30")
+            .attr("x", x)
+            .attr("y","30")
+            .attr("fill", colors[i]);     
+        legende
+            .append('text')
+            .attr("x",x + 75)
+            .attr("y","50")
+            .attr("fill","white")
+            .text(legendes[i])
+            .attr("text-anchor", "middle")
+            x += 150;
+    }
+    
+    
+    
 };
 
 // ------------------- INIT FUNCTIONS ------------- //
