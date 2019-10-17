@@ -165,7 +165,7 @@ const drawChart = async (continent, year) => {
     const colors  = ["#2ca02c", "#1f77b4", "#ff7f0e", "#d62728","#8c564b", "#581845"];
     const legendes = ["Pas polluant","Peu polluant","Polluant","Très polluant","Dangereux","Destructeur"]
     
-    for ( let i = 0; i< 6; i++){
+    for( let i = 0; i< 6; i++) {
         legende
             .append('rect')
             .attr("width", "150")
@@ -181,10 +181,7 @@ const drawChart = async (continent, year) => {
             .text(legendes[i])
             .attr("text-anchor", "middle")
             x += 150;
-    }
-    
-    
-    
+    }  
 };
 
 // ------------------- INIT FUNCTIONS ------------- //

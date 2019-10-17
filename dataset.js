@@ -26,9 +26,12 @@ app.get('/bt', async (req, res) => {
 
 // Page test pour Max
 app.get('/max', async (req, res) => {
-	console.log(nanoid());
-	const countries = await mysql('SELECT DISTINCT name FROM Countries ORDER BY name');
-	res.render('max', { countries : countries.map(line => line.name)} );
+	// console.log(nanoid());
+	// const countries = await mysql('SELECT DISTINCT name FROM Countries ORDER BY name');
+	// res.render('max', { countries : countries.map(line => line.name)} );
+
+	
+
 });
 
 //Exécuter des requêtes
@@ -73,6 +76,11 @@ app.get('/data/pollution/bycontinent/:continent/:year', async (req, res) => {
 	const queryResult = await mysql('SELECT name, year, value FROM countriespollution WHERE continent = ? AND year = ?', [req.params.continent, req.params.year]);
 	sendQueryJSON(queryResult, res);
 });
+
+// --------- DEFAULT ROUTING ---------- //
+
+
+
 
 // ----------  LISTEN ---------- //
 
