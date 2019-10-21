@@ -61,7 +61,7 @@ const computeCicleRadius = dataLine => {
          else return false;  
     })
 
-    if(!chosen) chosen = 20000;
+    if(!chosen) chosen = 30000;
     if(value <= 10000 ) return 10;
     else return value / chosen;
 }
@@ -84,61 +84,72 @@ const drawChart = async (continent, year) => {
     const simulation = d3.forceSimulation()
         .force('x',d3.forceX(width/2).strength(0.05))
         .force('y',d3.forceY(height/2).strength(0.05))
-        .force('collide',d3.forceCollide(computeCicleRadius));
-    
-    var div = svg.append("div")
-        .attr("class", "tooltip-donut")
-        .style("opacity", 0);
+        .force('collide',d3.forceCollide(computeCicleRadius))
+       // .force("charge", d3.forceManyBody())
+        
+       
 
     const circles = svg.selectAll('.bdd')
         .data(data)
         .enter()
-            .append('g')
-            .attr('id', 'cercle')
-            .on('mouseover', function (d, i) {
-                d3.select(this).transition()
-                     .duration('50')
-                     .attr('opacity', '.85')
-                div.transition()
-                     .duration('50')
-                     .style("opacity", 1);
-                div.html(d.value)})
-                   
-            .on('mouseout', function (d, i) {
-                d3.select(this).transition()
-                     .duration('50')
-                     .attr('opacity', '1')
-                div.transition()
-                     .duration('50')
-                     .style("opacity", 0)})
+        .append('g')
+        .attr('id', 'cercle')
+        .on('mouseover', function (d, i) {
+            d3.select(this).transition()
+                .duration('50')
+                .attr('opacity', '.85')
+        
+            if (d3.select(this.firstChild).attr('r') <= 40){
+                d3.select(this.firstChild).attr('r' ,'100')
+            }
+            d3.select(this.firstChild.nextSibling).attr("opacity","1")
+            d3.select(this.firstChild.nextSibling.nextSibling).attr("opacity","1")
+        })
+
+        .on('mouseout', function (d, i) {
+            d3.select(this).transition()
+                .duration('50')
+                .attr('opacity', '1')
+            
+            d3.select(this.firstChild).attr('r',computeCicleRadius)
+            d3.select(this.firstChild.nextSibling).attr('opacity',d =>{
+                if(d.value > 100000) return '1'
+                else return '0';})
+            d3.select(this.firstChild.nextSibling.nextSibling).attr('opacity',d =>{
+                if(d.value > 100000) return '1'
+                else return '0';})
+        })
             
 
     circles.append('circle')
         .attr('class','Pays')
         .attr('r', computeCicleRadius)
-        .attr('fill', computeCircleColor)
-        
+        .attr('fill', computeCircleColor)  
+
 
     circles.append('text')
+        .attr('class','titrePays')
         .attr("dy", ".2em")
         .style("text-anchor", "middle")
         .attr("fill", "black")
-        .text(d => {
-            if(d.value > 100000) { return d.name; }
-            else return "";})
-        .style("font-weight", "bold");
+        .text(d => d.name)
+        .attr('opacity', d =>{
+            if(d.value > 100000) return '1'
+            else return '0';})
+        .style("font-weight", "bold")
     
     circles.append('text')
         .attr("dy", "1.3em")
         .style("text-anchor", "middle")
         .attr("fill", "white")
-        .text(d => {
-            if(d.value > 100000) { return d.value; }
-            else return "";});
+        .text(d => (new Intl.NumberFormat({ style: 'decimal'}).format(d.value)))
+        .attr('opacity', d =>{
+            if(d.value > 100000) return '1'; 
+            else return '0';})
+        .style("font-weight", "bold")
 
     circles.append('title')
-        .text(d => {return d.name} )
-        .text(d => {return d.value} )
+        .text(d => {return d.name;} )
         
 
     simulation.nodes(data)
