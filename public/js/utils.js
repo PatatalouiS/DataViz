@@ -2,7 +2,7 @@
 'use strict'
 
 
-const getHOST = () => {
+export const getHOST = () => {
     return document.getElementById('MODE')
         .getAttribute('data-row') === 'development'
             ? 'localhost:8080'
