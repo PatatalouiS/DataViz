@@ -74,6 +74,11 @@ app.get('/data/pollution/bycontinent/:continent/:year', async (req, res) => {
 	sendQueryJSON(queryResult, res);
 });
 
+app.get('/data/pollution/top10/:year', async (req, res) => {
+	const queryResult = await mysql('SELECT name, year, value FROM countriespollution WHERE year = ? ORDER BY value DESC LIMIT 0,10', [req.params.year]);
+	sendQueryJSON(queryResult, res);
+});
+
 // ----------  LISTEN ---------- //
 
 app.listen(PORT, () => console.log(`Server is listenning on PORT : ${PORT} Mode is : ${MODE}`));
