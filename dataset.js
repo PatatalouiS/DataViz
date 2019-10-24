@@ -92,10 +92,10 @@ app.get('/data/pollution/bycontinent/:continent/:year', async (req, res) => {
 	sendQueryJSON(queryResult, res);
 });
 
-// --------- DEFAULT ROUTING ---------- //
-
-
-
+app.get('/data/pollution/top10/:year', async (req, res) => {
+	const queryResult = await mysql('SELECT name, year, value FROM countriespollution WHERE year = ? ORDER BY value DESC LIMIT 0,10', [req.params.year]);
+	sendQueryJSON(queryResult, res);
+});
 
 // ----------  LISTEN ---------- //
 

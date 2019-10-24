@@ -52,23 +52,29 @@ const computeCircleColor = dataLine => {
 
 const computeCicleRadius = dataLine => {
     const {value} = dataLine;
-    const ranges  = [ 50, 1000, 50000, 250000, 500000, 5000000];
-    const coeffs  = [ 5, 500, 2000, 5000, 5000, 60000];
+    const ranges  = [ 1000, 5000, 50000, 100000, 150000, 200000,250000,300000,350000,400000,450000,500000,550000,600000,650000,700000,750000,800000,850000,900000,950000,10000000,20000000,3000000,5000000,15000000];
+    const coeffs  = [ 10, 12, 15, 20, 30,40,45,50,55,60,65,70,75,80,85,90,100,105,110,112,115,130,150,170,200];
     let chosen    = null;
 
     ranges.some((range, index) => {
          if(value < range) { chosen = coeffs[index]; return true; }
          else return false;  
     })
-
-    if(!chosen) chosen = 30000;
-    if(value <= 10000 ) return 10;
-    else return value / chosen;
+    return chosen
 }
 
 
 const drawChart = async (continent, year) => {
-    const data        = await getData(`${dataURL}pollution/bycontinent/${continent}/${year}`);
+
+    const functionTab = {
+        'Top' : () => `${dataURL}pollution/top10/${year}`,
+        'World' : () => `${dataURL}pollution/top10/${year}`
+    };
+
+    const data = (continent === 'Top' || continent === 'World') 
+        ? await getData(functionTab[continent]())
+        : await getData(`${dataURL}pollution/bycontinent/${continent}/${year}`);
+
     const width       = 1340;
     const height      = 1000;
 
@@ -80,14 +86,14 @@ const drawChart = async (continent, year) => {
         .attr('id', 'svg')
         .append('g')
         .attr('transform','translate(2,2)');
+
+    const forcecollision = 50;
     
     const simulation = d3.forceSimulation()
         .force('x',d3.forceX(width/2).strength(0.05))
         .force('y',d3.forceY(height/2).strength(0.05))
         .force('collide',d3.forceCollide(computeCicleRadius))
-       // .force("charge", d3.forceManyBody())
-        
-       
+    
 
     const circles = svg.selectAll('.bdd')
         .data(data)
@@ -98,12 +104,16 @@ const drawChart = async (continent, year) => {
             d3.select(this).transition()
                 .duration('50')
                 .attr('opacity', '.85')
-        
+            
             if (d3.select(this.firstChild).attr('r') <= 40){
                 d3.select(this.firstChild).attr('r' ,'100')
+                //console.log(d3.select(this.firstChild).attr('r'))
+                //simulation.nodes(data)
             }
+            //simulation.alpha(1).restart();
             d3.select(this.firstChild.nextSibling).attr("opacity","1")
             d3.select(this.firstChild.nextSibling.nextSibling).attr("opacity","1")
+            
         })
 
         .on('mouseout', function (d, i) {
@@ -118,14 +128,16 @@ const drawChart = async (continent, year) => {
             d3.select(this.firstChild.nextSibling.nextSibling).attr('opacity',d =>{
                 if(d.value > 100000) return '1'
                 else return '0';})
+
+            simulation.nodes(data)
+                .on('tick', () => circles.attr('transform', d => `translate(${d.x},${d.y})`));
         })
             
 
     circles.append('circle')
         .attr('class','Pays')
         .attr('r', computeCicleRadius)
-        .attr('fill', computeCircleColor)  
-
+        .attr('fill', computeCircleColor) 
 
     circles.append('text')
         .attr('class','titrePays')
@@ -134,7 +146,7 @@ const drawChart = async (continent, year) => {
         .attr("fill", "black")
         .text(d => d.name)
         .attr('opacity', d =>{
-            if(d.value > 100000) return '1'
+            if(d.value > 150000) return '1'
             else return '0';})
         .style("font-weight", "bold")
     
@@ -144,7 +156,7 @@ const drawChart = async (continent, year) => {
         .attr("fill", "white")
         .text(d => (new Intl.NumberFormat({ style: 'decimal'}).format(d.value)))
         .attr('opacity', d =>{
-            if(d.value > 100000) return '1'; 
+            if(d.value > 150000) return '1'; 
             else return '0';})
         .style("font-weight", "bold")
 
@@ -154,6 +166,7 @@ const drawChart = async (continent, year) => {
 
     simulation.nodes(data)
         .on('tick', () => circles.attr('transform', d => `translate(${d.x},${d.y})`));
+
 
     const legende = svg
         .append('g')
