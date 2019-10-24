@@ -36,13 +36,8 @@ app.get('/max', async (req, res) => {
 
 //Exécuter des requêtes
 app.get('/query', async (req, res) => {
-	const query =
-	`SELECT idc, year, value FROM Pollution` ;
-
-	const queryResult = await mysql(query);
-
-	res.setHeader('Content-type', 'Application/json');
-	res.end(JSON.stringify(queryResult));
+		
+	//sendQueryJSON(await mysql(query), res);
 });
 
 // ------- ROUTES DE NAVIGATION -------- //
@@ -78,22 +73,22 @@ app.post('/generator', upload.single('json_file'), (req, res) => {
 // ------- ROUTES GETDATA POUR FETCH -------- //
 
 app.get('/data/pollution', async (req, res) => {
-	const queryResult = await mysql('SELECT * FROM countriespollution ORDER BY name, year');
+	const queryResult = await mysql('SELECT * FROM GlobalCountriesPollution ORDER BY name, year');
 	sendQueryJSON(queryResult, res);
 })
 
 app.get('/data/pollution/bycountry/:country/', async (req, res) => {
-	const queryResult = await mysql('SELECT * FROM countriespollution WHERE name = ?', [req.params.country]);
-	sendQueryJSON(queryResult, res);
+	const queryResult = await mysql('SELECT * FROM GlobalCountriesPollution WHERE name = ?', [req.params.country]);
+	sendQueryJSON(queryResult, res);  
 });
 
 app.get('/data/pollution/bycontinent/:continent', async (req, res) => {
-	const queryResult = await mysql('SELECT name, year, value FROM countriespollution WHERE continent = ?', [req.params.continent]);
+	const queryResult = await mysql('SELECT name, year, value FROM GlobalCountriesPollution WHERE continent = ?', [req.params.continent]);
 	sendQueryJSON(queryResult, res);
 });
 
 app.get('/data/pollution/bycontinent/:continent/:year', async (req, res) => {
-	const queryResult = await mysql('SELECT name, year, value FROM countriespollution WHERE continent = ? AND year = ?', [req.params.continent, req.params.year]);
+	const queryResult = await mysql('SELECT name, year, value FROM GlobalCountriesPollution WHERE continent = ? AND year = ?', [req.params.continent, req.params.year]);
 	sendQueryJSON(queryResult, res);
 });
 
