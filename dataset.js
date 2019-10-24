@@ -13,14 +13,11 @@ import multer from 'multer';
 import fs from 'fs';
 const upload = multer({ dest: 'uploads/' });
 
-
 app.set('view engine', 'ejs');
 app.use('/static', express.static('public'));
 app.use(cors());
 
-
 // ------- Tests ------- //
-
 
 // Page test pour BT
 app.get('/bt', async (req, res) => {
@@ -93,11 +90,10 @@ app.get('/data/pollution/bycontinent/:continent/:year', async (req, res) => {
 });
 
 app.get('/data/pollution/top10/:year', async (req, res) => {
-	const queryResult = await mysql('SELECT name, year, value FROM countriespollution WHERE year = ? ORDER BY value DESC LIMIT 0,10', [req.params.year]);
+	const queryResult = await mysql('SELECT name, year, value FROM GlobalCountriesPollution WHERE year = ? ORDER BY value DESC LIMIT 0,10', [req.params.year]);
 	sendQueryJSON(queryResult, res);
 });
 
 // ----------  LISTEN ---------- //
 
 app.listen(PORT, () => console.log(`Server is listenning on PORT : ${PORT} Mode is : ${MODE}`));
-
