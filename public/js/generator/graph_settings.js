@@ -1,19 +1,17 @@
 
-const getActiveTabClasses = tabValue => tabValue ? 'nav-link active' : 'nav-link';
-
 const template = /*html*/
     `<div class="card text-center" id="graph_params">
         <div class="card-header">
             <ul class="nav nav-pills card-header-pills">
                 <li class="nav-item" @click="setTab('settings')">
-                    <a :class="settingsStatus" href="#">Settings</a>
+                    <a class="nav-link" :class='{ active : tabs.settings }' href="#">Settings</a>
                 </li>
                 <li class="nav-item" @click="setTab('editor')">
-                    <a :class="editorStatus" href="#">Editor</a>
+                    <a class="nav-link" :class='{ active : tabs.editor }' href="#">Editor</a>
                 </li>
             </ul>
         </div>
-        <div class="card-body" v-if="tabs.settings">
+        <div class="card-body" v-show="tabs.settings">
             <p class="card-title">Choose fields to render and other options</p> 
             <div class='row justify-content-center'>
                 <div class='col-6'>
@@ -50,7 +48,7 @@ const template = /*html*/
                 </div>
             </div>
         </div>
-        <div class="card-body" v-else >
+        <div class="card-body" v-show='tabs.editor' >
             <div class='container'>
                 <h5>Here you can Visualize or edit your Data</h5> 
                 <div class='row'>
@@ -82,33 +80,23 @@ const graphsettings = {
       
     methods : {
         setTab : function(tabName) {
-            const {tabs, json} = this;
-
+            const {tabs} = this;
             tabs[tabName] = true;
             tabName === 'settings'
                 ? tabs.editor = false
                 : tabs.settings = false;
-
-            if(tabName === 'editor') {
-
-                setTimeout(() => {
-                    const editor = ace.edit('code');
-                    editor.session.setMode('ace/mode/javascript');      
-                    editor.setShowPrintMargin(false);
-                    editor.setHighlightActiveLine(false);
-                }, 0);
-            }
         }
     },
 
     computed : {
-        settingsStatus : function () { return getActiveTabClasses(this.tabs.settings)},
-        editorStatus : function () { return getActiveTabClasses(this.tabs.editor)},
-        jsonString : function () { return (JSON.stringify(this.json, null, 4))},
-        jsonFields : function () { return Object.keys(this.json[0])}
+        jsonString : function () { return (JSON.stringify(this.json, null, 4)) },
+        jsonFields : function () { return Object.keys(this.json[0]) }
+    },
+
+    mounted : function() {
+        const editor = ace.edit('code');
+        editor.session.setMode('ace/mode/javascript');      
     }
 };
 
-
 export default graphsettings;
-

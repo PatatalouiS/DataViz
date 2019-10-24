@@ -32,10 +32,6 @@ const init = (VueInstance) => {
 
 const dragarea = {
 
-    created : function () {
-        init(this);
-    },
-
     template :   /*html*/
         `<div class='border rounded container text-center background-trans' id='drag_zone'>
             <form class="dropzone" id="drop" method='post' enctype='multipart/form-data'>
@@ -43,6 +39,10 @@ const dragarea = {
                 <img src="/static/img/drag_and_drop.png" alt="Drag and drop Icon" class='img-fluid'>
             </form>
         </div>`,
+    
+    created : function () {
+        init(this);
+    },
 };
 
 export default dragarea;
