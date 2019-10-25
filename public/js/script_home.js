@@ -52,8 +52,6 @@ const computeCircleColor = dataLine => {
 
 const computeCicleRadius = dataLine => {
     const {value} = dataLine;
-    /*if currentlyselected = 
-        value = value + 100*/
     const ranges  = [ 1000, 5000, 50000, 100000, 150000, 200000,250000,300000,350000,400000,450000,500000,550000,600000,650000,700000,750000,800000,850000,900000,950000,10000000,20000000,3000000,5000000,15000000];
     const coeffs  = [ 10, 12, 15, 20, 30,40,45,50,55,60,65,70,75,80,85,90,100,105,110,112,115,130,150,170,200];
     let chosen    = null;
@@ -132,8 +130,8 @@ const drawChart = async (continent, year) => {
                 if(d.value > 150000) return '1'
                 else return '0';})
 
-            /*simulation.nodes(data)
-                .on('tick', () => circles.attr('transform', d => `translate(${d.x},${d.y})`));*/
+            simulation.nodes(data)
+                .on('tick', () => circles.attr('transform', d => `translate(${d.x},${d.y})`));
         })
             
 
@@ -181,7 +179,7 @@ const drawChart = async (continent, year) => {
     const colors  = ["#2ca02c", "#1f77b4", "#ff7f0e", "#d62728","#8c564b", "#581845"];
     const legendes = ["Pas polluant","Peu polluant","Polluant","Très polluant","Dangereux","Destructeur"]
     
-    for ( let i = 0; i< 6; i++){
+    for( let i = 0; i< 6; i++) {
         legende
             .append('rect')
             .attr("width", "150")
@@ -199,7 +197,7 @@ const drawChart = async (continent, year) => {
             x += 150;
     }        
     
-
+    
     const pollu = svg
         .append('g')
         .attr('id','wp')

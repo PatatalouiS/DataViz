@@ -1,0 +1,32 @@
+
+
+body {
+    background-image: url('../img/background.png') !important;
+    background-size: cover !important;
+    background-attachment: fixed;
+}
+
+img {
+    height: 10%;
+    width: 10%;
+}
+
+#drag_zone {
+    padding : 20px;
+}
+
+#graph_params {
+    margin-top: 20px;
+}
+
+.background-trans {
+    background-color: rgba(255, 255, 255, 0.6);
+}
+  
+#code {
+    height:300px;
+    padding-right:0;
+    padding-left: 0;
+}
+  
+
