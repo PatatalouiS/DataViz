@@ -99,6 +99,11 @@ app.get('/data/pollution/top10/:year', async (req, res) => {
 	sendQueryJSON(queryResult, res);
 });
 
+app.get('/data/pollution/top10/:year/total', async (req, res) => {
+	const queryResult = await mysql(/*sql*/`SELECT SUM(value) AS TotalPollution, year FROM GlobalCountriesPollution WHERE year = ?`, [req.params.year]);
+	sendQueryJSON(queryResult, res);
+});
+
 app.get('/data/pollution/top10/:year', async (req, res) => {
 	const queryResult = await mysql('SELECT name, year, value FROM countriespollution WHERE year = ? ORDER BY value DESC LIMIT 0,10', [req.params.year]);
 	sendQueryJSON(queryResult, res);

@@ -22,7 +22,7 @@ const getCheckedRadioButton = radioClass => {
 // ------------------   HANDLERS ------------------ //
 
 const attachHandlers = () => {
-    Array.from(document.getElementsByClassName('radio'))
+    Array.from(document.getElementsByClassName('custom-control-input'))
         .forEach(radioButton => radioButton.addEventListener('click', paramsChangedHandler));
 };
 
@@ -108,10 +108,8 @@ const drawChart = async (continent, year) => {
             
             if (d3.select(this.firstChild).attr('r') <= 40){
                 d3.select(this.firstChild).attr('r' ,'100')
-                //console.log(d3.select(this.firstChild).attr('r'))
-                //simulation.nodes(data)
+                
             }
-            //simulation.alpha(1).restart();
             d3.select(this.firstChild.nextSibling).attr("opacity","1")
             d3.select(this.firstChild.nextSibling.nextSibling).attr("opacity","1")
             
@@ -196,13 +194,18 @@ const drawChart = async (continent, year) => {
             .attr("text-anchor", "middle")
             x += 150;
     }        
+   
     
+    const total            = await getData(`${dataURL}pollution/bycontinent/${getCheckedRadioButton('radio-c')}/${getCheckedRadioButton('radio-y')}/total`)
+    const numberPollu      = total[0].TotalPollution
+    const totalWorld       = await getData(`${dataURL}pollution/top10/${getCheckedRadioButton('radio-y')}/total`)
+    const numberPolluWorld = totalWorld[0].TotalPollution
+    const affichervaleur   = (getCheckedRadioButton('radio-c') != 'Top') ? numberPollu : numberPolluWorld
     
     const pollu = svg
         .append('g')
         .attr('id','wp')
    
-    
     pollu.append('rect')
         .attr("width", "150")
         .attr("height", "30")
@@ -213,12 +216,13 @@ const drawChart = async (continent, year) => {
         .attr("stroke-width","2")
     
     pollu.append('text')
-        .text(getCheckedRadioButton('radio-c'))
-        .attr("x","45")
+        .text("Total " + (getCheckedRadioButton('radio-c')))
+        .attr("x","30")
         .attr("y",'140')
+        .style("font-weight", "bold")
     
     pollu.append('text')
-        .text(new Intl.NumberFormat({ style: 'decimal'}).format('22'))
+        .text(new Intl.NumberFormat({ style: 'decimal'}).format(affichervaleur))
         .attr("x","60")
         .attr("y",'170')
         .style("font-weight", "bold")

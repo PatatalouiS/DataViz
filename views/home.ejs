@@ -4,6 +4,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel= "stylesheet" href="/static/css/style_home.css" />
 </head>
 
@@ -15,48 +16,55 @@
         </div>
     </header>
     
-    <a href="/generator" class='nav-link' id="generator">Generator</a>
+    <div id="general-menu">
+        <a href="/generator" class='nav-link' id="generator">Generator</a>
 
-    <div id="controls-continent">
-        <input id="Europe" class='radio radio-c' type="radio" name="continent" checked='true'>
-        <label for="Europe">Europe</label>
-        <input id="Asie" class='radio radio-c' type="radio" name="continent">
-        <label for="Asie">Asie</label>
-        <input id="NorthAmerica" class='radio radio-c' type="radio" name="continent">
-        <label for="NorthAmerica">North America</label>
-        <input id="SouthAmerica" class='radio radio-c' type="radio" name="continent">
-        <label for="SouthAmerica">South America</label>
-        <input id="Oceania" class='radio radio-c' type="radio" name="continent">
-        <label for="Oceania">Oceania</label>
-        <input id="Africa" class='radio radio-c' type="radio" name="continent">
-        <label for="Africa">Africa</label>
-        <input id="World" class='radio radio-c' type="radio" name="continent">
-        <label for="World">World</label>
-        <input id="Top" class='radio radio-c' type="radio" name="continent">
-        <label for="Top">Top 10</label>
-    </div>
+        <div id="controls-continent">
+            <input type="radio" id ="Europe" class="custom-control-input  radio-c" name="continent" checked>
+            <label class="custom-control-label" for="Europe">Europe</label>
+            <input type ="radio" id="Asie" class='custom-control-input radio-c' name="continent">
+            <label class="custom-control-label" for="Asie">Asie</label>
+            <input type="radio" id="NorthAmerica" class='custom-control-input radio-c' type="radio" name="continent">
+            <label class="custom-control-label" for="NorthAmerica">North America</label>
+            <input type="radio" id="SouthAmerica" class='custom-control-input radio-c' type="radio" name="continent">
+            <label class="custom-control-label" for="SouthAmerica">South America</label>
+            <input type="radio" id="Oceania" class='custom-control-input radio-c' type="radio" name="continent">
+            <label class="custom-control-label" for="Oceania">Oceania</label>
+            <input type="radio" id="Africa" class='custom-control-input radio-c' type="radio" name="continent">
+            <label class="custom-control-label" for="Africa">Africa</label>
+            <input type="radio" id="Top" class='custom-control-input radio-c' type="radio" name="continent">
+            <label class="custom-control-label" for="Top">Top 10</label>
+        </div>
 
-    <div id="controls-year">
-        <input id="1975" class='radio radio-y' type="radio" checked='true' name='year'>
-        <label for="1975">1975</label>
-        <input id="1985" class='radio radio-y' type="radio" checked='true' name='year'>
-        <label for="1985">1985</label>
-        <input id="1995" class='radio radio-y' type="radio" checked='true' name='year'>
-        <label for="1995">1995</label>
-        <input id="2005" class='radio radio-y' type="radio" checked='true' name='year'>
-        <label for="2005">2005</label>
-        <input id="2010" class='radio radio-y' type="radio" name='year'>
-        <label for="2010">2010</label>
-        <input id="2012" class='radio radio-y' type="radio" checked='true' name='year'>
-        <label for="2012">2012</label>
-        <input id="2013" class='radio radio-y' type="radio" checked='true' name='year'>
-        <label for="2013">2013</label>
-        <input id="2014" class='radio radio-y' type="radio" checked='true' name='year'>
-        <label for="2014">2014</label>
-    </div>
+        <div id="controls-year">
+            <input type="radio" id="1975" class='custom-control-input radio-y' type="radio" checked='true' name='year'>
+            <label class="custom-control-label" for="1975">1975</label>
+            <input type="radio" id="1985" class='custom-control-input radio-y' type="radio" checked='true' name='year'>
+            <label class="custom-control-label" for="1985">1985</label>
+            <input type="radio" id="1995" class='custom-control-input radio-y' type="radio" checked='true' name='year'>
+            <label class="custom-control-label" for="1995">1995</label>
+            <input type="radio" id="2005" class='custom-control-input radio-y' type="radio" checked='true' name='year'>
+            <label class="custom-control-label" for="2005">2005</label>
+            <input type="radio" id="2010" class='custom-control-input radio-y' type="radio" name='year'>
+            <label class="custom-control-label" for="2010">2010</label>
+            <input type="radio" id="2012" class='custom-control-input radio-y' type="radio" checked='true' name='year'>
+            <label class="custom-control-label" for="2012">2012</label>
+            <input type="radio" id="2013" class='custom-control-input radio-y' type="radio" checked='true' name='year'>
+            <label class="custom-control-label" for="2013">2013</label>
+            <input type="radio" id="2014" class='custom-control-input radio-y' type="radio" checked='true' name='year'>
+            <label class="custom-control-label" for="2014">2014</label>
+                        
+            <input type="radio" id="pays" class='custom-control-input radio-t' type="radio" checked='true' name='type' style="margin-left: 30px;">
+            <label class="custom-control-label" for="pays">Pollution par pays</label>
+            <input type="radio" id="pays" class='custom-control-input radio-t' type="radio" checked='true' name='type' >
+            <label class="custom-control-label" for="capita">Pollution par habitants</label>
+        </div>
+        
+        <div class ="well"><p style="font-weight: bold">Estimation des émissions de CO2 </p><p><br> Dues à la combustion de combustibles fossiles, à la production de ciment et au gaz brûlés à la torchère. En milliers de tonnes de dioxyde de carbone pour les
+        pays ou/et en tonne par habitant</p>
+    </div>   
     
-    <p>Estimation des émissions de CO2 <br> Dues à la combustion de combustibles fossiles, à la production de ciment et au gaz brûlés à la torchère (milliers de tonnes de dioxyde de carbone)</p>
-   
+
     <div id="chart" class = "svg-container"></div>
 
     <%- include includes/scripts_env.ejs %>

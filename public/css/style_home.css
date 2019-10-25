@@ -13,6 +13,7 @@ body{
 	position:absolute;
 	top:0;
 	left:0;
+	
 
 }
 
@@ -33,16 +34,20 @@ body{
 	font-size: 30px;
 }
 
-p{
-	font-size: 18px;
+#general-menu{
 	margin-left: 10px;
+	font-size: 18px;
 }
 
-#controls-continent {
-  font-size: 18px;
+
+#controls-continent{
   margin-bottom: 10px;
-  margin-top: 60px;
   padding-top: 30px;
+}
+
+#controls-year, #controls-type{
+  padding-top: 5px;
+  margin-bottom: 5px;
 }
 
 #Legende{
