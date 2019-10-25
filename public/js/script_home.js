@@ -52,6 +52,8 @@ const computeCircleColor = dataLine => {
 
 const computeCicleRadius = dataLine => {
     const {value} = dataLine;
+    /*if currentlyselected = 
+        value = value + 100*/
     const ranges  = [ 1000, 5000, 50000, 100000, 150000, 200000,250000,300000,350000,400000,450000,500000,550000,600000,650000,700000,750000,800000,850000,900000,950000,10000000,20000000,3000000,5000000,15000000];
     const coeffs  = [ 10, 12, 15, 20, 30,40,45,50,55,60,65,70,75,80,85,90,100,105,110,112,115,130,150,170,200];
     let chosen    = null;
@@ -93,6 +95,7 @@ const drawChart = async (continent, year) => {
         .force('x',d3.forceX(width/2).strength(0.05))
         .force('y',d3.forceY(height/2).strength(0.05))
         .force('collide',d3.forceCollide(computeCicleRadius))
+        
     
 
     const circles = svg.selectAll('.bdd')
@@ -123,14 +126,14 @@ const drawChart = async (continent, year) => {
             
             d3.select(this.firstChild).attr('r',computeCicleRadius)
             d3.select(this.firstChild.nextSibling).attr('opacity',d =>{
-                if(d.value > 100000) return '1'
+                if(d.value > 150000) return '1'
                 else return '0';})
             d3.select(this.firstChild.nextSibling.nextSibling).attr('opacity',d =>{
-                if(d.value > 100000) return '1'
+                if(d.value > 150000) return '1'
                 else return '0';})
 
-            simulation.nodes(data)
-                .on('tick', () => circles.attr('transform', d => `translate(${d.x},${d.y})`));
+            /*simulation.nodes(data)
+                .on('tick', () => circles.attr('transform', d => `translate(${d.x},${d.y})`));*/
         })
             
 
@@ -194,10 +197,35 @@ const drawChart = async (continent, year) => {
             .text(legendes[i])
             .attr("text-anchor", "middle")
             x += 150;
-    }
+    }        
     
+
+    const pollu = svg
+        .append('g')
+        .attr('id','wp')
+   
     
+    pollu.append('rect')
+        .attr("width", "150")
+        .attr("height", "30")
+        .attr("x", "30")
+        .attr("y",'150')
+        .attr("fill", "white")
+        .attr("stroke", "grey")
+        .attr("stroke-width","2")
     
+    pollu.append('text')
+        .text(getCheckedRadioButton('radio-c'))
+        .attr("x","45")
+        .attr("y",'140')
+    
+    pollu.append('text')
+        .text(new Intl.NumberFormat({ style: 'decimal'}).format('22'))
+        .attr("x","60")
+        .attr("y",'170')
+        .style("font-weight", "bold")
+        
+     
 };
 
 // ------------------- INIT FUNCTIONS ------------- //

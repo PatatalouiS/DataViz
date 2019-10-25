@@ -79,6 +79,7 @@ app.get('/data/pollution/top10/:year', async (req, res) => {
 	sendQueryJSON(queryResult, res);
 });
 
+
 // ----------  LISTEN ---------- //
 
 app.listen(PORT, () => console.log(`Server is listenning on PORT : ${PORT} Mode is : ${MODE}`));
