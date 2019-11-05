@@ -2,17 +2,17 @@
 'use strict'
 
 
+const getMODE = () => {
+    return document.getElementById('MODE')
+        .getAttribute('data-row');
+}
+
+
 export const getHOST = () => {
     return document.getElementById('MODE')
         .getAttribute('data-row') === 'development'
             ? 'localhost:8080'
             : 'lifprojet.patatalouis.fr';
-}
-
-
-const getMODE = () => {
-    return document.getElementById('MODE')
-        .getAttribute('data-row');
 }
 
 
@@ -25,7 +25,19 @@ export const getData = url => {
         .catch(error => console.error(`Error : here the error object for you : `, error));
 };
 
-
-
 export const dataURL = `http://${getHOST()}/data/`;
 
+export class Timer {
+
+    constructor () {
+        this.time = null;
+    } 
+
+    set (value) {
+        this.time = value;
+    }
+
+    clear () {
+        this.time = clearTimeout(this.time);
+    }
+}
