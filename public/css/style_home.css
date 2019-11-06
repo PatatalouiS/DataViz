@@ -13,8 +13,6 @@ body{
 	position:absolute;
 	top:0;
 	left:0;
-	
-
 }
 
 #banner{
@@ -45,9 +43,10 @@ body{
   padding-top: 30px;
 }
 
-#controls-year, #controls-type{
+#controls-year, #controls-continent{
   padding-top: 5px;
   margin-bottom: 5px;
+  margin-left: 30px;	
 }
 
 #Legende{
@@ -96,4 +95,66 @@ div.tooltip-donut {
 	border-radius: 8px;
 	pointer-events: none;
 	font-size: 1.3rem;
+}
+
+
+
+
+
+
+
+
+
+
+/************** Style TimeLine *****/
+
+
+#play-button {
+	position: absolute;
+	top: 90px;
+	left: 120px;
+	background: #f08080;
+	padding-right: 26px;
+	border-radius: 3px;
+	border: none;
+	color: white;
+	margin: 0;
+	padding: 0 12px;
+	width: 60px;
+	cursor: pointer;
+	/*height: 30px;*/
+}
+
+#play-button:hover {
+	background-color: #696969;
+}    
+
+
+.track,.track-inset,.track-overlay {
+      stroke-linecap: round;
+}
+
+.track {
+    stroke: #000;
+    stroke-opacity: 0.3;
+    stroke-width: 10px;
+}
+	
+.track-inset {
+	stroke: #dcdcdc;
+	stroke-width: 8px;
+}
+	
+.track-overlay {
+    pointer-events: stroke;
+    stroke-width: 50px;
+    stroke: transparent;
+    cursor: crosshair;
+}
+
+.handle {
+	fill: #fff;
+	stroke: #000;
+	stroke-opacity: 0.5;
+	stroke-width: 1.25px;
 }
