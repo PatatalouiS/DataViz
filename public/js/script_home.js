@@ -175,6 +175,7 @@ const drawTimeLine = async (continent,year) => {
     const startDate = new Date("1975"),
           endDate =  new Date("2014");
     const targetValue = rangeMax;
+    var currentValue = 0;
 
     const moving = false;
 
@@ -206,7 +207,9 @@ const drawTimeLine = async (continent,year) => {
         .attr("class", "track-overlay")
         .call(d3.drag()
             .on("start.interrupt", () => { return slider.interrupt(); })
-            .on("start drag", () => { return update(x.invert(d3.event.x));}))
+            .on("start drag", function() { 
+                currentValue = d3.event.x;
+                update(x.invert(currentValue));}))
         
     slider.insert("g",".track-overlay")
         .attr("class","ticks")
@@ -234,30 +237,30 @@ const drawTimeLine = async (continent,year) => {
 
 
     /************  FONCTION DU SLIDER  ***************/
-
+    
     playButton
-        .on("click", () => {
+        .on("click", function () {
             const button = d3.select(this);
             if(button.text() == "Pause"){
-                moving = false;
+                console.log(timer);
                 clearInterval(timer);
                 button.text("Play");
             }else{
-                moving = true;
                 timer = setInterval(step,100);
                 button.text("Pause");
             }
-            timer = setInterval(step,100);
         })
 
-    /*function step (){
-        const currentValue = update(x.invert(d3.event.x));
-        if (currentValue > (width/150)){
+    function step (){
+        update(x.invert(currentValue));
+        currentValue = currentValue + (targetValue/150);
+        if (currentValue > targetValue){
             currentValue = 0;
             clearInterval(timer);
-            playButton.text("Play;")
+            playButton.text("Play;");
+            console.log("Bouger");
         }        
-    }*/
+    }
 
     function update(h){
         handle.attr("cx", x(h));
@@ -287,7 +290,7 @@ const drawChart = async (continent, year) => {
     const height      = 900;
 
     // Definition of the force Simulation, especially collapse force
-    const s = 0.005;
+    const s = 0.01;
     const timer = new Timer();
     const force = d3.forceSimulation(data)
         .force('x', d3.forceX(width/2).strength(s))
