@@ -77,6 +77,8 @@ const updateRadius = ({newRadius, simulation, data, transitionDuration, indexTri
             }
         })
     simulation.alpha(1).restart();
+
+    return Promise.resolve();
 };
 
 const showLargeBubble = (simulation, data, timer) => (dataTrigger, indexTrigger, nodes) => {
@@ -87,8 +89,13 @@ const showLargeBubble = (simulation, data, timer) => (dataTrigger, indexTrigger,
         transitionDuration : 400,
         indexTrigger,
         nodes
-    }), 500));
-};
+    })
+    .then(() =>d3.select(nodes[indexTrigger].parentNode.firstChild.nextSibling).style('display','') &&
+    d3.select(nodes[indexTrigger].parentNode.firstChild.nextSibling.nextSibling).style('display',''))
+    , 500));
+    
+
+};  
 
 const showInitialBubble = (simulation, data, timer) => (dataTrigger, indexTrigger, nodes) => {
     timer.clear();
@@ -100,6 +107,18 @@ const showInitialBubble = (simulation, data, timer) => (dataTrigger, indexTrigge
         indexTrigger, 
         nodes
     })
+    
+    d3.select(nodes[indexTrigger].parentNode.firstChild.nextSibling).style('display', dataTrigger =>{
+        if(dataTrigger.value > 150000) return ''
+        else return 'none'
+    });
+
+    d3.select(nodes[indexTrigger].parentNode.firstChild.nextSibling.nextSibling).style('display',dataTrigger =>{
+        if(dataTrigger.value > 150000) return ''
+        else return 'none'
+    });
+    
+
 }
 
 // ---------------  D3/GRAPH/DRAWING ------------- //
@@ -306,7 +325,7 @@ const drawChart = async (continent, year) => {
         .attr("dy", ".2em")
         .style("text-anchor", "middle")
         .attr("fill", "black")
-        .text(d => d.name)
+        .text(d => d.name.replace(/\(.[^(]*\)/g,''))
         .style('display', d => d.value > 150000 ? '' : 'none')
         .style("font-weight", "bold")
     
@@ -353,7 +372,7 @@ const drawChart = async (continent, year) => {
             .attr("text-anchor", "middle")
             x += 150;
     }             
-    console.log(getCheckedRadioButton('radio-c'));   
+       
 };
 
 // ------------------- INITIAL STATE OF PAGE ------------- //
