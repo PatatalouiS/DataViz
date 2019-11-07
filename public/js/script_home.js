@@ -7,7 +7,7 @@ import {dataURL, getData, Timer} from './utils.js';
 
 const START_VALUES = {
     continent : 'Europe',
-    year      : 2005
+    year      : 1975
 };
 
 // -------------  UTILS LOCAL FUNCTIONS ------------- //
@@ -44,15 +44,18 @@ const computeCircleRadius = (dataLine) => {
 // ------------------   HANDLERS FAMILY  ------------------ //
 
 const attachHandlers = () => {
-    Array.from(document.getElementsByClassName('radio'))
-        .forEach(radioButton => radioButton.addEventListener('click', paramsChangedHandler));
+    Array.from(document.getElementsByClassName('custom-control-input'))
+        .forEach(radioButton => radioButton.addEventListener('click', paramsChangedHandler));  
+        
+    // d3.select('timeline')
+    //     .on()   
 };
 
 const paramsChangedHandler = () => {
     const continent = getCheckedRadioButton('radio-c');
     const year      = getCheckedRadioButton('radio-y');
     const svg       = document.getElementById('svg');
-
+    
     if(svg) svg.remove();
     drawChart(continent, year);
 };
@@ -101,6 +104,152 @@ const showInitialBubble = (simulation, data, timer) => (dataTrigger, indexTrigge
 
 // ---------------  D3/GRAPH/DRAWING ------------- //
 
+const drawMenu = async (continent, year) => {
+    const width = 279
+    const height = 100
+
+    const svg = d3.select("#vis")
+        .append("svg")
+        .attr("width", width)
+        .attr("height",height)
+
+    const total            = await getData(`${dataURL}pollution/bycontinent/${getCheckedRadioButton('radio-c')}/${getCheckedRadioButton('radio-y')}/total`)
+    const numberPollu      = total[0].TotalPollution
+    const totalWorld       = await getData(`${dataURL}pollution/top10/${getCheckedRadioButton('radio-y')}/total`)
+    const numberPolluWorld = totalWorld[0].TotalPollution
+    const affichervaleur   = (getCheckedRadioButton('radio-c') != 'Top') ? numberPollu : numberPolluWorld
+
+    const pollu = svg
+        .append('g')
+        .attr('id','wp')
+       
+    pollu.append('rect')
+        .attr("width", "150")
+        .attr("height", "30")
+        .attr("x", "30")
+        .attr("y",'40')
+        .attr("fill", "white")
+        .attr("stroke", "grey")
+        .attr("stroke-width","2")
+        
+    pollu.append('text')
+        .text("Total " + (getCheckedRadioButton('radio-c')))
+        .attr("x","30")
+        .attr("y",'30')
+        .style("font-weight", "bold")
+        
+    pollu.append('text')
+        .text(new Intl.NumberFormat({ style: 'decimal'}).format(affichervaleur))
+        .attr("x","60")
+        .attr("y",'62')
+        .style("font-weight", "bold")
+}
+
+
+const drawTimeLine = async (continent,year) => {
+    const width = 279
+    const height = 120
+    const margin = {right :10, left : 10},
+        rangeMax = width - margin.left - margin.right;
+
+    const formatDateIntoYear = d3.timeFormat("%Y");
+    const startDate = new Date("1975"),
+          endDate =  new Date("2014");
+    const targetValue = rangeMax;
+
+    const moving = false;
+
+    const svg = d3.select("#timeLine")
+        .append("svg")
+        .attr("width", width)
+        .attr("height",height)
+        
+    const playButton = d3.select("#play-button")
+
+    /************DESSIN DU SLIDER  ***************/
+
+    const x = d3.scaleTime()
+        .domain([startDate,endDate])
+        .range([0,rangeMax])
+        .clamp(true);
+    
+    const slider = svg.append("g")
+        .attr("class","slider")
+        .attr("transform", "translate(" + margin.left + "," + height/2 + ")");
+
+    slider.append("line")
+        .attr("class","track")
+        .attr("x1", x.range()[0])
+        .attr("x2",x.range()[1])
+        .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
+        .attr("class", "track-inset")
+        .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
+        .attr("class", "track-overlay")
+        .call(d3.drag()
+            .on("start.interrupt", () => { return slider.interrupt(); })
+            .on("start drag", () => { return update(x.invert(d3.event.x));}))
+        
+    slider.insert("g",".track-overlay")
+        .attr("class","ticks")
+        .attr("transform","translate(0," + 50 + ")")
+        .selectAll("text")
+        .data(x.ticks(4))
+        .enter()
+        .append("text")
+        .attr("x",x)
+        .attr("y",-30)
+        .attr("font-size","75%")
+        .attr("text-anchor","middle")
+        .text( (d) => {return formatDateIntoYear(d);});
+        
+    const handle = slider.insert("circle", ".track-overlay")
+        .attr("class", "handle")
+        .attr("r", 9);
+    
+    const label = slider.append("text")
+        .attr("class","label")
+        .attr("text-anchor","middle")
+        .text(formatDateIntoYear(startDate))
+        .attr("transform", "translate(10," + (-25) + ")")
+    
+
+
+    /************  FONCTION DU SLIDER  ***************/
+
+    playButton
+        .on("click", () => {
+            const button = d3.select(this);
+            if(button.text() == "Pause"){
+                moving = false;
+                clearInterval(timer);
+                button.text("Play");
+            }else{
+                moving = true;
+                timer = setInterval(step,100);
+                button.text("Pause");
+            }
+            timer = setInterval(step,100);
+        })
+
+    /*function step (){
+        const currentValue = update(x.invert(d3.event.x));
+        if (currentValue > (width/150)){
+            currentValue = 0;
+            clearInterval(timer);
+            playButton.text("Play;")
+        }        
+    }*/
+
+    function update(h){
+        handle.attr("cx", x(h));
+        label
+            .attr("x", x(h))
+            .text(formatDateIntoYear(h));
+        const years = formatDateIntoYear(h);
+    }    
+}
+
+
 const drawChart = async (continent, year) => {
 
     const functionTab = {
@@ -115,8 +264,8 @@ const drawChart = async (continent, year) => {
      
     const data = queryData.map(dataLine => Object.assign({}, dataLine, { radius : computeCircleRadius(dataLine)}));
 
-    const width       = 1340;
-    const height      = 1000;
+    const width       = 1200;
+    const height      = 900;
 
     // Definition of the force Simulation, especially collapse force
     const s = 0.005;
@@ -128,10 +277,11 @@ const drawChart = async (continent, year) => {
         .force('collide', d3.forceCollide(d => d.radius))
         .on('tick', () => circles.attr('transform', d => `translate(${d.x},${d.y})`));
 
+
     const svg = d3.select('#chart')
         .append('svg')
         .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 1340 1000")
+        .attr("viewBox", "0 0 1200 900")
         .classed("svg-content", true)
         .attr('id', 'svg')
         .append('g')
@@ -202,7 +352,8 @@ const drawChart = async (continent, year) => {
             .text(legendes[i])
             .attr("text-anchor", "middle")
             x += 150;
-    }  
+    }             
+    console.log(getCheckedRadioButton('radio-c'));   
 };
 
 // ------------------- INITIAL STATE OF PAGE ------------- //
@@ -212,6 +363,8 @@ const init = () => {
     document.getElementById(continent).checked = true;
     document.getElementById(year).checked      = true;
     drawChart(continent, year);
+    drawMenu(continent, year);
+    drawTimeLine(continent,year);
 };
 
 // --------------------   MAIN   ------------------- //
