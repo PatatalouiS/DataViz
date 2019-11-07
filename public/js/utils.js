@@ -31,7 +31,7 @@ export class Timer {
 
     constructor () {
         this.time = null;
-    } 
+    }
 
     set (value) {
         this.time = value;

@@ -57,7 +57,7 @@ const paramsChangedHandler = () => {
     drawChart(continent, year);
 };
 
-const updateRadius = ({newRadius, simulation, data, transitionDuration, indexTrigger, nodes})=> { 
+const updateRadius = ({newRadius, simulation, data, transitionDuration, indexTrigger, nodes}) => { 
     const circleTriggered = d3.select(nodes[indexTrigger].parentNode.firstChild);
 
     circleTriggered
