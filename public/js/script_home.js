@@ -237,15 +237,16 @@ const drawTimeLine = async (continent,year) => {
 
 
     /************  FONCTION DU SLIDER  ***************/
-    
+    var timer;
     playButton
         .on("click", function () {
-            const button = d3.select(this);
+            
+            var button = d3.select(this);            
             if(button.text() == "Pause"){
-                console.log(timer);
                 clearInterval(timer);
                 button.text("Play");
             }else{
+                console.log(setInterval(step,100));
                 timer = setInterval(step,100);
                 button.text("Pause");
             }
