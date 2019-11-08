@@ -7,7 +7,8 @@ import {dataURL, getData, Timer} from './utils.js';
 
 const START_VALUES = {
     continent : 'Europe',
-    year      : 1975
+    year      : 1975,
+    dataType  : 'total'
 };
 
 // -------------  UTILS LOCAL FUNCTIONS ------------- //
@@ -16,11 +17,6 @@ const getCheckedRadioButton = radioClass => {
     return Array.from(document.getElementsByClassName(radioClass))
         .map(button => button.checked ? button.getAttribute('id') : false)
         .filter(val => val !== false)[0];
-};
-
-const getActualCircleRadiusList = () => {
-    return Array.from(document.querySelectorAll('circle'))
-        .map(d => Object.assign({}, { radius : Number(d.getAttribute('r'))}));
 };
 
 const computeCircleColor = dataLine => {
@@ -32,32 +28,48 @@ const computeCircleColor = dataLine => {
     return '#581845';
 };
 
-const computeCircleRadius = (dataLine) => {
+const computeCircleRadius = (dataLine, maxValue) => {
     const {value} = dataLine;
-    const ranges  = [ 1000, 5000, 50000, 100000, 150000, 200000,250000,300000,350000,400000,450000,500000,550000,600000,650000,700000,750000,800000,850000,900000,950000,10000000,20000000,3000000,5000000,15000000];
-    const coeffs  = [ 10, 12, 15, 20, 30,40,45,50,55,60,65,70,75,80,85,90,100,105,110,112,115,130,150,170,200];
+    const linearScale = d3.scaleSqrt()
+        .domain([0, maxValue])
+        .range([15, 150]);
 
-    for(let index in ranges) if(value <= ranges[index]) return coeffs[index];
-    return false
+    return linearScale(value);
+}
+
+const getTotalFromData = (data, field) => {
+    return data
+        .reduce((total, dataLine) => total + dataLine[field] , 0);
+}
+
+const getSelectedData = async (continent, year, dataType) => {
+    const url = `${dataURL}pollution`;
+    const data = continent === 'Top'
+        ? await getData(`${url}/top10/${year}`)
+        : await getData(`${url}/bycontinent/${continent}/${year}`)
+    const maxValue = data.reduce((acc, dataLine) => dataLine.value > acc ? dataLine.value : acc , null);
+    return data.map(dataLine => Object.assign({}, dataLine, { radius : computeCircleRadius(dataLine, maxValue)}));
 }
 
 // ------------------   HANDLERS FAMILY  ------------------ //
 
 const attachHandlers = () => {
     Array.from(document.getElementsByClassName('custom-control-input'))
-        .forEach(radioButton => radioButton.addEventListener('click', paramsChangedHandler));  
-        
-    // d3.select('timeline')
-    //     .on()   
+        .forEach(radioButton => radioButton.addEventListener('click', paramsChangedHandler));    
 };
 
-const paramsChangedHandler = () => {
-    const continent = getCheckedRadioButton('radio-c');
-    const year      = getCheckedRadioButton('radio-y');
-    const svg       = document.getElementById('svg');
-    
+const paramsChangedHandler = async () => {
+    const continent   = getCheckedRadioButton('radio-c');
+    const year        = getCheckedRadioButton('radio-y');
+    const choosenData = getCheckedRadioButton('radio-t');
+    const svg         = document.getElementById('svg');
+
     if(svg) svg.remove();
-    drawChart(continent, year);
+    const data = await getSelectedData(continent, year, choosenData)
+    drawChart(data);
+
+    d3.select('#total')
+        .text(new Intl.NumberFormat('de-DE').format(getTotalFromData(data, 'value')));
 };
 
 const updateRadius = ({newRadius, simulation, data, transitionDuration, indexTrigger, nodes}) => { 
@@ -80,31 +92,39 @@ const updateRadius = ({newRadius, simulation, data, transitionDuration, indexTri
 };
 
 const showLargeBubble = (simulation, data, timer) => (dataTrigger, indexTrigger, nodes) => {
-    if(dataTrigger.radius < 40) timer.set(setTimeout(() => updateRadius({
-        newRadius : 75,
-        simulation,
-        data,
-        transitionDuration : 400,
-        indexTrigger,
-        nodes
-    }), 500));
+    if(dataTrigger.radius < 40) {
+        timer.setTimeout(() => {
+            dataTrigger.previousRadius = dataTrigger.radius;
+            updateRadius({
+                newRadius : 75,
+                simulation,
+                data,
+                transitionDuration : 400,
+                indexTrigger,
+                nodes
+            });
+        }, 500);
+    } 
 };
 
 const showInitialBubble = (simulation, data, timer) => (dataTrigger, indexTrigger, nodes) => {
     timer.clear();
-    if(Number(computeCircleRadius(dataTrigger)) !== dataTrigger.radius) updateRadius({
-        newRadius : computeCircleRadius(dataTrigger),
-        simulation,
-        data,
-        transitionDuration : 400,
-        indexTrigger, 
-        nodes
-    })
+    if(dataTrigger.hasOwnProperty('previousRadius')) {
+        updateRadius({
+            newRadius : dataTrigger.previousRadius,
+            simulation,
+            data,
+            transitionDuration : 400,
+            indexTrigger, 
+            nodes
+        })
+        delete dataTrigger.previousRadius;
+    } 
 }
 
 // ---------------  D3/GRAPH/DRAWING ------------- //
 
-const drawMenu = async (continent, year) => {
+const drawMenu = data => {
     const width = 279
     const height = 100
 
@@ -113,16 +133,10 @@ const drawMenu = async (continent, year) => {
         .attr("width", width)
         .attr("height",height)
 
-    const total            = await getData(`${dataURL}pollution/bycontinent/${getCheckedRadioButton('radio-c')}/${getCheckedRadioButton('radio-y')}/total`)
-    const numberPollu      = total[0].TotalPollution
-    const totalWorld       = await getData(`${dataURL}pollution/top10/${getCheckedRadioButton('radio-y')}/total`)
-    const numberPolluWorld = totalWorld[0].TotalPollution
-    const affichervaleur   = (getCheckedRadioButton('radio-c') != 'Top') ? numberPollu : numberPolluWorld
-
     const pollu = svg
         .append('g')
         .attr('id','wp')
-       
+
     pollu.append('rect')
         .attr("width", "150")
         .attr("height", "30")
@@ -133,20 +147,20 @@ const drawMenu = async (continent, year) => {
         .attr("stroke-width","2")
         
     pollu.append('text')
-        .text("Total " + (getCheckedRadioButton('radio-c')))
+        .text("Total " + (getCheckedRadioButton()))
         .attr("x","30")
         .attr("y",'30')
         .style("font-weight", "bold")
         
     pollu.append('text')
-        .text(new Intl.NumberFormat({ style: 'decimal'}).format(affichervaleur))
+        .attr('id', 'total')
+        .text(new Intl.NumberFormat('de-DE').format(getTotalFromData(data, 'value')))
         .attr("x","60")
         .attr("y",'62')
         .style("font-weight", "bold")
 }
 
-
-const drawTimeLine = async (continent,year) => {
+const drawTimeLine = (continent,year) => {
     const width = 279
     const height = 120
     const margin = {right :10, left : 10},
@@ -249,23 +263,9 @@ const drawTimeLine = async (continent,year) => {
     }    
 }
 
-
-const drawChart = async (continent, year) => {
-
-    const functionTab = {
-        'Top' : () => `${dataURL}pollution/top10/${year}`,
-        'World' : () => `${dataURL}pollution/top10/${year}`
-    };
-
-    // Fetch correct data on server
-    const queryData = (continent === 'Top' || continent === 'World') 
-        ? await getData(functionTab[continent]())
-        : await getData(`${dataURL}pollution/bycontinent/${continent}/${year}`)
-     
-    const data = queryData.map(dataLine => Object.assign({}, dataLine, { radius : computeCircleRadius(dataLine)}));
-
-    const width       = 1200;
-    const height      = 900;
+const drawChart = data => {
+    const width    = 1200;
+    const height   = 900;
 
     // Definition of the force Simulation, especially collapse force
     const s = 0.005;
@@ -276,7 +276,6 @@ const drawChart = async (continent, year) => {
         .force('center', d3.forceCenter(width/2, height/2))
         .force('collide', d3.forceCollide(d => d.radius))
         .on('tick', () => circles.attr('transform', d => `translate(${d.x},${d.y})`));
-
 
     const svg = d3.select('#chart')
         .append('svg')
@@ -314,7 +313,7 @@ const drawChart = async (continent, year) => {
         .attr("dy", "1.3em")
         .style("text-anchor", "middle")
         .attr("fill", "white")
-        .text(d => new Intl.NumberFormat({ style: 'decimal'}).format(d.value))
+        .text(d => new Intl.NumberFormat('de-DE').format(d.value))
         .style('display', d => d.value > 150000 ? '' : 'none')
         .style("font-weight", "bold")
 
@@ -326,7 +325,7 @@ const drawChart = async (continent, year) => {
         .on('mouseout', showInitialBubble(force, data, timer))
 
     circles.append('title')
-        .text(d => {return d.name;} ) 
+        .text(d => d.name) 
 
     const legende = svg
         .append('g')
@@ -350,26 +349,28 @@ const drawChart = async (continent, year) => {
             .attr("y","50")
             .attr("fill","white")
             .text(legendes[i])
-            .attr("text-anchor", "middle")
+            .attr("text-anchor", "middle");
             x += 150;
     }             
-    console.log(getCheckedRadioButton('radio-c'));   
 };
 
 // ------------------- INITIAL STATE OF PAGE ------------- //
 
-const init = () => {
-    const {continent, year}                    = START_VALUES;
+const init = async () => {
+    const {continent, year, dataType}          = START_VALUES;
     document.getElementById(continent).checked = true;
     document.getElementById(year).checked      = true;
-    drawChart(continent, year);
-    drawMenu(continent, year);
-    drawTimeLine(continent,year);
+
+    const data = await getSelectedData(continent, year, dataType);
+
+    drawChart(data);
+    drawMenu(data);
+    drawTimeLine(data);
 };
 
 // --------------------   MAIN   ------------------- //
 
 document.addEventListener('DOMContentLoaded', () => {
-    attachHandlers();
     init();
+    attachHandlers();
 });

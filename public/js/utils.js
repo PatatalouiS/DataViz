@@ -17,9 +17,9 @@ export const getHOST = () => {
 
 
 export const getData = url => {
+    console.log(`Ressource demandée : ${url}`);
     return fetch(url)
         .then(response => response.json())
-        .then(data => {console.log(`Ressource demandée : ${url}`); return data;})
         .then(data => {if(data.err) throw data; return data})
         .then(data => {if(getMODE() === 'development') console.log(data); return data;})
         .catch(error => console.error(`Error : here the error object for you : `, error));
@@ -33,8 +33,8 @@ export class Timer {
         this.time = null;
     }
 
-    set (value) {
-        this.time = value;
+    setTimeout (callback, delay) {
+        this.time = setTimeout(callback, delay);
     }
 
     clear () {
