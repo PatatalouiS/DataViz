@@ -110,7 +110,11 @@ const showLargeBubble = (simulation, data, timer) => (dataTrigger, indexTrigger,
                 d3.select(nodes[indexTrigger].parentNode.firstChild.nextSibling.nextSibling).style('display', '') 
             });
         }, 500);
-    } 
+    }
+    d3.select(nodes[indexTrigger].parentNode).transition()
+        .duration('50')
+        .attr('opacity', '.85')
+    
 };
 
 const showInitialBubble = (simulation, data, timer) => (dataTrigger, indexTrigger, nodes) => {
@@ -125,17 +129,12 @@ const showInitialBubble = (simulation, data, timer) => (dataTrigger, indexTrigge
             nodes
         })
         delete dataTrigger.previousRadius;
-    } 
-
-    d3.select(nodes[indexTrigger].parentNode.firstChild.nextSibling).style('display', dataTrigger =>{
-        if(dataTrigger.value > 150000) return ''
-        else return 'none'
-    });
-
-    d3.select(nodes[indexTrigger].parentNode.firstChild.nextSibling.nextSibling).style('display',dataTrigger =>{
-        if(dataTrigger.value > 150000) return ''
-        else return 'none'
-    })
+        d3.select(nodes[indexTrigger].parentNode.firstChild.nextSibling).style('display', 'none')
+        d3.select(nodes[indexTrigger].parentNode.firstChild.nextSibling.nextSibling).style('display', 'none') 
+    }
+    d3.select(nodes[indexTrigger].parentNode).transition()
+            .duration('50')
+            .attr('opacity', '1')
 }
 
 // ---------------  D3/GRAPH/DRAWING ------------- //
@@ -324,7 +323,7 @@ const drawChart = data => {
         .style("text-anchor", "middle")
         .attr("fill", "black")
         .text(d => d.name.replace(/\(.[^(]*\)/g,''))
-        .style('display', d => d.value > 150000 ? '' : 'none')
+        .style('display', d => d.radius < 40 ? 'none' : '')
         .style("font-weight", "bold")
     
     circles.append('text')
@@ -332,7 +331,7 @@ const drawChart = data => {
         .style("text-anchor", "middle")
         .attr("fill", "white")
         .text(d => new Intl.NumberFormat('de-DE').format(d.value))
-        .style('display', d => d.value > 150000 ? '' : 'none')
+        .style('display', d => d.radius < 40 ? 'none' : '')
         .style("font-weight", "bold")
 
     circles.append('circle')
