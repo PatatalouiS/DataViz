@@ -120,7 +120,7 @@ div.tooltip-donut {
 	color: white;
 	margin: 0;
 	padding: 0 12px;
-	width: 60px;
+	/*width: 60px;*/
 	cursor: pointer;
 	/*height: 30px;*/
 }
