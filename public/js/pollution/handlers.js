@@ -60,7 +60,7 @@ export const showLargeBubble = (simulation, data, timer) => (dataTrigger, indexT
                 d3.select(nodes[indexTrigger].parentNode.firstChild.nextSibling).style('display', '')
                 d3.select(nodes[indexTrigger].parentNode.firstChild.nextSibling.nextSibling).style('display', '') 
             });
-        }, 500);
+        }, 0);
     } 
 
     d3.select(nodes[indexTrigger].parentNode)
