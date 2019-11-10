@@ -1,7 +1,7 @@
 
 'use strict';
 
-import {dataURL, getData} from './utils.js';
+import {dataURL, getData} from './utils.js/index.js.js';
 
 const deletePropertiesByName = (data, properties) => data
 	.map(el =>

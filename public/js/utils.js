@@ -1,12 +1,12 @@
 
 'use strict'
 
+// ----------------------  SET/GET ENVIRONEMENT -------------------- //
 
 const getMODE = () => {
     return document.getElementById('MODE')
         .getAttribute('data-row');
 }
-
 
 export const getHOST = () => {
     return document.getElementById('MODE')
@@ -15,6 +15,7 @@ export const getHOST = () => {
             : 'lifprojet.patatalouis.fr';
 }
 
+// ----------------------  FETCH GET QUERY ------------------------- //
 
 export const getData = url => {
     console.log(`Ressource demandée : ${url}`);
@@ -26,6 +27,8 @@ export const getData = url => {
 };
 
 export const dataURL = `http://${getHOST()}/data/`;
+
+// ------------------ CLASS TIMER FOR DELAY HANDLERS --------------- //
 
 export class Timer {
 
@@ -41,3 +44,12 @@ export class Timer {
         this.time = clearTimeout(this.time);
     }
 }
+
+// ------------------------ EXPORTS -------------------------- //
+
+export default {
+    getHOST,
+    getData,
+    dataURL,
+    Timer
+};
