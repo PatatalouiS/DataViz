@@ -74,6 +74,11 @@ app.get('/data/pollution/total', async (req, res) => {
 	sendQueryJSON(queryResult, res);
 })
 
+app.get('/data/utils/countriesnames', async (req, res) => {
+	const queryResult = await mysql(/*sql*/`SELECT DISTINCT name FROM Countries ORDER BY name`);
+	sendQueryJSON(queryResult, res);
+})
+
 app.get('/data/pollution/total/bycountry/:country/', async (req, res) => {
 	const queryResult = await mysql(/*sql*/`SELECT * FROM GlobalCountriesPollution WHERE name = ?`, [req.params.country]);
 	sendQueryJSON(queryResult, res);  
