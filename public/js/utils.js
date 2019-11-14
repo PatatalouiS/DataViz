@@ -40,8 +40,12 @@ export class Timer {
         this.time = setTimeout(callback, delay);
     }
 
-    clear () {
+    clearTimeout () {
         this.time = clearTimeout(this.time);
+    }
+
+    setInterval (callback, delay) {
+        this.time = this.setInterval(callback, delay);
     }
 }
 

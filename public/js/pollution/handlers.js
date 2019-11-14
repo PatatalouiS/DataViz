@@ -40,7 +40,6 @@ export const updateRadius = ({newRadius, simulation, data, transitionDuration, i
             }
         })
     simulation.alpha(1).restart();
-
     return Promise.resolve();
 };
 
@@ -70,7 +69,7 @@ export const showLargeBubble = (simulation, data, timer) => (dataTrigger, indexT
 };
 
 export const showInitialBubble = (simulation, data, timer) => (dataTrigger, indexTrigger, nodes) => {
-    timer.clear();
+    timer.clearTimeout();
     if(dataTrigger.hasOwnProperty('previousRadius')) {
         updateRadius({
             newRadius : dataTrigger.previousRadius,

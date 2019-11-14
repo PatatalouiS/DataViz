@@ -152,9 +152,11 @@ export const drawChart = data => {
     const width    = 1200;
     const height   = 900;
 
+    console.log(data);
+
     // Definition of the force Simulation, especially collapse force
-    const s = 0.01;
-    const timer = new Timer();
+    const s = 0.005;
+    const timer = new Timer(); 
     const force = d3.forceSimulation(data)
         .force('x', d3.forceX(width/2).strength(s))
         .force('y', d3.forceY(height/2).strength(s))
