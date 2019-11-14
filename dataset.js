@@ -69,38 +69,39 @@ app.post('/generator', upload.single('json_file'), (req, res) => {
 
 // ------- ROUTES GETDATA POUR FETCH -------- //
 
-app.get('/data/pollution', async (req, res) => {
+app.get('/data/pollution/total', async (req, res) => {
 	const queryResult = await mysql(/*sql*/`SELECT * FROM GlobalCountriesPollution ORDER BY name, year`);
 	sendQueryJSON(queryResult, res);
 })
 
-app.get('/data/pollution/bycountry/:country/', async (req, res) => {
+app.get('/data/pollution/total/bycountry/:country/', async (req, res) => {
 	const queryResult = await mysql(/*sql*/`SELECT * FROM GlobalCountriesPollution WHERE name = ?`, [req.params.country]);
 	sendQueryJSON(queryResult, res);  
 });
 
-app.get('/data/pollution/bycontinent/:continent', async (req, res) => {
+app.get('/data/pollution/total/bycontinent/:continent', async (req, res) => {
 	const queryResult = await mysql(/*sql*/`SELECT name, year, value FROM GlobalCountriesPollution WHERE continent = ?`, [req.params.continent]);
 	sendQueryJSON(queryResult, res);
 });
 
-app.get('/data/pollution/bycontinent/:continent/:year', async (req, res) => {
+app.get('/data/pollution/total/bycontinent/:continent/:year', async (req, res) => {
 	const queryResult = await mysql(/*sql*/`SELECT name, year, value FROM GlobalCountriesPollution WHERE continent = ? AND year = ?`, [req.params.continent, req.params.year]);
 	sendQueryJSON(queryResult, res);
 });
 
-app.get('/data/pollution/bycontinent/:continent/:year/total', async (req, res) => {
-	const queryResult = await mysql(/*sql*/ `SELECT SUM(value) AS TotalPollution, year FROM GlobalCountriesPollution WHERE continent = ? AND year = ?`,[req.params.continent, req.params.year]);
-	sendQueryJSON(queryResult, res);
-});
-
-app.get('/data/pollution/top10/:year', async (req, res) => {
+app.get('/data/pollution/total/top10/:year', async (req, res) => {
 	const queryResult = await mysql(/*sql*/`SELECT name, year, value FROM GlobalCountriesPollution WHERE year = ? ORDER BY value DESC LIMIT 0,10`, [req.params.year]);
 	sendQueryJSON(queryResult, res);
 });
 
-app.get('/data/pollution/top10/:year/total', async (req, res) => {
-	const queryResult = await mysql(/*sql*/`SELECT SUM(value) AS TotalPollution, year FROM GlobalCountriesPollution WHERE year = ?`, [req.params.year]);
+app.get('/data/pollution/per-capita/bycontinent/:continent/:year', async (req, res) => {
+	const queryResult = await mysql(/*sql*/ `SELECT name, year, valuePerCapita FROM PerCapitaCountriesPollution WHERE continent = ? AND year = ?`,
+	[req.params.continent, req.params.year]);
+	sendQueryJSON(queryResult, res);
+});
+
+app.get('/data/pollution/per-capita/top10/:year', async (req, res) => {
+	const queryResult = await mysql(/*sql*/ `SELECT name year, valuePerCapita FROM PerCapitaCountriesPollution WHERE year = ? ORDER BY valuePerCapita DESC LIMIT 0,10`, [req.params.year]);
 	sendQueryJSON(queryResult, res);
 });
 

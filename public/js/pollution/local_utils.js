@@ -28,15 +28,28 @@ export const getTotalFromData = (data, field) => {
         .reduce((total, dataLine) => total + dataLine[field] , 0);
 }
 
+export const getMaxfromData = (data, field) => {
+    return data
+        .reduce((max, dataLine) => dataLine[field] > max ? dataLine[field] : max, 0);
+}
+
 // --------------------  FETCH FUNCTIONS --------------------- //
 
 export const getSelectedData = async (continent, year, dataType) => {
     const url = `${dataURL}pollution`;
     const data = continent === 'Top'
-        ? await getData(`${url}/top10/${year}`)
-        : await getData(`${url}/bycontinent/${continent}/${year}`)
-    const maxValue = data.reduce((acc, dataLine) => dataLine.value > acc ? dataLine.value : acc , null);
-    return data.map(dataLine => Object.assign({}, dataLine, { radius : computeCircleRadius(dataLine, maxValue)}));
+        ? await getData(`${url}/${dataType}/top10/${year}`)
+        : await getData(`${url}/${dataType}/bycontinent/${continent}/${year}`)
+    
+    const valueKeyName = mainValueKeyNames[dataType];
+    const maxValue = getMaxfromData(data, valueKeyName);
+
+    return data.map(dataLine => {
+        const value = dataLine[valueKeyName];
+        const radius = computeCircleRadius({value}, maxValue);
+        delete dataLine[valueKeyName];
+        return Object.assign(dataLine, { value, radius });
+    })
 }
 
 // ----------------- DOM-RELATED FUNCTIONS ------------------ //
