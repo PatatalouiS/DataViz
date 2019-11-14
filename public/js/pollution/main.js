@@ -3,7 +3,7 @@
 
 // ------------ IMPORT AND CONSTANTS ---------------- //
 
-import {drawMenu, drawLegend, drawChart, drawTimeLine} from './draw.js';
+import {drawMenu, drawLegend, drawChart, drawTimeLine,drawBouton} from './draw.js';
 import {getSelectedData} from './local_utils.js';
 import {paramsChangedHandler} from './handlers.js';
 
@@ -28,6 +28,7 @@ const init = async () => {
     drawLegend();
     drawMenu(data);
     drawTimeLine(data);
+    drawBouton();
 
     Array.from(document.getElementsByClassName('custom-control-input'))
         .forEach(radioButton => radioButton.addEventListener('click', paramsChangedHandler));  

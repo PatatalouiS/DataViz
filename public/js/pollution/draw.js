@@ -248,7 +248,7 @@ export const drawLegend = () => {
 
 export const drawBouton = () => {
 
-}
+};
 
 // ------------------------ EXPORTS --------------------------- //
 
