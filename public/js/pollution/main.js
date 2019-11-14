@@ -20,6 +20,7 @@ const init = async () => {
     const {continent, year, dataType}          = START_VALUES;
     document.getElementById(continent).checked = true;
     document.getElementById(year).checked      = true;
+    document.getElementById(dataType).checked  = true;
 
     const data = await getSelectedData(continent, year, dataType);
 

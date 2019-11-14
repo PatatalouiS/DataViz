@@ -17,7 +17,10 @@ export const paramsChangedHandler = async () => {
     const data = await getSelectedData(continent, year, choosenData)
     drawChart(data);
 
-    d3.select('#total')
+    d3.select('#total-title')
+        .text(`Total : ${getCheckedRadioButton('radio-c')}`);
+
+    d3.select('#total-value')
         .text(new Intl.NumberFormat('de-DE').format(getTotalFromData(data, 'value')));
 };
 

@@ -1,25 +1,39 @@
 
-// ---------------------  IMPORTS  --------------------- //
+// ---------------------  IMPORTS AND CONSTANTS  --------------------- //
 
 import {getData, dataURL} from '../utils.js';
 
+// Define here your valueKey to bind from data Server
+const mainValueKeyNames = {
+    'total'     : 'value',
+    'per-capita': 'valuePerCapita'
+};
+
 // ------------------  COMPUTING VALUE  -------------------- //
 
-export const computeCircleColor = dataLine => {
-    const {value} = dataLine;
-    const ranges  = [50000, 150000, 250000, 500000, 1000000];
-    const values  = ['#2ca02c', '#1f77b4', '#ff7f0e', '#d62728', '#8c564b'];
+export const getMainValue = dataType => {
+    try {
+        if(!valuesName.hasOwnProperty(dataType)) throw new Error()
+        return valuesName[dataType];
+    }
+    catch (err) {
+        console.err(`There is no MainValue field for dataType '${dataType}'`);
+    }
+}
 
-    for(let index in ranges) if(value <= ranges[index]) return values[index];
-    return '#581845';
+export const computeCircleColor = (dataLine, maxValue) => {
+    const {value} = dataLine;
+    const colorScale = d3.scaleQuantize()
+        .domain([0, maxValue])
+        .range(['#2ca02c', '#1f77b4', '#ff7f0e', '#d62728', '#8c564b']);
+    return colorScale(value);
 };
 
 export const computeCircleRadius = (dataLine, maxValue) => {
     const {value} = dataLine;
     const linearScale = d3.scaleSqrt()
         .domain([0, maxValue])
-        .range([15, 150]);
-
+        .range([20, 150]);
     return linearScale(value);
 }
 
