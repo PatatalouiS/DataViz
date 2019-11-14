@@ -23,6 +23,9 @@
     </div>  
     <div class ="container"> 
         <div class ="row">
+            <div id="legend" class ="col-lg-9"></div>
+        </div>
+        <div class ="row">
             <div id="vis" class="col-lg-3"> </div>
             <div id="chart" class = "col-lg-9"></div>        
         </div>
@@ -93,7 +96,23 @@
 
     <%- include includes/scripts_env.ejs %>
     <script type='module' src="/static/js/pollution/main.js"></script>
-    <script src="https://d3js.org/d3.v5.min.js"></script>
+    
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+
+    <script type="text/javascript">
+               
+        function AfficherMasquer()
+        {
+            divInfo = document.getElementById('divacacher');
+        
+            if (divInfo.style.display == 'none')
+                divInfo.style.display = 'block';
+            else
+                divInfo.style.display = 'none';
+        
+        }
+    </script>
+
 
 </body>
 </html>

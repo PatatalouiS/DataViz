@@ -56,12 +56,10 @@ export const drawTimeLine = (continent,year) => {
     const targetValue = rangeMax;
     var currentValue = 0;
 
-    const moving = false;
-
-    const svg = d3.select('#timeLine')
-        .append('svg')
-        .attr('width', width)
-        .attr('height',height)
+    const svg = d3.select("#timeLine")
+        .append("svg")
+        .attr("width", width)
+        .attr("height",height)
         
     const playButton = d3.select('#play-button')
 
@@ -114,30 +112,28 @@ export const drawTimeLine = (continent,year) => {
         .attr('transform', 'translate(10,' + (-25) + ')')
     
     /************  FONCTION DU SLIDER  ***************/
-    var timer;
+    var timer;      
     playButton
-        .on('click', function () {
-            
-            var button = d3.select(this);            
-            if(button.text() == 'Pause'){
+        .on("click", function() {
+            var button = d3.select(this);
+            if (button.text() == "Pause") {
                 clearInterval(timer);
-                button.text('Play');
-            }else{
-                console.log(setInterval(step,100));
-                timer = setInterval(step,100);
-                button.text('Pause');
+                button.text("Play");
+            } else {
+                timer = setInterval(step, 100);
+                button.text("Pause");
             }
         })
 
-    function step (){
+  
+    function step() {
         update(x.invert(currentValue));
-        currentValue = currentValue + (targetValue/150);
-        if (currentValue > targetValue){
+        currentValue = currentValue + (targetValue/80);
+        if (currentValue > targetValue) {
             currentValue = 0;
             clearInterval(timer);
-            playButton.text('Play;');
-            console.log('Bouger');
-        }        
+            playButton.text("Play");
+            }
     }
 
     function update(h){
@@ -157,7 +153,7 @@ export const drawChart = data => {
 
     // Definition of the force Simulation, especially collapse force
     const s = 0.005;
-    const timer = new Timer(); 
+    const timer = new Timer();
     const force = d3.forceSimulation(data)
         .force('x', d3.forceX(width/2).strength(s))
         .force('y', d3.forceY(height/2).strength(s))
@@ -219,8 +215,12 @@ export const drawChart = data => {
 }
 
 export const drawLegend = () => {
-    const legende = d3.select('svg')
-        .append('g')
+    const width    = 1157;
+    const height   = 100;
+    const legende = d3.select("#legend")
+        .append("svg")
+        .attr("width", width)
+        .attr("height",height)
         .attr('id', 'legende');
 
     let x = 220;   
@@ -246,11 +246,16 @@ export const drawLegend = () => {
     }
 };
 
+export const drawBouton = () => {
+
+}
+
 // ------------------------ EXPORTS --------------------------- //
 
 export default {
     drawChart,
     drawLegend,
     drawMenu,
-    drawTimeLine
+    drawTimeLine,
+    drawBouton
 };
