@@ -7,27 +7,21 @@ import { drawChart } from './draw.js';
 // ---------------------------  MAIN HANDLER ------------------------- //
 //launched when selection data change 
 
-/*export const paramsChangedHandler = async () => {
+export const paramsChangedHandler = async () => {
     const continent   = getSelectedOption('selectOption');
     const year        = getCheckedRadioButton('radio-y');
     const choosenData = getCheckedRadioButton('radio-t');
-    const svg         = document.getElementById('svg');
-
+    
     if(svg) svg.remove();
-    const data = await getSelectedData(continent, year, choosenData)
-    drawChart(data);
+        const data = await getSelectedData(continent, year, choosenData)
+        drawChart(data);
+
 
     d3.select('#total-title')
         .text(`Total : ${getSelectedOption('selectOption')}`);
 
     d3.select('#total-value')
         .text(new Intl.NumberFormat('de-DE').format(getTotalFromData(data, 'value')));
-};*/
-
-export const paramsChangedHandler = async () => {
-    const continent   = getSelectedOption('selectOption');
-    d3.select('#total-title')
-        .text(`Total : ${getSelectedOption('selectOption')}`);
 }
 
 // ----------------------------  UPDATE CIRCLE RADIUS HANDLERS -------------------- //

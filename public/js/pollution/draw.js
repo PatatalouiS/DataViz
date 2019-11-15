@@ -149,8 +149,6 @@ export const drawChart = data => {
     const width    = 1200;
     const height   = 900;
 
-    console.log(data);
-
     // Definition of the force Simulation, especially collapse force
     const s = 0.005;
     const timer = new Timer();
@@ -247,15 +245,22 @@ export const drawLegend = () => {
 };
 
 export const drawBouton = () => {
-    var button = document.getElementById("Pays");
-    var option = document.createElement("option");
-    option.innerHTML ="COUCOU";
-    button.appendChild(option);
-    $(".selectpicker")
-    .selectpicker('refresh');
+    const test = document.getElementById("Continent");
+    test.onclick = function(){console.log("coucou")};
+    
+    fetch('/data/utils/countriesnames').then(async (response) => {
+        const json = await response.json();
+        json.forEach(pays => {
+            const button = document.getElementById("Pays");
+            const option = document.createElement("option");
+            option.innerHTML =pays.name.replace(/\(.[^(]*\)/g,'');
+            button.appendChild(option);
+            $(".selectpicker")
+                .selectpicker('refresh');
+        })          
+    })
+       
 };
-
-console.log(getSelectedOption("selectOption"));
 
 // ------------------------ EXPORTS --------------------------- //
 

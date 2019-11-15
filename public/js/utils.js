@@ -18,11 +18,11 @@ export const getHOST = () => {
 // ----------------------  FETCH GET QUERY ------------------------- //
 
 export const getData = url => {
-    console.log(`Ressource demandée : ${url}`);
+    /*console.log(`Ressource demandée : ${url}`);*/
     return fetch(url)
         .then(response => response.json())
         .then(data => {if(data.err) throw data; return data})
-        .then(data => {if(getMODE() === 'development') console.log(data); return data;})
+        .then(data => {if(getMODE() === 'development') return data;})
         .catch(error => console.error(`Error : here the error object for you : `, error));
 };
 

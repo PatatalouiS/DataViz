@@ -32,21 +32,25 @@
             <div id="vis" class="col-lg-3"> </div>
             <div id="chart" class = "col-lg-9"></div>        
         </div>
-        
-    
         <div class ="row">
             <div id="controls-continent" class ="col-lg-3">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+                <label class="form-check-label" for="inlineRadio1">Par Continent</label>
                 <select class="selectpicker" multiple data-live-search="true" title="Choose" id="selectOption">
-                    <optgroup label="Continent" data-max-options="1" id="ctc">
+                    <optgroup label="Continent" data-max-options="1" id="Continent">
                         <option id="Asie" class ="radio-c" value="1" >Asie</option>
                         <option id="Africa" class ="radio-c" value="2">Africa</option>
-                        <option id ="Europe" class ="radio-c" value="3">Europe</option>
+                        <option id="Europe" class ="radio-c" value="3" selected>Europe</option>
                         <option id="NorthAmerica" class ="radio-c" value="4">North America</option>
                         <option id="SouthAmerica" class ="radio-c" value="5">South America</option>
-                        <option id="Oceania" class ="radio-c" selected value="6">Oceania</option>
+                        <option id="Oceania" class ="radio-c" value="6">Oceania</option>
                         <option id="Top" class ="radio-c" value="7">Top 10</option>
                     </optgroup>
-                    <optgroup label="Pays" id="Pays">
+                </select>
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                <label class="form-check-label" for="inlineRadio2">Par pays</label>
+                <select class="selectpicker" multiple data-live-search="true" id="selectOption" disabled>
+                    <optgroup label="Pays" id="Pays" data-max-options="10">
                     </optgroup>
                 </select>
             </div>

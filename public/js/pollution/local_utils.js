@@ -76,12 +76,8 @@ export const getCheckedRadioButton = radioClass => {
 
 export const getSelectedOption = idSelect => {
     const slct  = document.getElementById(idSelect);
-    return slct.options[slct.value - 1].text;
+    return slct.options[slct.value - 1].id;
 }
-
-//console.log(getSelectedOption("selectOption"));
-console.log(getSelectedOption("selectOption"));
-
 // ------------------------ EXPORTS --------------------------- //
 
 export default {

@@ -9,7 +9,7 @@ import {paramsChangedHandler} from './handlers.js';
 
 
 const START_VALUES = {
-    continent : 'Asie',
+    continent : 'Europe',
     year      : 1975,
     dataType  : 'total'
 };
@@ -32,7 +32,7 @@ const init = async () => {
 
    /* Array.from(document.getElementsByClassName('radio-c'))
         .forEach(radioButton => radioButton.addEventListener('click', paramsChangedHandler)); */
-    var a = document.getElementById('selectOption')
+    const a = document.getElementById('selectOption')
     a.addEventListener('change', paramsChangedHandler, false);
      
 };
