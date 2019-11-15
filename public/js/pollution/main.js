@@ -9,7 +9,7 @@ import {paramsChangedHandler} from './handlers.js';
 
 
 const START_VALUES = {
-    continent : 'Europe',
+    continent : 'Asie',
     year      : 1975,
     dataType  : 'total'
 };
@@ -30,8 +30,11 @@ const init = async () => {
     drawTimeLine(data);
     drawBouton();
 
-    Array.from(document.getElementsByClassName('custom-control-input'))
-        .forEach(radioButton => radioButton.addEventListener('click', paramsChangedHandler));  
+   /* Array.from(document.getElementsByClassName('radio-c'))
+        .forEach(radioButton => radioButton.addEventListener('click', paramsChangedHandler)); */
+    var a = document.getElementById('selectOption')
+    a.addEventListener('change', paramsChangedHandler, false);
+     
 };
 
 // --------------------   MAIN   ------------------- //

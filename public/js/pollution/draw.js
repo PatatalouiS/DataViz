@@ -2,7 +2,7 @@
 // ---------------------  IMPORTS  --------------------- //
 
 import {Timer} from '../utils.js';
-import {getCheckedRadioButton, getTotalFromData, computeCircleColor, getMaxfromData} from './local_utils.js';
+import {getCheckedRadioButton,getSelectedOption, getTotalFromData, computeCircleColor, getMaxfromData} from './local_utils.js';
 import {showLargeBubble, showInitialBubble} from './handlers.js'
 
 // ----------------------- DRAWING DOM/SVG FUNCTIONS -------------------- //
@@ -31,7 +31,7 @@ export const drawMenu = data => {
         
     pollu.append('text')
         .attr('id', 'total-title')
-        .text(`Total : ${getCheckedRadioButton('radio-c')}`)
+        .text(`Total : ${getSelectedOption('selectOption')}`)
         .attr('x','30')
         .attr('y','30')
         .style('font-weight', 'bold')
@@ -247,8 +247,15 @@ export const drawLegend = () => {
 };
 
 export const drawBouton = () => {
-
+    var button = document.getElementById("test");
+    var option = document.createElement("option");
+    option.innerHTML ="COUCOU";
+    button.appendChild(option);
+    console.log(button.appendChild(option))
+  
 };
+
+console.log(getSelectedOption("selectOption"));
 
 // ------------------------ EXPORTS --------------------------- //
 

@@ -4,8 +4,11 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
     <link rel= "stylesheet" href="/static/css/style_home.css" />
+
+    
 </head>
 
 <body>
@@ -29,15 +32,29 @@
             <div id="vis" class="col-lg-3"> </div>
             <div id="chart" class = "col-lg-9"></div>        
         </div>
+        
+        <div class = "row">
+            <div  class ="col-lg-3">
+                <select class="selectpicker" multiple data-live-search="true" title="Choose" >
+                    <optgroup label="Continent" data-max-options="1" id="test">
+                        <option id="Asie" class ="radio-c" value="1" >Asie</option> 
+                    </optgroup> 
+                </select>            
+            </div> 
+        </div>
         <div class ="row">
-            <div class ="col-lg-3">
-                <select class="selectpicker test">
-                    <optgroup label="Picnic">
-                        <option>Mustard</option>
-                        <option>Ketchup</option>
-                        <option>Relish</option>
+            <div id="controls-continent" class ="col-lg-3">
+                <select class="selectpicker" multiple data-live-search="true" title="Choose" id="selectOption">
+                    <optgroup label="Continent" data-max-options="1" id="ctc">
+                        <option id="Asie" class ="radio-c" value="1" >Asie</option>
+                        <option id="Africa" class ="radio-c" value="2">Africa</option>
+                        <option id ="Europe" class ="radio-c" value="3">Europe</option>
+                        <option id="NorthAmerica" class ="radio-c" value="4">North America</option>
+                        <option id="SouthAmerica" class ="radio-c" value="5">South America</option>
+                        <option id="Oceania" class ="radio-c" selected value="6">Oceania</option>
+                        <option id="Top" class ="radio-c" value="7">Top 10</option>
                     </optgroup>
-                    <optgroup label="Camping">
+                    <optgroup label="Pays" id="Pays">
                         <option>Tent</option>
                         <option>Flashlight</option>
                         <option>Toilet Paper</option>
@@ -45,8 +62,8 @@
                 </select>
             </div>
         </div>
-        <div class ="row" >
-            <div id="controls-continent" class ="col-lg-3">
+        <!--<div class ="row" >
+                <div id="controls-continent" class ="col-lg-3">
                 <div class= "row">
                     <input type="radio" id ="Europe" class="custom-control-input  radio-c" name="continent" checked>
                     <label class="custom-control-label" for="Europe">Europe</label>
@@ -69,7 +86,7 @@
                     <label class="custom-control-label" for="Top">Top 10</label>
                 </div>
             </div>
-        </div>
+        </div>-->
         <div class ="row">
             <div id="controls-year" class ="col-lg-3">
                 <div class ="row">
@@ -114,6 +131,8 @@
     <script type='module' src="/static/js/pollution/main.js"></script>
     
     <script src="https://d3js.org/d3.v4.min.js"></script>
+    
+    
 
     <script type="text/javascript">
                

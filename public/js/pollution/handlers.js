@@ -1,14 +1,14 @@
 
 // ---------------------  IMPORTS  --------------------- //
 
-import {getCheckedRadioButton, getSelectedData, getTotalFromData} from './local_utils.js';
+import {getCheckedRadioButton,getSelectedOption, getSelectedData, getTotalFromData} from './local_utils.js';
 import { drawChart } from './draw.js';
 
 // ---------------------------  MAIN HANDLER ------------------------- //
 //launched when selection data change 
 
-export const paramsChangedHandler = async () => {
-    const continent   = getCheckedRadioButton('radio-c');
+/*export const paramsChangedHandler = async () => {
+    const continent   = getSelectedOption('selectOption');
     const year        = getCheckedRadioButton('radio-y');
     const choosenData = getCheckedRadioButton('radio-t');
     const svg         = document.getElementById('svg');
@@ -18,11 +18,17 @@ export const paramsChangedHandler = async () => {
     drawChart(data);
 
     d3.select('#total-title')
-        .text(`Total : ${getCheckedRadioButton('radio-c')}`);
+        .text(`Total : ${getSelectedOption('selectOption')}`);
 
     d3.select('#total-value')
         .text(new Intl.NumberFormat('de-DE').format(getTotalFromData(data, 'value')));
-};
+};*/
+
+export const paramsChangedHandler = async () => {
+    const continent   = getSelectedOption('selectOption');
+    d3.select('#total-title')
+        .text(`Total : ${getSelectedOption('selectOption')}`);
+}
 
 // ----------------------------  UPDATE CIRCLE RADIUS HANDLERS -------------------- //
 

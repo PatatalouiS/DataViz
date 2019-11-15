@@ -74,6 +74,14 @@ export const getCheckedRadioButton = radioClass => {
         .filter(val => val !== false)[0];
 };
 
+export const getSelectedOption = idSelect => {
+    const slct  = document.getElementById(idSelect);
+    return slct.options[slct.value - 1].text;
+}
+
+//console.log(getSelectedOption("selectOption"));
+console.log(getSelectedOption("selectOption"));
+
 // ------------------------ EXPORTS --------------------------- //
 
 export default {
@@ -81,6 +89,7 @@ export default {
     computeCircleColor,
     computeCircleRadius,
     getTotalFromData,
-    getSelectedData
+    getSelectedData,
+    getSelectedOption
 };
 
