@@ -247,12 +247,12 @@ export const drawLegend = () => {
 };
 
 export const drawBouton = () => {
-    var button = document.getElementById("test");
+    var button = document.getElementById("Pays");
     var option = document.createElement("option");
     option.innerHTML ="COUCOU";
     button.appendChild(option);
-    console.log(button.appendChild(option))
-  
+    $(".selectpicker")
+    .selectpicker('refresh');
 };
 
 console.log(getSelectedOption("selectOption"));
