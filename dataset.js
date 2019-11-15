@@ -106,7 +106,7 @@ app.get('/data/pollution/per-capita/bycontinent/:continent/:year', async (req, r
 });
 
 app.get('/data/pollution/per-capita/top10/:year', async (req, res) => {
-	const queryResult = await mysql(/*sql*/ `SELECT name year, valuePerCapita FROM PerCapitaCountriesPollution WHERE year = ? ORDER BY valuePerCapita DESC LIMIT 0,10`, [req.params.year]);
+	const queryResult = await mysql(/*sql*/ `SELECT name, year, valuePerCapita FROM PerCapitaCountriesPollution WHERE year = ? ORDER BY valuePerCapita DESC LIMIT 0,10`, [req.params.year]);
 	sendQueryJSON(queryResult, res);
 });
 
