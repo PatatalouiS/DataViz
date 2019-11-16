@@ -18,7 +18,7 @@ export const getHOST = () => {
 // ----------------------  FETCH GET QUERY ------------------------- //
 
 export const getData = url => {
-    /*console.log(`Ressource demandée : ${url}`);*/
+    console.log(`Ressource demandée : ${url}`);
     return fetch(url)
         .then(response => response.json())
         .then(data => {if(data.err) throw data; return data})
@@ -41,13 +41,38 @@ export class Timer {
     }
 
     clearTimeout () {
-        this.time = clearTimeout(this.time);
+        this.time = clearTimeout(this.time)
+        this.time = null;
     }
 
     setInterval (callback, delay) {
-        this.time = this.setInterval(callback, delay);
+        this.time = setInterval(callback, delay);
+    }
+
+    clearInterval () {
+        this.time = clearInterval(this.time);
+        this.time = null;
+    }
+
+    getTime () {
+        return this.time
     }
 }
+
+// --------------------- UTILS FUNCTIONS ---------------------- //
+
+export const interpolationTabNumber = (number, start, end, round = false) => {
+    const range = (end-start);
+    const step = range/(number-1);
+    const mappers = [(x,i) => start + x * step, (x,i) => Math.round(start + x*step)];
+
+    const values = new Array(number-2)
+        .fill(0)
+        .map((x, i) => i+1)
+        .map(mappers[Number(round)])
+
+    return [start].concat(values).concat([end]);
+};
 
 // ------------------------ EXPORTS -------------------------- //
 

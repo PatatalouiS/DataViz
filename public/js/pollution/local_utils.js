@@ -1,7 +1,7 @@
 
 // ---------------------  IMPORTS AND CONSTANTS  --------------------- //
 
-import {getData, dataURL} from '../utils.js';
+import {getData, dataURL, interpolationTabNumber} from '../utils.js';
 
 // Define here your valueKey to bind from data Server
 const mainValueKeyNames = {
@@ -9,7 +9,9 @@ const mainValueKeyNames = {
     'per-capita': 'valuePerCapita'
 };
 
-// ------------------  COMPUTING VALUE  -------------------- //
+const dates = ['1975', '1985', '1995', '2005', '2010', '2012', '2013', '2014'];
+
+// ------------------  COMPUTING VALUE, GET PROJECT CONSTANTS  -------------------- //
 
 export const getMainValue = dataType => {
     try {
@@ -47,10 +49,31 @@ export const getMaxfromData = (data, field) => {
         .reduce((max, dataLine) => dataLine[field] > max ? dataLine[field] : max, 0);
 }
 
+export const getAllDates = () => dates;
+
+
+
+export const valueToDiscreteTimeline = value => {
+    const rangeMax = d3.select('#timeline').attr('width');
+    const valueToDiscrete = d3.scaleQuantize()
+        .domain([0, rangeMax])
+        .range(interpolationTabNumber(getAllDates().length, 0, rangeMax));
+    return valueToDiscrete(value);
+};
+
+export const valueToDateTimeline = value => {
+    const rangeMax = d3.select('#timeline').attr('width');
+    const valueToDate = d3.scaleQuantize()
+        .domain([0, rangeMax])
+        .range(getAllDates())
+    return valueToDate(value);
+}
+
 // --------------------  FETCH FUNCTIONS --------------------- //
 
 export const getSelectedData = async (continent, year, dataType) => {
     const url = `${dataURL}pollution`;
+
     const data = continent === 'Top'
         ? await getData(`${url}/${dataType}/top10/${year}`)
         : await getData(`${url}/${dataType}/bycontinent/${continent}/${year}`)
@@ -75,9 +98,18 @@ export const getCheckedRadioButton = radioClass => {
 };
 
 export const getSelectedOption = idSelect => {
-    const slct  = document.getElementById(idSelect);
-    return slct.options[slct.value - 1].id;
+    const selectTag = document.getElementById(idSelect);
+ 
+    // only for one option use this return 
+    return selectTag.options[selectTag.value - 1].id;
+    // to get multiple options selected, use this return :
+    /*return Array.from(document.getElementsByClassName('option-continent selected'))
+        .map(option => option.innerText); */  
 }
+
+export const getCurrentYear = () => document.getElementById('selected-year')
+    .getAttribute('year');
+
 // ------------------------ EXPORTS --------------------------- //
 
 export default {
@@ -86,6 +118,9 @@ export default {
     computeCircleRadius,
     getTotalFromData,
     getSelectedData,
+    getCurrentYear,
+    valueToDiscreteTimeline,
+    valueToDateTimeline,
     getSelectedOption
 };
 

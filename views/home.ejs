@@ -1,122 +1,80 @@
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='fr'>
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
-    <link rel= "stylesheet" href="/static/css/style_home.css" />
-
-    
+    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+    <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous'>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css'>
+    <link rel= 'stylesheet' href='/static/css/style_home.css' />
 </head>
 
 <body>
 
     <header>
-        <div id="banner">
-            <p id ="titre">DATA VISUALTION</p>
+        <div id='banner'>
+            <p id ='titre'>DATA VISUALTION</p>
         </div>
     </header>
     
-    <div id="general-menu">
-        <a href="/generator" class='nav-link' id="generator">Generator</a>       
-        <div class ="well"><p style="font-weight: bold">Estimation des émissions de CO2 </p><p><br> Dues à la combustion de combustibles fossiles, à la production de ciment et au gaz brûlés à la torchère. En milliers de tonnes de dioxyde de carbone pour les
+    <div id='general-menu'>
+        <a href='/generator' class='nav-link' id='generator'>Generator</a>       
+        <div class ='well'><p style='font-weight: bold'>Estimation des émissions de CO2 </p><p><br> Dues à la combustion de combustibles fossiles, à la production de ciment et au gaz brûlés à la torchère. En milliers de tonnes de dioxyde de carbone pour les
         pays ou/et en tonne par habitant</p>
     </div>  
-    <div class ="container"> 
-        <div class ="row">
-            <div id="legend" class ="col-lg-9"></div>
+
+    <div class ='container'> 
+        <div class ='row'>
+            <div id='legend' class ='col-lg-9'></div>
         </div>
-        <div class ="row">
-            <div id="vis" class="col-lg-3"> </div>
-            <div id="chart" class = "col-lg-9"></div>        
+        <div class ='row'>
+            <div id='vis' class='col-lg-3'> </div>
+            <div id='chart' class = 'col-lg-9'></div>        
         </div>
-        <div class ="row">
-            <div id="controls-continent" class ="col-lg-3">
-                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
-                <label class="form-check-label" for="inlineRadio1">Par Continent</label>
-                <select class="selectpicker" multiple data-live-search="true" title="Choose" id="selectOption">
-                    <optgroup label="Continent" data-max-options="1" id="Continent">
-                        <option id="Asie" class ="radio-c" value="1" >Asie</option>
-                        <option id="Africa" class ="radio-c" value="2">Africa</option>
-                        <option id="Europe" class ="radio-c" value="3" selected>Europe</option>
-                        <option id="NorthAmerica" class ="radio-c" value="4">North America</option>
-                        <option id="SouthAmerica" class ="radio-c" value="5">South America</option>
-                        <option id="Oceania" class ="radio-c" value="6">Oceania</option>
-                        <option id="Top" class ="radio-c" value="7">Top 10</option>
+        <div class ='row'>
+            <div id='controls-continent' class ='col-lg-3'>
+                <input class='form-check-input' type='radio' name='inlineRadioOptions' id='inlineRadio1' value='option1'>
+                <label class='form-check-label' for='inlineRadio1'>Par Continent</label>
+                <select class='selectpicker' multiple data-live-search='true' title='Choose' id='selectOption'>
+                    <optgroup label='Continent' data-max-options='1' id='Continent'>
+                        <option id='Asie' class = 'option-continent' value='1' >Asie</option>
+                        <option id='Africa' class = 'option-continent' value='2'>Africa</option>
+                        <option id='Europe' class = 'option-continent' value='3' selected>Europe</option>
+                        <option id='NorthAmerica' class = 'option-continent' value='4'>North America</option>
+                        <option id='SouthAmerica' class = 'option-continent' value='5'>South America</option>
+                        <option id='Oceania' class = 'option-continent' value='6'>Oceania</option>
+                        <option id='Top' class = 'option-continent' value='7'>Top 10</option>
                     </optgroup>
                 </select>
-                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-                <label class="form-check-label" for="inlineRadio2">Par pays</label>
-                <select class="selectpicker" multiple data-live-search="true" id="selectOption" disabled>
-                    <optgroup label="Pays" id="Pays" data-max-options="10">
+                <input class='form-check-input' type='radio' name='inlineRadioOptions' id='inlineRadio2' value='option2'>
+                <label class='form-check-label' for='inlineRadio2'>Par pays</label>
+                <select class='selectpicker' multiple data-live-search='true' id='selectOption'>
+                    <optgroup label='Pays' id='Pays' data-max-options='10'>
                     </optgroup>
                 </select>
             </div>
         </div>
-        <div class ="row">
-            <div id="controls-year" class ="col-lg-3">
-                <div class ="row">
-                    <input type="radio" id="1975" class='custom-control-input radio-y' type="radio" checked name='year'>
-                    <label class="custom-control-label" for="1975">1975</label>
-                    <input type="radio" id="1985" class='custom-control-input radio-y' type="radio" name='year'>
-                    <label class="custom-control-label" for="1985">1985</label>
-                    <input type="radio" id="1995" class='custom-control-input radio-y' type="radio" name='year'>
-                    <label class="custom-control-label" for="1995">1995</label>
-                    <input type="radio" id="2005" class='custom-control-input radio-y' type="radio" name='year'>
-                    <label class="custom-control-label" for="2005">2005</label>
-                </div>
-                <div class="row">
-                    <input type="radio" id="2010" class='custom-control-input radio-y' type="radio" name='year'>
-                    <label class="custom-control-label" for="2010">2010</label>
-                    <input type="radio" id="2012" class='custom-control-input radio-y' type="radio" name='year'>
-                    <label class="custom-control-label" for="2012">2012</label>
-                    <input type="radio" id="2013" class='custom-control-input radio-y' type="radio" name='year'>
-                    <label class="custom-control-label" for="2013">2013</label>
-                    <input type="radio" id="2014" class='custom-control-input radio-y' type="radio" name='year'>
-                    <label class="custom-control-label" for="2014">2014</label>
-                </div>
-                <div class ="row">         
-                    <input type="radio" id="total" class='custom-control-input radio-t' type="radio" checked name='type'>
-                    <label class="custom-control-label" for="total">Pollution par pays</label>
-                </div>  
-                <div class ="row">
-                    <input type="radio" id="per-capita" class='custom-control-input radio-t' type="radio" name='type' >
-                    <label class="custom-control-label" for="per-capita">Pollution par habitants</label>
-                </div>    
+
+        <div class ='row'>
+            <div id='timeLine' class='col-lg-3'> 
+                <button id='play-button'>Play</button>
             </div>
-        </div>
-        <div class="row ">
-            <div id="timeLine" class="col-lg-3"> 
-                <button id="play-button">Play</button>
-            </div>
+        </div>    
+
+        <div class ='row'>         
+            <input type='radio' id='total' class='custom-control-input radio-t' type='radio' checked name='type'>
+            <label class='custom-control-label' for='total'>Pollution par pays</label>
+        </div>  
+
+        <div class ='row'>
+            <input type='radio' id='per-capita' class='custom-control-input radio-t' type='radio' name='type' >
+            <label class='custom-control-label' for='per-capita'>Pollution par habitants</label>
         </div>
     </div>
     
-
     <%- include includes/scripts_env.ejs %>
-    <script type='module' src="/static/js/pollution/main.js"></script>
+    <script type='module' src='/static/js/pollution/main.js'></script>
     
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    
-    
-
-    <script type="text/javascript">
-               
-        function AfficherMasquer()
-        {
-            divInfo = document.getElementById('divacacher');
-        
-            if (divInfo.style.display == 'none')
-                divInfo.style.display = 'block';
-            else
-                divInfo.style.display = 'none';
-        
-        }
-    </script>
-
-
 </body>
 </html>
 

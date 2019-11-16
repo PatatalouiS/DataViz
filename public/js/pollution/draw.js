@@ -1,13 +1,14 @@
 
 // ---------------------  IMPORTS  --------------------- //
 
-import {Timer} from '../utils.js';
-import {getCheckedRadioButton,getSelectedOption, getTotalFromData, computeCircleColor, getMaxfromData} from './local_utils.js';
-import {showLargeBubble, showInitialBubble} from './handlers.js'
+import { Timer, dataURL, getData } from '../utils.js';
+import { getTotalFromData, computeCircleColor, getMaxfromData,
+         getAllDates, getSelectedOption, valueToDiscreteTimeline } from './local_utils.js';
+import {showLargeBubble, showInitialBubble, updateTimeLine, playButtonHandler} from './handlers.js'
 
 // ----------------------- DRAWING DOM/SVG FUNCTIONS -------------------- //
 
-export const drawMenu = data => {
+export const drawTotal = data => {
     const width = 279
     const height = 100
 
@@ -44,105 +45,67 @@ export const drawMenu = data => {
         .style('font-weight', 'bold')
 }
 
-export const drawTimeLine = (continent,year) => {
-    const width = 279
-    const height = 120
-    const margin = {right :10, left : 10},
-        rangeMax = width - margin.left - margin.right;
+export const drawTimeLine = () => {
+    const width              = 279;
+    const height             = 120;
+    const margin             = {right: 10, left: 10};
+    const rangeMax           = width - margin.left - margin.right;
+    const dates              = getAllDates();
+    const startDate          = dates[0];
+    const endDate            = dates[dates.length-1];
+    const targetValue        = rangeMax;
 
-    const formatDateIntoYear = d3.timeFormat('%Y');
-    const startDate = new Date('1975'),
-          endDate =  new Date('2014');
-    const targetValue = rangeMax;
-    var currentValue = 0;
-
-    const svg = d3.select("#timeLine")
-        .append("svg")
-        .attr("width", width)
-        .attr("height",height)
+    const svg = d3.select('#timeLine')
+        .append('svg')
+        .attr('id', 'timeline')
+        .attr('width', width)
+        .attr('height',height)
         
     const playButton = d3.select('#play-button')
-
-    /************DESSIN DU SLIDER  ***************/
-
-    const x = d3.scaleTime()
-        .domain([startDate,endDate])
-        .range([0,rangeMax])
-        .clamp(true);
-    
+        .on('click', () => playButtonHandler(playButton, rangeMax));
+  
     const slider = svg.append('g')
         .attr('class','slider')
         .attr('transform', 'translate(' + margin.left + ',' + height/2 + ')');
 
     slider.append('line')
         .attr('class','track')
-        .attr('x1', x.range()[0])
-        .attr('x2',x.range()[1])
+        .attr('x1', 0)
+        .attr('x2', rangeMax)
         .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
         .attr('class', 'track-inset')
         .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
         .attr('class', 'track-overlay')
         .call(d3.drag()
-            .on('start.interrupt', () => { return slider.interrupt(); })
-            .on('start drag', function() { 
-                currentValue = d3.event.x;
-                update(x.invert(currentValue));}))
+            .on('drag', () => updateTimeLine(valueToDiscreteTimeline(d3.event.x)))
+        );
         
     slider.insert('g','.track-overlay')
         .attr('class','ticks')
         .attr('transform','translate(0,' + 50 + ')')
         .selectAll('text')
-        .data(x.ticks(4))
+        .data([dates[0], dates[2], dates[4], dates[6]])
         .enter()
-        .append('text')
-        .attr('x',x)
-        .attr('y',-30)
-        .attr('font-size','75%')
-        .attr('text-anchor','middle')
-        .text( (d) => {return formatDateIntoYear(d);});
+            .append('text')
+            .attr('x', (d, i) => (rangeMax/3) * i )
+            .attr('y', -30)
+            .attr('font-size','75%')
+            .attr('text-anchor','middle')
+            .text(d => d);
         
     const handle = slider.insert('circle', '.track-overlay')
+        .attr('id', 'handle')
         .attr('class', 'handle')
-        .attr('r', 9);
+        .attr('r', 9)
+        .attr('cx', 0);
     
     const label = slider.append('text')
         .attr('class','label')
+        .attr('id', 'selected-year')
         .attr('text-anchor','middle')
-        .text(formatDateIntoYear(startDate))
-        .attr('transform', 'translate(10,' + (-25) + ')')
-    
-    /************  FONCTION DU SLIDER  ***************/
-    var timer;      
-    playButton
-        .on("click", function() {
-            var button = d3.select(this);
-            if (button.text() == "Pause") {
-                clearInterval(timer);
-                button.text("Play");
-            } else {
-                timer = setInterval(step, 100);
-                button.text("Pause");
-            }
-        })
-
-  
-    function step() {
-        update(x.invert(currentValue));
-        currentValue = currentValue + (targetValue/80);
-        if (currentValue > targetValue) {
-            currentValue = 0;
-            clearInterval(timer);
-            playButton.text("Play");
-            }
-    }
-
-    function update(h){
-        handle.attr('cx', x(h));
-        label
-            .attr('x', x(h))
-            .text(formatDateIntoYear(h));
-        const years = formatDateIntoYear(h);
-    }    
+        .attr('year', '1975')
+        .text(startDate)
+        .attr('transform', 'translate(10,' + (-25) + ')')  
 }
 
 export const drawChart = data => {
@@ -168,7 +131,6 @@ export const drawChart = data => {
         .append('g')
         .attr('transform','translate(2,2)')
        
-
     const circles = svg.selectAll('.node')
         .data(data)
         .enter()
@@ -207,7 +169,6 @@ export const drawChart = data => {
         .on('mouseover', showLargeBubble(force, data, timer))
         .on('mouseout', showInitialBubble(force, data, timer))
       
-
     circles.append('title')
         .text(d => d.name) 
 }
@@ -215,15 +176,15 @@ export const drawChart = data => {
 export const drawLegend = () => {
     const width    = 1157;
     const height   = 100;
-    const legende = d3.select("#legend")
-        .append("svg")
-        .attr("width", width)
-        .attr("height",height)
+    const colors   = ['#2ca02c', '#1f77b4', '#ff7f0e', '#d62728','#8c564b', '#581845'];
+    const legendes = ['Pas polluant','Peu polluant','Polluant','Très polluant','Dangereux','Destructeur']
+    const legende = d3.select('#legend')
+        .append('svg')
+        .attr('width', width)
+        .attr('height',height)
         .attr('id', 'legende');
 
     let x = 220;   
-    const colors  = ['#2ca02c', '#1f77b4', '#ff7f0e', '#d62728','#8c564b', '#581845'];
-    const legendes = ['Pas polluant','Peu polluant','Polluant','Très polluant','Dangereux','Destructeur']
 
     for( let i = 0; i < colors.length; i++) {
         legende
@@ -244,23 +205,19 @@ export const drawLegend = () => {
     }
 };
 
-export const drawBouton = () => {
-    const test = document.getElementById("Continent");
-    test.onclick = function(){console.log("coucou")};
-    
-    fetch('/data/utils/countriesnames').then(async (response) => {
-        const json = await response.json();
-        json.forEach(pays => {
-            const button = document.getElementById("Pays");
-            const option = document.createElement("option");
-            option.innerHTML =pays.name.replace(/\(.[^(]*\)/g,'');
-            button.appendChild(option);
-            $(".selectpicker")
-                .selectpicker('refresh');
-        })          
-    })
-       
-};
+export const drawMenu = async () => {
+    const countriesNames = await getData(`${dataURL}utils/countriesnames`);
+    const selectTag = document.getElementById('Pays');
+
+    countriesNames.forEach(({name}) => {
+                const newOption = document.createElement('option');
+                newOption.innerHTML = name.replace(/\(.[^(]*\)/g,'');
+                newOption.classList = 'option-country'
+                selectTag.appendChild(newOption);
+    });
+
+    $('.selectpicker').selectpicker('refresh');
+}; 
 
 // ------------------------ EXPORTS --------------------------- //
 
@@ -269,5 +226,5 @@ export default {
     drawLegend,
     drawMenu,
     drawTimeLine,
-    drawBouton
+    drawTotal
 };
