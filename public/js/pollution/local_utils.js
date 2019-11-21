@@ -25,9 +25,9 @@ export const getMainValue = dataType => {
 
 export const computeCircleColor = (dataLine/*, maxValue*/) => {
     const {value} = dataLine;
-    const max = 1000000;
+    const type = getCheckedRadioButton('radio-t')
     const colorScale = d3.scaleQuantize()
-        .domain([0, max/*Value*/])
+        .domain([0,type == 'total' ? 1000000 : 25])
         .range(['#2ca02c','#cbdc01', '#1f77b4','#ff7f0e', '#d62728', '#8c564b','#581845']);
     return colorScale(value);
 };

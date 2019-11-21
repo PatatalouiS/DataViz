@@ -3,7 +3,7 @@
 
 import { Timer, dataURL, getData } from '../utils.js';
 import { getTotalFromData, computeCircleColor, getMaxfromData,
-         getAllDates, getSelectedOption, valueToDiscreteTimeline,getCheckedRadioButton} from './local_utils.js';
+         getAllDates, getSelectedOption, valueToDiscreteTimeline,getCheckedRadioButton,getCurrentYear} from './local_utils.js';
 import {showLargeBubble, showInitialBubble, updateTimeLine, playButtonHandler} from './handlers.js'
 
 // ----------------------- DRAWING DOM/SVG FUNCTIONS -------------------- //
@@ -112,6 +112,21 @@ export const drawChart = data => {
     const width    = 1200;
     const height   = 900;
 
+    var tranlatebubble = true;
+
+    const type = getCheckedRadioButton('radio-t');
+    console.log(type)
+
+
+    const xscale = d3.scaleLinear()
+        .domain([1970, 2015])
+        .range([0, width - 100]);
+
+    const yscale = d3.scaleLinear()
+        .domain([0, type == 'total' ? 1000000 : 50])
+        .range([height - 200, 0]);
+
+
     // Definition of the force Simulation, especially collapse force
     const s = 0.005;
     const timer = new Timer();
@@ -120,7 +135,13 @@ export const drawChart = data => {
         .force('y', d3.forceY(height/2).strength(s))
         .force('center', d3.forceCenter(width/2, height/2))
         .force('collide', d3.forceCollide(d => d.radius))
-        .on('tick', () => circles.attr('transform', d => `translate(${d.x},${d.y})`));
+        .on('tick', () => circles.attr('transform', d => {
+            if (tranlatebubble){
+                return `translate(${d.x},${d.y})`
+            }else                 
+                return 'translate('+xscale(d.year)+','+yscale(d.value)+')'
+        }));
+             
 
     const svg = d3.select('#chart')
         .append('svg')
@@ -131,6 +152,7 @@ export const drawChart = data => {
         .append('g')
         .attr("id","chartgroup")
         .attr('transform','translate(2,2)')
+       
        
     const circles = svg.selectAll('.node')
         .data(data)
@@ -175,25 +197,22 @@ export const drawChart = data => {
 
     /****************** Representation avec graph ****************************/
 
-    /*const representation = getCheckedRadioButton('radio-rp')
-    if (representation) {
-        svg.remove();
-        var scale = d3.scaleLinear()
-                  .domain([0, 12000000])
-                  .range([0, 150]);
-
-        // Add scales to axis
-        var x_axis = d3.axisBottom()
-                    .scale(scale);
-
-        var y_axis = d3.axisLeft()
-            .scale(scale);
-
-        //Append group and insert axis
+    console.log(getCheckedRadioButton('radio-rp'))
+    if (getCheckedRadioButton('radio-rp') == 'graph') {
+        
+        tranlatebubble = false;
         svg.append("g")
-        .call(x_axis)
-        .call(y_axis);
-    }*/
+        .attr('id',"graph")
+
+        svg.append("g")
+        .attr('transform','translate(50,'+ height/1.2 +')')
+        .call(d3.axisBottom(xscale));
+
+        svg.append("g")
+        .attr('transform','translate(50,55)')
+        .call(d3.axisLeft(yscale));
+
+    }
 };
 
 export const drawLegend = () => {
