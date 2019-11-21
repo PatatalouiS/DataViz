@@ -1,7 +1,7 @@
 
 // ---------------------  IMPORTS  --------------------- //
 
-import {getCheckedRadioButton, getSelectedOption, getSelectedData, getTotalFromData, getCurrentYear, valueToDateTimeline, getAllDates} from './local_utils.js';
+import {getCheckedRadioButton, getSelectedOption, getSelectedData, getTotalFromData, getCurrentYear, valueToDateTimeline } from './local_utils.js';
 import { drawChart } from './draw.js';
 import { Timer } from '../utils.js';
 

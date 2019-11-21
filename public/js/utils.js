@@ -15,7 +15,7 @@ export const getHOST = () => {
             : 'lifprojet.patatalouis.fr';
 }
 
-// ----------------------  FETCH GET QUERY ------------------------- //
+// ----------------------  FETCH GET QUERY --> JSON ------------------------- //
 
 export const getData = url => {
     console.log(`Ressource demandée : ${url}`);
@@ -80,5 +80,6 @@ export default {
     getHOST,
     getData,
     dataURL,
+    interpolationTabNumber,
     Timer
 };
