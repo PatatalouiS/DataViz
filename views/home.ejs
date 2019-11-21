@@ -32,10 +32,12 @@
             <div id='chart' class = 'col-lg-9'></div>        
         </div>
         <div class ='row'>
-            <div id='controls-continent' class ='col-lg-3'>
-                <input class='form-check-input' type='radio' name='inlineRadioOptions' id='inlineRadio1' value='option1'>
-                <label class='form-check-label' for='inlineRadio1'>Par Continent</label>
-                <select class='selectpicker' multiple data-live-search='true' title='Choose' id='selectOption'>
+            <div id='controls-continent' class="col-lg-3">
+                <div class="custom-control custom-radio">
+                    <input type="radio" class="custom-control-input radio-choice" id="radio-continent" name="choice"  checked>
+                    <label class="custom-control-label" for="radio-continent">Par Continent</label>
+                </div>
+                <select class='selectpicker sContinent' multiple data-live-search='true' title='Choose' id='selectOption'>
                     <optgroup label='Continent' data-max-options='1' id='Continent'>
                         <option id='Asie' class = 'option-continent' value='1' >Asie</option>
                         <option id='Africa' class = 'option-continent' value='2'>Africa</option>
@@ -46,9 +48,11 @@
                         <option id='Top' class = 'option-continent' value='7'>Top 10</option>
                     </optgroup>
                 </select>
-                <input class='form-check-input' type='radio' name='inlineRadioOptions' id='inlineRadio2' value='option2'>
-                <label class='form-check-label' for='inlineRadio2'>Par pays</label>
-                <select class='selectpicker' multiple data-live-search='true' id='selectOption'>
+                <div class="custom-control custom-radio">
+                    <input type="radio" class="custom-control-input radio-choice" id="radio-country" name="choice">
+                    <label class="custom-control-label" for="radio-country">Par pays</label>
+                </div>
+                <select class='selectpicker scountry' multiple data-live-search='true' id='selectOption'>
                     <optgroup label='Pays' id='Pays' data-max-options='10'>
                     </optgroup>
                 </select>
@@ -61,14 +65,33 @@
             </div>
         </div>    
 
-        <div class ='row'>         
-            <input type='radio' id='total' class='custom-control-input radio-t' type='radio' checked name='type'>
-            <label class='custom-control-label' for='total'>Pollution par pays</label>
-        </div>  
+        <div class ='row'>
+            <div class="col-lg-3"> 
+                <div class="custom-control custom-radio">
+                    <input type="radio" class="custom-control-input radio-t" id="total" name="pollu"  checked>
+                    <label class="custom-control-label" for="total">Pollution par pays</label>
+                </div>
+                <div class="custom-control custom-radio">
+                    <input type="radio" class="custom-control-input radio-t" id="per-capita" name="pollu">
+                    <label class="custom-control-label" for="per-capita">Pollution par habitants</label>
+                </div>
+            </div>
+        </div>
 
         <div class ='row'>
-            <input type='radio' id='per-capita' class='custom-control-input radio-t' type='radio' name='type' >
-            <label class='custom-control-label' for='per-capita'>Pollution par habitants</label>
+            <div class='col-lg-3'>
+                <h3> Choix de la représentation</h3>
+                <img class ="image" src="/static/img/BubbleChart.png" style="margin-bottom: 10px;">
+                <div class="custom-control custom-radio">
+                        <input type="radio" class="custom-control-input radio-rp" id="bubble" name="repres">
+                        <label class="custom-control-label" for="bubble">Bubble Chart</label>
+                </div>
+                <img class ="image" src="/static/img/BubbleChart.png">
+                <div class="custom-control custom-radio">
+                        <input type="radio" class="custom-control-input radio-rp" id="graph" name="repres" checked>
+                        <label class="custom-control-label" for="graph">Graph</label>
+                </div>
+            </div>
         </div>
     </div>
     

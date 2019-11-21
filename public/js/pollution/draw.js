@@ -3,7 +3,7 @@
 
 import { Timer, dataURL, getData } from '../utils.js';
 import { getTotalFromData, computeCircleColor, getMaxfromData,
-         getAllDates, getSelectedOption, valueToDiscreteTimeline } from './local_utils.js';
+         getAllDates, getSelectedOption, valueToDiscreteTimeline,getCheckedRadioButton} from './local_utils.js';
 import {showLargeBubble, showInitialBubble, updateTimeLine, playButtonHandler} from './handlers.js'
 
 // ----------------------- DRAWING DOM/SVG FUNCTIONS -------------------- //
@@ -129,6 +129,7 @@ export const drawChart = data => {
         .classed('svg-content', true)
         .attr('id', 'svg')
         .append('g')
+        .attr("id","chartgroup")
         .attr('transform','translate(2,2)')
        
     const circles = svg.selectAll('.node')
@@ -143,7 +144,7 @@ export const drawChart = data => {
         .style('pointer-events','visible')
         .attr('class','Pays')
         .attr('r', dataLine => dataLine.radius)
-        .attr('fill', dataLine => computeCircleColor(dataLine, getMaxfromData(data, 'value')))
+        .attr('fill', dataLine => computeCircleColor(dataLine/*, getMaxfromData(data, 'value')*/))
 
     circles.append('text')
         .attr('class','titrePays p')
@@ -171,7 +172,29 @@ export const drawChart = data => {
       
     circles.append('title')
         .text(d => d.name) 
-}
+
+    /****************** Representation avec graph ****************************/
+
+    /*const representation = getCheckedRadioButton('radio-rp')
+    if (representation) {
+        svg.remove();
+        var scale = d3.scaleLinear()
+                  .domain([0, 12000000])
+                  .range([0, 150]);
+
+        // Add scales to axis
+        var x_axis = d3.axisBottom()
+                    .scale(scale);
+
+        var y_axis = d3.axisLeft()
+            .scale(scale);
+
+        //Append group and insert axis
+        svg.append("g")
+        .call(x_axis)
+        .call(y_axis);
+    }*/
+};
 
 export const drawLegend = () => {
     const width    = 1157;
@@ -217,6 +240,19 @@ export const drawMenu = async () => {
     });
 
     $('.selectpicker').selectpicker('refresh');
+
+    const selectCountry = document.getElementsByClassName('scountry')[1]
+    const selectContinent = document.getElementsByClassName('sContinent')[1];
+    const radiocheck = getCheckedRadioButton('radio-choice');
+    
+    if (radiocheck == 'radio-continent'){
+        selectCountry.setAttribute('disabled', 'disabled')
+        selectContinent.removeAttribute('disabled')
+    }
+    if (radiocheck == 'radio-country'){
+        selectContinent.setAttribute('disabled', 'disabled')
+        selectCountry.removeAttribute('disabled')
+    }
 }; 
 
 // ------------------------ EXPORTS --------------------------- //
@@ -226,5 +262,5 @@ export default {
     drawLegend,
     drawMenu,
     drawTimeLine,
-    drawTotal
+    drawTotal,
 };

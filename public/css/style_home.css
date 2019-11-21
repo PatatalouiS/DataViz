@@ -32,7 +32,7 @@ body{
 	font-size: 30px;
 }
 
-#general-menu{
+/*#general-menu{
 	margin-left: 10px;
 	font-size: 18px;
 }
@@ -47,7 +47,7 @@ body{
   padding-top: 5px;
   margin-bottom: 5px;
   margin-left: 30px;	
-}
+}*/
 
 #Legende{
 	font-size: 18px;
@@ -97,9 +97,12 @@ div.tooltip-donut {
 	font-size: 1.3rem;
 }
 
-
-
-
+.image{
+	text-align: center;
+	width: 120px;
+	height: 90px;
+	border:solid 1px blue;
+}
 
 
 

@@ -1,8 +1,8 @@
 
 // ---------------------  IMPORTS  --------------------- //
 
-import {getCheckedRadioButton, getSelectedOption, getSelectedData, getTotalFromData, getCurrentYear, valueToDateTimeline } from './local_utils.js';
-import { drawChart } from './draw.js';
+import {getCheckedRadioButton, getSelectedOption, getSelectedData, getTotalFromData, getCurrentYear, valueToDateTimeline, getAllDates} from './local_utils.js';
+import { drawChart} from './draw.js';
 import { Timer } from '../utils.js';
 
 // ---------------------------  MAIN HANDLER ------------------------- //
@@ -11,9 +11,9 @@ export const paramsChangedHandler = async () => {
     const svg         = document.getElementById('svg');
     const year        = getCurrentYear();
     const choosenData = getCheckedRadioButton('radio-t');
-    const continent   = getSelectedOption('selectOption');
-
-    if(svg) svg.remove();
+    const continent   = getSelectedOption('selectOption');    
+    
+    if(svg) d3.select('#chartgroup').remove();
 
     const data = await getSelectedData(continent, year, choosenData)
     drawChart(data);
