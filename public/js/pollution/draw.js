@@ -119,7 +119,7 @@ export const drawChart = data => {
         .force('x', d3.forceX(width/2).strength(s))
         .force('y', d3.forceY(height/2).strength(s))
         .force('center', d3.forceCenter(width/2, height/2))
-        .force('collide', d3.forceCollide(d => d.radius))
+        .force('collide', d3.forceCollide(dataLine => dataLine.finalRadius))
         .on('tick', () => circles.attr('transform', d => `translate(${d.x},${d.y})`));
 
     const svg = d3.select('#chart')
@@ -137,41 +137,61 @@ export const drawChart = data => {
         .enter()
             .append('g')
             .attr('id', 'cercle')
-            .style('pointer-events','visible')
      
+    function animation (dataLine, index , nodes) {
+        const circle = d3.select(nodes[index]);
+        const interpolation = d3.interpolate(dataLine.currentRadius, dataLine.finalRadius);
+        return time => {
+            dataLine.currentRadius = interpolation(time)
+            circle.attr('r', dataLine.currentRadius);
+
+            const textOfcircle = d3.select(nodes[index].parentNode.children[1]);
+
+            if(dataLine.currentRadius >= 40 && textOfcircle.style('display') == 'none' ) {  
+               textOfcircle.style('display', '');    
+            }
+            force.nodes(data)
+        }  
+    }
+
     circles.append('circle')
         .classed('node', true)
-        .style('pointer-events','visible')
         .attr('class','Pays')
-        .attr('r', dataLine => dataLine.radius)
+        .attr('r', dataLine => dataLine.currentRadius)
         .attr('fill', dataLine => computeCircleColor(dataLine/*, getMaxfromData(data, 'value')*/))
+        .on('mouseover', showLargeBubble(force, data, timer))
+        .on('mouseout', showInitialBubble(force, data, timer))
+        .transition()
+            .duration(2000)
+            .tween('currentRadius', animation);
 
-    circles.append('text')
+    circles.append('g')
+        .attr('class', 'text-description')
+        .attr('id', dataLine => `bubble-text-${dataLine.index}`)
+        .style('display', dataLine => dataLine.currentRadius < 40 ? 'none' : '');
+        
+    const textContainers = d3.selectAll('.text-description');
+
+    textContainers.append('text')
         .attr('class','titrePays p')
         .attr('dy', '.2em')
         .style('text-anchor', 'middle')
+        .style('pointer-events', 'none')
         .attr('fill', 'black')
-        .text(d => d.name.replace(/\(.[^(]*\)/g,''))
-        .style('display', d => d.radius < 40 ? 'none' : '')
         .style('font-weight', 'bold')
+        .text(d => d.name.replace(/\(.[^(]*\)/g,''));
     
-    circles.append('text')
+    textContainers.append('text')
         .attr('dy', '1.3em')
         .style('text-anchor', 'middle')
+        .style('pointer-events', 'none')
         .attr('fill', 'white')
-        .text(d => new Intl.NumberFormat('de-DE').format(d.value))
-        .style('display', d => d.radius < 40 ? 'none' : '')
         .style('font-weight', 'bold')
+        .text(d => new Intl.NumberFormat('de-DE').format(d.value))
 
-    circles.append('circle')
-        .attr('class','circle-container')
-        .attr('fill', 'none')
-        .attr('r', d => d.radius)
-        .on('mouseover', showLargeBubble(force, data, timer))
-        .on('mouseout', showInitialBubble(force, data, timer))
-      
-    circles.append('title')
-        .text(d => d.name) 
+    textContainers.append('title')
+        .text(dataLine => dataLine.name)
+        .style('pointer-events', 'none'); 
 
     /****************** Representation avec graph ****************************/
 

@@ -33,13 +33,12 @@ const init = async () => {
         .addEventListener('change', paramsChangedHandler);   
 
     Array.from(document.getElementsByClassName('radio-t'))
-        .forEach(element => element.addEventListener('click', paramsChangedHandler));
+        .forEach(element => element.addEventListener('click', paramsChangedHandler));   
 };
 
 // --------------------   MAIN   ------------------- //
 
 document.addEventListener('DOMContentLoaded', () => {
-
     if(getHOST() !== 'localhost:8080') console.log = () => {};
     init();
 });

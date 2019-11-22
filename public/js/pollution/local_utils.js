@@ -34,6 +34,8 @@ export const computeCircleColor = (dataLine/*, maxValue*/) => {
 
 export const computeCircleRadius = (dataLine, maxValue) => {
     const {value} = dataLine;
+    if(value === 0) return value;
+
     const linearScale = d3.scaleSqrt()
         .domain([0, maxValue])
         .range([20, 150]);
@@ -51,8 +53,6 @@ export const getMaxfromData = (data, field) => {
 }
 
 export const getAllDates = () => dates;
-
-
 
 export const valueToDiscreteTimeline = value => {
     const rangeMax = d3.select('#timeline').attr('width');
@@ -77,17 +77,22 @@ export const getSelectedData = async (continent, year, dataType) => {
 
     const data = continent === 'Top'
         ? await getData(`${url}/${dataType}/top10/${year}`)
-        : await getData(`${url}/${dataType}/bycontinent/${continent}/${year}`)
-    
+        : await getData(`${url}/${dataType}/bycontinent/${continent}/${year}`);
+    const countriesNames = await getData(`${dataURL}utils/countriesnames`);
+
     const valueKeyName = mainValueKeyNames[dataType];
     const maxValue = getMaxfromData(data, valueKeyName);
-
-    return data.map(dataLine => {
-        const value = dataLine[valueKeyName];
-        const radius = computeCircleRadius({value}, maxValue);
-        delete dataLine[valueKeyName];
-        return Object.assign(dataLine, { value, radius });
-    })
+    
+    return countriesNames.map(country => {
+        const dataLine = data.find(dataLine => dataLine.name == country.name);
+        if(dataLine) {
+            const value = dataLine[valueKeyName];
+            const finalRadius = computeCircleRadius({value}, maxValue);
+            delete dataLine[valueKeyName];
+            return Object.assign(dataLine, { value, finalRadius, currentRadius : 0 });  
+        } 
+        else return {name : country.name, value : 0, currentRadius : 0, finalRadius : 0 };
+    });
 }
 
 // ----------------- DOM-RELATED FUNCTIONS ------------------ //
@@ -108,8 +113,7 @@ export const getSelectedOption = idSelect => {
         .map(option => option.innerText); */  
 }
 
-export const getCurrentYear = () => document.getElementById('selected-year')
-    .getAttribute('year');
+export const getCurrentYear = () => d3.select('#selected-year').text();
 
 // ------------------------ EXPORTS --------------------------- //
 
