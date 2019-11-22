@@ -117,7 +117,7 @@
     },
     {
       "id": 23,
-      "name": "Bolivia (Plurin State of)",
+      "name": "Bolivia",
       "continent": "SouthAmerica"
     },
     {
@@ -212,12 +212,12 @@
     },
     {
       "id": 42,
-      "name": "China Hong Kong SAR",
+      "name": "China Hong Kong",
       "continent":"Asie"
     },
     {
       "id": 43,
-      "name": "China Macao SAR",
+      "name": "China Macao",
       "continent":"Asie"
     },
     {
@@ -277,12 +277,12 @@
     },
     {
       "id": 55,
-      "name": "Dem People's Rep Korea",
+      "name": "North Korea",
       "continent":"Asie"
     },
     {
       "id": 56,
-      "name": "Dem Rep of the Congo",
+      "name": "Congo",
       "continent":"Africa"
     },
     {
@@ -342,7 +342,7 @@
     },
     {
       "id": 68,
-      "name": "Falkland Islands (Malvinas)",
+      "name": "Falkland Islands",
       "continent":"SouthAmerica"
     },
     {
@@ -477,7 +477,7 @@
     },
     {
       "id": 95,
-      "name": "Iran (Islamic Republic of)",
+      "name": "Iran",
       "continent":"Asie"
     },
     {
@@ -542,7 +542,7 @@
     },
     {
       "id": 108,
-      "name": "Lao People's Dem Rep",
+      "name": "Lao",
       "continent":"Asie"
     },
     {
@@ -642,7 +642,7 @@
     },
     {
       "id": 128,
-      "name": "Micronesia (Fed States of)",
+      "name": "Micronesia",
       "continent": "Oceania"
     },
     {
@@ -697,7 +697,7 @@
     },
     {
       "id": 139,
-      "name": "Netherlands Antilles [former]",
+      "name": "Netherlands Antilles",
       "continent": "SouthAmerica"
     },
     {
@@ -792,12 +792,12 @@
     },
     {
       "id": 158,
-      "name": "Republic of Korea",
+      "name": "South Korea",
       "continent": "Asie"
     },
     {
       "id": 159,
-      "name": "Republic of Moldova",
+      "name": "Moldova",
       "continent": "Europe"
     },
     {
@@ -872,7 +872,7 @@
     },
     {
       "id": 174,
-      "name": "Serbia and Monten [former]",
+      "name": "Serbia and Monten",
       "continent": "Europe"
     },
     {
@@ -892,7 +892,7 @@
     },
     {
       "id": 178,
-      "name": "Sint Maarten (Dutch part)",
+      "name": "Sint Maarten",
       "continent": "NorthAmerica"
     },
     {
@@ -942,12 +942,12 @@
     },
     {
       "id": 188,
-      "name": "Sudan",
+      "name": "North Sudan",
       "continent": "Africa"
     },
     {
       "id": 189,
-      "name": "Sudan [former]",
+      "name": "South Sudan",
       "continent": "Africa"
     },
     {
@@ -972,7 +972,7 @@
     },
     {
       "id": 194,
-      "name": "Syrian Arab Republic",
+      "name": "Syria",
       "continent": "Asie"
     },
     {
@@ -982,7 +982,7 @@
     },
     {
       "id": 196,
-      "name": "TFYR of Macedonia",
+      "name": "Macedonia",
       "continent": "Europe"
     },
     {
@@ -1082,7 +1082,7 @@
     },
     {
       "id": 217,
-      "name": "Venezuela (Boliv Rep of)",
+      "name": "Venezuela",
       "continent": "SouthAmerica"
     },
     {
