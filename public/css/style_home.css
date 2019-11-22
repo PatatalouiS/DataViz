@@ -97,6 +97,16 @@ div.tooltip-donut {
 	font-size: 1.3rem;
 }
 
+.main-menu{
+	text-align: center;
+	margin: 15px;
+}
+
+.menu-input{
+	vertical-align: middle;
+	display: table-cell;
+}
+
 .image{
 	text-align: center;
 	width: 120px;
@@ -104,6 +114,24 @@ div.tooltip-donut {
 	border:solid 1px blue;
 }
 
+.custom-block{
+	display: block;
+	text-align: center;
+}
+
+.custom-inline{
+	display: inline-block;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.img{
+	display: inline-block;
+}
+
+.main-img{
+	text-align: center;
+}
 
 
 
@@ -115,7 +143,7 @@ div.tooltip-donut {
 #play-button {
 	position: absolute;
 	top: 90px;
-	left: 120px;
+	left: 170px;
 	background: #f08080;
 	padding-right: 26px;
 	border-radius: 3px;
