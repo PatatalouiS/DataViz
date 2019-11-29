@@ -193,7 +193,7 @@ export const drawChart = data => {
         .text(dataLine => dataLine.name)
         .style('pointer-events', 'none'); 
 
-    /****************** Representation avec graph ****************************/
+    /***************** Representation avec graph ***************************/
 
     /*const representation = getCheckedRadioButton('radio-rp')
     if (representation) {
