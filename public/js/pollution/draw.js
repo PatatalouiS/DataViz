@@ -3,13 +3,13 @@
 
 import { Timer, dataURL, getData } from '../utils.js';
 import { getTotalFromData, computeCircleColor, getMaxfromData,
-         getAllDates, getSelectedOption, valueToDiscreteTimeline,getCheckedRadioButton} from './local_utils.js';
-import {showLargeBubble, showInitialBubble, updateTimeLine, playButtonHandler} from './handlers.js'
+         getAllDates, getSelectedOption, valueToDiscreteTimeline,getCheckedRadioButton,getCurrentYear} from './local_utils.js';
+import {showLargeBubble, showInitialBubble, updateTimeLine, playButtonHandler, bubbleTransition} from './handlers.js'
 
 // ----------------------- DRAWING DOM/SVG FUNCTIONS -------------------- //
 
 export const drawTotal = data => {
-    const width = 279
+    const width = 366
     const height = 100
 
     const svg = d3.select('#vis')
@@ -43,12 +43,18 @@ export const drawTotal = data => {
         .attr('x','60')
         .attr('y','62')
         .style('font-weight', 'bold')
+    
+    pollu.append('text')
+        .text(() => getCheckedRadioButton('radio-t') == 'total' ? "*milliers de tonnes de CO2" : "*en tonne par habitant")
+        .attr('x','30')
+        .attr('y','90')
+        .style('font-style', 'italic')
 }
 
 export const drawTimeLine = () => {
-    const width              = 279;
+    const width              = 366;
     const height             = 120;
-    const margin             = {right: 10, left: 10};
+    const margin             = {right: 40, left: 40};
     const rangeMax           = width - margin.left - margin.right;
     const dates              = getAllDates();
     const startDate          = dates[0];
@@ -72,19 +78,20 @@ export const drawTimeLine = () => {
         .attr('class','track')
         .attr('x1', 0)
         .attr('x2', rangeMax)
+        .attr('id', 'line-timeline')
         .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
         .attr('class', 'track-inset')
         .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
         .attr('class', 'track-overlay')
         .call(d3.drag()
-            .on('drag', () => updateTimeLine(valueToDiscreteTimeline(d3.event.x)))
+            .on('drag', () => updateTimeLine(valueToDiscreteTimeline(d3.event.x, rangeMax), rangeMax))
         );
         
     slider.insert('g','.track-overlay')
         .attr('class','ticks')
         .attr('transform','translate(0,' + 50 + ')')
         .selectAll('text')
-        .data([dates[0], dates[2], dates[4], dates[6]])
+        .data([dates[0], dates[2], dates[4], dates[7]])
         .enter()
             .append('text')
             .attr('x', (d, i) => (rangeMax/3) * i )
@@ -109,8 +116,18 @@ export const drawTimeLine = () => {
 }
 
 export const drawChart = data => {
-    const width    = 1200;
-    const height   = 900;
+    const width        = 1300;
+    const height       = 1000;
+    var tranlatebubble = true;
+    const type         = getCheckedRadioButton('radio-t');
+
+    const xscale = d3.scaleLinear()
+        .domain([1970, 2015])
+        .range([0, width - 250]);
+
+    const yscale = d3.scaleLinear()
+        .domain([0, type == 'total' ? 1000000 : 50])
+        .range([height - 200, 0]);
 
     // Definition of the force Simulation, especially collapse force
     const s = 0.005;
@@ -125,7 +142,7 @@ export const drawChart = data => {
     const svg = d3.select('#chart')
         .append('svg')
         .attr('preserveAspectRatio', 'xMinYMin meet')
-        .attr('viewBox', '0 0 1200 900')
+        .attr('viewBox', '0 0 1300 1000')
         .classed('svg-content', true)
         .attr('id', 'svg')
         .append('g')
@@ -138,22 +155,6 @@ export const drawChart = data => {
             .append('g')
             .attr('id', 'cercle')
      
-    function animation (dataLine, index , nodes) {
-        const circle = d3.select(nodes[index]);
-        const interpolation = d3.interpolate(dataLine.currentRadius, dataLine.finalRadius);
-        return time => {
-            dataLine.currentRadius = interpolation(time)
-            circle.attr('r', dataLine.currentRadius);
-
-            const textOfcircle = d3.select(nodes[index].parentNode.children[1]);
-
-            if(dataLine.currentRadius >= 40 && textOfcircle.style('display') == 'none' ) {  
-               textOfcircle.style('display', '');    
-            }
-            force.nodes(data)
-        }  
-    }
-
     circles.append('circle')
         .classed('node', true)
         .attr('class','Pays')
@@ -163,7 +164,7 @@ export const drawChart = data => {
         .on('mouseout', showInitialBubble(force, data, timer))
         .transition()
             .duration(2000)
-            .tween('currentRadius', animation);
+            .tween('currentRadius', bubbleTransition(force, data));
 
     circles.append('g')
         .attr('class', 'text-description')
@@ -193,41 +194,40 @@ export const drawChart = data => {
         .text(dataLine => dataLine.name)
         .style('pointer-events', 'none'); 
 
-    /***************** Representation avec graph ***************************/
-
-    /*const representation = getCheckedRadioButton('radio-rp')
-    if (representation) {
-        svg.remove();
-        var scale = d3.scaleLinear()
-                  .domain([0, 12000000])
-                  .range([0, 150]);
-
-        // Add scales to axis
-        var x_axis = d3.axisBottom()
-                    .scale(scale);
-
-        var y_axis = d3.axisLeft()
-            .scale(scale);
-
-        //Append group and insert axis
+    /****************** Representation avec graph ****************************/
+    //console.log(getCheckedRadioButton('radio-rp'))
+    if (getCheckedRadioButton('radio-rp') == 'graph') {
+        tranlatebubble = false;
         svg.append("g")
-        .call(x_axis)
-        .call(y_axis);
-    }*/
+        .attr('id',"graph")
+        
+        svg.append("g")
+        .attr('transform','translate(170,'+ height/1.1 +')')
+        .style('font-weight', 'bold')
+        .style('font-size','20px')
+        .call(d3.axisBottom(xscale));
+
+        svg.append("g")
+        .attr('transform','translate(170,110)')
+        .style('font-weight', 'bold')
+        .style('font-size','20px')
+        .call(d3.axisLeft(yscale));
+
+    }
 };
 
 export const drawLegend = () => {
-    const width    = 1157;
+    const width    = 1127;
     const height   = 100;
-    const colors   = ['#2ca02c', '#1f77b4', '#ff7f0e', '#d62728','#8c564b', '#581845'];
-    const legendes = ['Pas polluant','Peu polluant','Polluant','Très polluant','Dangereux','Destructeur']
+    const colors   = ['#2ca02c', '#cbdc01','#1f77b4', '#ff7f0e', '#d62728','#8c564b', '#581845'];
+    const legendes = ['Pas polluant','tres peu polluant','Peu polluant','Polluant','Très polluant','Dangereux','Destructeur']
     const legende = d3.select('#legend')
         .append('svg')
         .attr('width', width)
         .attr('height',height)
         .attr('id', 'legende');
 
-    let x = 220;   
+    let x = 45;   
 
     for( let i = 0; i < colors.length; i++) {
         legende

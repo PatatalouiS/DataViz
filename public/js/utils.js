@@ -70,7 +70,7 @@ export const interpolationTabNumber = (number, start, end, round = false) => {
         .fill(0)
         .map((x, i) => i+1)
         .map(mappers[Number(round)])
-
+        
     return [start].concat(values).concat([end]);
 };
 

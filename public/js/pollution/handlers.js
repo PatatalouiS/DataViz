@@ -13,17 +13,21 @@ export const paramsChangedHandler = async () => {
     const choosenData = getCheckedRadioButton('radio-t');
     const continent   = getSelectedOption('selectOption');    
     
+    const lastData = d3.select('svg');
+    console.log(lastData);
+
     if(svg) d3.select('#chartgroup').remove();
 
-    const data = await getSelectedData(continent, year, choosenData)
-    console.log(data);
-    drawChart(data);
+    
+    const newData = await getSelectedData(continent, year, choosenData)
+    console.log(newData, lastData);
+    drawChart(newData, lastData);
 
     d3.select('#total-title')
         .text(`Total : ${getSelectedOption('selectOption')}`);
 
     d3.select('#total-value')
-        .text(new Intl.NumberFormat('de-DE').format(getTotalFromData(data, 'value')));
+        .text(new Intl.NumberFormat('de-DE').format(getTotalFromData(newData, 'value')));
 }
 
 // ----------------------------  UPDATE CIRCLE RADIUS HANDLERS -------------------- //
@@ -102,13 +106,13 @@ export const showInitialBubble = (simulation, data, timer) => (dataTrigger, inde
 
 // ---------------------   TIMELINE HANDLERS ----------------------- //
 
-export const updateTimeLine = (posX, timeout = 200, maxValue = 259) => {
+export const updateTimeLine = (posX, maxValue, timeout = 200) => {
     if(!updateTimeLine.manageEventimer) updateTimeLine.manageEventimer = new Timer();
     const lastValue                                                    = Number(d3.select('#handle').attr('cx'));
     const lastYear                                                     = getCurrentYear();
-    const newValue = posX >= maxValue ? maxValue : posX;
-    const newYear                                                      = valueToDateTimeline(newValue);
-
+    const newValue                                                     = posX >= maxValue ? maxValue : posX;
+    const newYear                                                      = valueToDateTimeline(newValue, maxValue);
+   
     if(newValue !== lastValue) {
         d3.select('#handle')
             .attr('cx', newValue);
@@ -124,8 +128,8 @@ export const updateTimeLine = (posX, timeout = 200, maxValue = 259) => {
 };
 
 export const playButtonHandler = (button, targetValue) => {
-    const handle     = d3.select('#handle');
-    const transition = handle.transition();
+    const handle      = d3.select('#handle');
+    const transition  = handle.transition();
 
     if(button.text() === "Pause") {  
         transition.duration(0);
@@ -133,23 +137,39 @@ export const playButtonHandler = (button, targetValue) => {
     } 
     else {
         button.text("Pause");
+        if(getCurrentYear() === '2014') updateTimeLine(0, undefined, 200);
+        const currentHandlePosition = Number(handle.attr('cx'));
 
-        if(getCurrentYear() === '2014') {
-           updateTimeLine(0, 0);
-        }
-
-        const currentHandlePosition = handle.attr('cx');
         handle.transition()
             .duration((targetValue - currentHandlePosition) * 40)
             .ease(d3.easeLinear)
             .tween('cx', () => {
-                const interpolation = d3.interpolate(handle.attr('cx'), targetValue);
+                const interpolation = d3.interpolate(currentHandlePosition, targetValue);
                 return time => { 
-                    updateTimeLine(interpolation(time));  
+                    updateTimeLine(interpolation(time), targetValue);  
                 } 
             })
             .on('end', () => button.text('Play'));
     }
+}
+
+
+// --------------------  ANIMATION DE TRANSITION ------------------- //
+
+export const bubbleTransition = (force, data) => (dataLine, index , nodes) => {
+    const circle                       = d3.select(nodes[index]);
+    const interpolation                = d3.interpolate(dataLine.currentRadius, dataLine.finalRadius);
+    return time => {
+        dataLine.currentRadius = interpolation(time)
+        circle.attr('r', dataLine.currentRadius);
+
+        const textOfcircle = d3.select(nodes[index].parentNode.children[1]);
+
+        if(dataLine.currentRadius >= 40 && textOfcircle.style('display') == 'none' ) {  
+           textOfcircle.style('display', '');    
+        }
+        force.nodes(data);
+    }  
 }
 
 // ------------------------ EXPORTS --------------------------- //
@@ -160,5 +180,6 @@ export default {
     showLargeBubble,
     showInitialBubble,
     updateTimeLine,
-    playButtonHandler
+    playButtonHandler,
+    bubbleTransition
 };

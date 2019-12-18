@@ -15,7 +15,7 @@ const dates = ['1975', '1985', '1995', '2005', '2010', '2012', '2013', '2014'];
 
 export const getMainValue = dataType => {
     try {
-        if(!valuesName.hasOwnProperty(dataType)) throw new Error()
+        if(!valuesName.hasOwnProperty(dataType)) throw new Error();
         return valuesName[dataType];
     }
     catch (err) {
@@ -25,9 +25,9 @@ export const getMainValue = dataType => {
 
 export const computeCircleColor = (dataLine/*, maxValue*/) => {
     const {value} = dataLine;
-    const max = 1000000;
+    const type = getCheckedRadioButton('radio-t')
     const colorScale = d3.scaleQuantize()
-        .domain([0, max/*Value*/])
+        .domain([0,type == 'total' ? 1000000 : 25])
         .range(['#2ca02c','#cbdc01', '#1f77b4','#ff7f0e', '#d62728', '#8c564b','#581845']);
     return colorScale(value);
 };
@@ -54,18 +54,16 @@ export const getMaxfromData = (data, field) => {
 
 export const getAllDates = () => dates;
 
-export const valueToDiscreteTimeline = value => {
-    const rangeMax = d3.select('#timeline').attr('width');
+export const valueToDiscreteTimeline = (value, maxValue) => {
     const valueToDiscrete = d3.scaleQuantize()
-        .domain([0, rangeMax])
-        .range(interpolationTabNumber(getAllDates().length, 0, rangeMax));
+        .domain([0, maxValue])
+        .range(interpolationTabNumber(getAllDates().length, 0, maxValue));
     return valueToDiscrete(value);
 };
 
-export const valueToDateTimeline = value => {
-    const rangeMax = d3.select('#timeline').attr('width');
+export const valueToDateTimeline = (value, maxValue) => {
     const valueToDate = d3.scaleQuantize()
-        .domain([0, rangeMax])
+        .domain([0, maxValue])
         .range(getAllDates())
     return valueToDate(value);
 }
