@@ -29,7 +29,7 @@ const init = async () => {
     drawTimeLine();
     drawMenu();
 
-    document.getElementById('selectOption')
+    document.getElementById('selectContinent')
         .addEventListener('change', paramsChangedHandler);   
 
     Array.from(document.getElementsByClassName('radio-t'))
@@ -43,3 +43,4 @@ document.addEventListener('DOMContentLoaded', () => {
     if(getHOST() !== 'localhost:8080') console.log = () => {};
     init();
 });
+

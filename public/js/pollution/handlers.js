@@ -11,7 +11,7 @@ export const paramsChangedHandler = async () => {
     const svg         = document.getElementById('svg');
     const year        = getCurrentYear();
     const choosenData = getCheckedRadioButton('radio-t');
-    const continent   = getSelectedOption('selectOption');    
+    const continent   = getSelectedOption('selectContinent');    
     
     if(svg) d3.select('#chartgroup').remove();
 
@@ -19,7 +19,7 @@ export const paramsChangedHandler = async () => {
     drawChart(data);
 
     d3.select('#total-title')
-        .text(`Total : ${getSelectedOption('selectOption')}`);
+        .text(`Total : ${getSelectedOption('selectContinent')}`);
 
     d3.select('#total-value')
         .text(new Intl.NumberFormat('de-DE').format(getTotalFromData(data, 'value')));
@@ -47,7 +47,8 @@ export const updateRadius = ({newRadius, simulation, data, transitionDuration, i
 };
 
 export const showLargeBubble = (simulation, data, timer) => (dataTrigger, indexTrigger, nodes) => {
-    if(dataTrigger.radius < 40) {
+
+    if(dataTrigger.radius < (getCheckedRadioButton('radio-rp') =='graph' ? 60 : 40)) {
         timer.setTimeout(() => {
             dataTrigger.previousRadius = dataTrigger.radius;
             updateRadius({
@@ -68,7 +69,7 @@ export const showLargeBubble = (simulation, data, timer) => (dataTrigger, indexT
     d3.select(nodes[indexTrigger].parentNode)
         .transition()
         .duration(50)
-        .attr('opacity', '.85')
+        .attr('opacity', '0.8')
 };
 
 export const showInitialBubble = (simulation, data, timer) => (dataTrigger, indexTrigger, nodes) => {
@@ -84,16 +85,19 @@ export const showInitialBubble = (simulation, data, timer) => (dataTrigger, inde
         })
 
         delete dataTrigger.previousRadius;
-        d3.select(nodes[indexTrigger].parentNode.firstChild.nextSibling)
-            .style('display', 'none')
-        d3.select(nodes[indexTrigger].parentNode.firstChild.nextSibling.nextSibling)
-            .style('display', 'none')
+        
+            d3.select(nodes[indexTrigger].parentNode.firstChild.nextSibling)
+                .style('display', 'none')
+            d3.select(nodes[indexTrigger].parentNode.firstChild.nextSibling.nextSibling)
+                .style('display', 'none')
+        
+        
     } 
-
+    const select = getCheckedRadioButton('radio-rp')
     d3.select(nodes[indexTrigger].parentNode)
         .transition()
         .duration(50)
-        .attr('opacity', '1')
+        .attr('opacity',(select =='graph') ? '0.7' : '1')
 };
 
 // ---------------------   VARIOUS HANDLERS ----------------------- //
