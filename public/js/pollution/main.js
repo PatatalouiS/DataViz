@@ -15,7 +15,7 @@ const START_VALUES = {
     dataType  : 'total'
 };
 
-// ------------------- INITIAL STATE OF PAGE ------------- //
+// ------------------- INITIAL STATE OF PAGE ------------- // 
 
 const init = async () => {
     const {continent, year, dataType}          = START_VALUES;
