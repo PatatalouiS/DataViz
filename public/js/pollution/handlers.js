@@ -11,7 +11,7 @@ export const paramsChangedHandler = async () => {
     const svg         = document.getElementById('svg');
     const year        = getCurrentYear();
     const choosenData = getCheckedRadioButton('radio-t');
-    const continent   = getSelectedOption('selectOption');    
+    const continent   = getSelectedOption('selectContinent');    
     
     const lastData = d3.select('svg');
     console.log(lastData);
@@ -24,7 +24,7 @@ export const paramsChangedHandler = async () => {
     drawChart(newData, lastData);
 
     d3.select('#total-title')
-        .text(`Total : ${getSelectedOption('selectOption')}`);
+        .text(`Total : ${getSelectedOption('selectContinent')}`);
 
     d3.select('#total-value')
         .text(new Intl.NumberFormat('de-DE').format(getTotalFromData(newData, 'value')));
@@ -59,7 +59,7 @@ export const showLargeBubble = (simulation, data, timer) => (dataTrigger, indexT
     dataTrigger.fx = dataTrigger.x;
     dataTrigger.fy = dataTrigger.y;
 
-    if(dataTrigger.finalRadius < 40) {
+    if(dataTrigger.finalRadius < (getCheckedRadioButton('radio-rp') =='graph' ? 60 : 40)) {
         timer.setTimeout(() => {
             dataTrigger.previousRadius = dataTrigger.finalRadius;
             updateRadius({
@@ -77,7 +77,7 @@ export const showLargeBubble = (simulation, data, timer) => (dataTrigger, indexT
     d3.select(nodes[indexTrigger].parentNode)
         .transition()
         .duration(50)
-        .attr('opacity', '.85')
+        .attr('opacity', '0.8')
 };
 
 export const showInitialBubble = (simulation, data, timer) => (dataTrigger, indexTrigger, nodes) => {
@@ -97,11 +97,12 @@ export const showInitialBubble = (simulation, data, timer) => (dataTrigger, inde
         delete dataTrigger.previousRadius;
         d3.select(`#bubble-text-${indexTrigger}`).style('display', 'none');
     } 
-
+    const select = getCheckedRadioButton('radio-rp')
     d3.select(nodes[indexTrigger].parentNode)
         .transition()
         .duration(50)
-        .attr('opacity', '1');
+        .attr('opacity', '1')
+        .attr('opacity',(select =='graph') ? '0.7' : '1');
 };
 
 // ---------------------   TIMELINE HANDLERS ----------------------- //

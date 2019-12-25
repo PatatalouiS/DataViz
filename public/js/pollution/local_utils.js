@@ -34,12 +34,15 @@ export const computeCircleColor = (dataLine/*, maxValue*/) => {
 
 export const computeCircleRadius = (dataLine, maxValue) => {
     const {value} = dataLine;
-    if(value === 0) return value;
-
-    const linearScale = d3.scaleSqrt()
-        .domain([0, maxValue])
-        .range([20, 150]);
-    return linearScale(value);
+    if(getCheckedRadioButton('radio-rp') == 'graph'){
+        return 50;
+    }
+    else {
+        const linearScale = d3.scaleSqrt()
+            .domain([0, maxValue])
+            .range([20, 150]);
+        return linearScale(value);
+    }    
 }
 
 export const getTotalFromData = (data, field) => {
@@ -103,12 +106,13 @@ export const getCheckedRadioButton = radioClass => {
 
 export const getSelectedOption = idSelect => {
     const selectTag = document.getElementById(idSelect);
- 
-    // only for one option use this return 
-    return selectTag.options[selectTag.value - 1].id;
-    // to get multiple options selected, use this return :
-    /*return Array.from(document.getElementsByClassName('option-continent selected'))
-        .map(option => option.innerText); */  
+    if(selectTag.id =='selectContinent'){
+        return selectTag.options[selectTag.value].id;
+    }
+    else {
+        return Array.from(document.getElementsByClassName('option-continent selected'))
+        .map(option => option.innerText);
+    }
 }
 
 export const getCurrentYear = () => d3.select('#selected-year').text();
