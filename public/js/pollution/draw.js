@@ -29,10 +29,11 @@ export const drawTotal = data => {
         .attr('fill', 'white')
         .attr('stroke', 'grey')
         .attr('stroke-width','2')
-        
+    
+    console.log(getCheckedRadioButton('radio-choice'))
     pollu.append('text')
         .attr('id', 'total-title')
-        .text(`Total : ${getSelectedOption('selectOption')}`)
+        .text(`Total : ${(getCheckedRadioButton('radio-choice')=='radio-continent') ? getSelectedOption('selectContinent') : getSelectedOption('selectCountry') }`)
         .attr('x','30')
         .attr('y','30')
         .style('font-weight', 'bold')
@@ -118,15 +119,17 @@ export const drawTimeLine = () => {
 export const drawChart = data => {
     const width        = 1300;
     const height       = 1000;
-    var tranlatebubble = true;
-    const type         = getCheckedRadioButton('radio-t');
+    let tranlatebubble = true;
 
+    const select = getCheckedRadioButton('radio-rp');
+    const type = getCheckedRadioButton('radio-t');
+  
     const xscale = d3.scaleLinear()
         .domain([1970, 2015])
         .range([0, width - 250]);
 
     const yscale = d3.scaleLinear()
-        .domain([0, type == 'total' ? 1000000 : 50])
+        .domain([0, type == 'total' ? 1000000/*d => {getMaxfromData(d,'value')}*/ : 50])
         .range([height - 200, 0]);
 
     // Definition of the force Simulation, especially collapse force
@@ -178,17 +181,21 @@ export const drawChart = data => {
         .attr('dy', '.2em')
         .style('text-anchor', 'middle')
         .style('pointer-events', 'none')
-        .attr('fill', 'black')
+        .attr('fill', 'white')
         .style('font-weight', 'bold')
-        .text(d => d.name.replace(/\(.[^(]*\)/g,''));
+        .style('font-size','20px')
+        .text(d => d.name.replace(/\(.[^(]*\)/g,''))
+        .style('display', d => d.radius < ((select == 'bubble') ? 40 : 70) ? 'none' : '');
     
     textContainers.append('text')
         .attr('dy', '1.3em')
         .style('text-anchor', 'middle')
         .style('pointer-events', 'none')
         .attr('fill', 'white')
-        .style('font-weight', 'bold')
         .text(d => new Intl.NumberFormat('de-DE').format(d.value))
+        .style('display', d => d.radius < ((select == 'bubble') ? 40 : 70) ? 'none' : '')
+        .style('font-weight', 'bold')
+        .style('font-size','20px')
 
     textContainers.append('title')
         .text(dataLine => dataLine.name)
@@ -196,7 +203,7 @@ export const drawChart = data => {
 
     /****************** Representation avec graph ****************************/
     //console.log(getCheckedRadioButton('radio-rp'))
-    if (getCheckedRadioButton('radio-rp') == 'graph') {
+    if (select == 'graph') {
         tranlatebubble = false;
         svg.append("g")
         .attr('id',"graph")
@@ -250,6 +257,8 @@ export const drawLegend = () => {
 
 export const drawMenu = async () => {
     const countriesNames = await getData(`${dataURL}utils/countriesnames`);
+    console.log(countriesNames)
+
     const selectTag = document.getElementById('Pays');
 
     countriesNames.forEach(({name}) => {
@@ -264,15 +273,19 @@ export const drawMenu = async () => {
     const selectCountry = document.getElementsByClassName('scountry')[1]
     const selectContinent = document.getElementsByClassName('sContinent')[1];
     const radiocheck = getCheckedRadioButton('radio-choice');
-    
-    if (radiocheck == 'radio-continent'){
-        selectCountry.setAttribute('disabled', 'disabled')
-        selectContinent.removeAttribute('disabled')
-    }
-    if (radiocheck == 'radio-country'){
-        selectContinent.setAttribute('disabled', 'disabled')
-        selectCountry.removeAttribute('disabled')
-    }
+
+    $("#selectCountry").prop("disabled", true);
+        
+    $("#radio-country").click(() => {
+        $('#selectCountry').prop("disabled", false);
+        $("#selectContinent").prop("disabled", true);
+    });
+
+    $("#radio-continent").click(() => {
+        $('#selectContinent').prop("disabled", false);
+        $("#selectCountry").prop("disabled", true);
+        
+    });
 }; 
 
 // ------------------------ EXPORTS --------------------------- //

@@ -15,7 +15,7 @@ const START_VALUES = {
     dataType  : 'total'
 };
 
-// ------------------- INITIAL STATE OF PAGE ------------- //
+// ------------------- INITIAL STATE OF PAGE ------------- // 
 
 const init = async () => {
     const {continent, year, dataType}          = START_VALUES;
@@ -29,7 +29,7 @@ const init = async () => {
     drawTimeLine();
     drawMenu();
 
-    document.getElementById('selectOption')
+    document.getElementById('selectContinent')
         .addEventListener('change', paramsChangedHandler);   
 
     Array.from(document.getElementsByClassName('radio-t'))
@@ -42,3 +42,4 @@ document.addEventListener('DOMContentLoaded', () => {
     if(getHOST() !== 'localhost:8080') console.log = () => {};
     init();
 });
+

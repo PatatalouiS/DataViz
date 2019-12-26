@@ -39,7 +39,7 @@
                         <input type="radio" class="custom-control-input radio-choice" id="radio-continent" name="choice"  checked>
                         <label class="custom-control-label" for="radio-continent">Par Continent</label>
                     </div>
-                    <select class='selectpicker sContinent' multiple data-live-search='true' title='Choose' id='selectOption'>
+                    <select class='selectpicker sContinent' data-live-search='true' title='Choose' id='selectContinent' >
                         <optgroup label='Continent' data-max-options='1' id='Continent'>
                             <option id='Asie' class = 'option-continent' value='1' >Asie</option>
                             <option id='Africa' class = 'option-continent' value='2'>Africa</option>
@@ -54,8 +54,8 @@
                         <input type="radio" class="custom-control-input radio-choice" id="radio-country" name="choice">
                         <label class="custom-control-label" for="radio-country">Par pays</label>
                     </div>
-                    <select class='selectpicker scountry' multiple data-live-search='true' id='selectOption'>
-                        <optgroup label='Pays' id='Pays' data-max-options='10'>
+                    <select class='selectpicker scountry' multiple data-live-search='true' id='selectCountry' >
+                        <optgroup label='Pays' id='Pays' data-max-options='10' >
                         </optgroup>
                     </select>
                 </div>
@@ -93,7 +93,7 @@
                         </div>
                     </div>
                     <div class="img">
-                        <img class ="image custom-inline" src="/static/img/BubbleChart.png">
+                        <img class ="image custom-inline" src="/static/img/Graph.png">
                         <div class="custom-control custom-radio">
                             <input type="radio" class="custom-control-input radio-rp" id="graph" name="repres" >
                             <label class="custom-control-label" for="graph">Graph</label>
