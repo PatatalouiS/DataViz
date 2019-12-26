@@ -27,7 +27,7 @@ app.get('/bt', async (req, res) => {
 // Page test pour Max
 app.get('/max', async (req, res) => {
 	console.log(nanoid());
-	const countries = await mysql('SELECT DISTINCT name FROM Countries ORDER BY name');
+	const countries = await mysql('SELECT DISTINCT name FROM countries ORDER BY name');
 	res.render('max', { countries : countries.map(line => line.name)} );	
 });
 
@@ -70,7 +70,7 @@ app.post('/generator', upload.single('json_file'), (req, res) => {
 // ------- ROUTES GETDATA POUR FETCH -------- //
 
 app.get('/data/utils/countriesnames', async (req, res) => {
-	const queryResult = await mysql(/*sql*/`SELECT DISTINCT name FROM Countries ORDER BY name`);
+	const queryResult = await mysql(/*sql*/`SELECT DISTINCT name FROM countries ORDER BY name`);
 	sendQueryJSON(queryResult, res);
 });
 
