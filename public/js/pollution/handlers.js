@@ -2,16 +2,19 @@
 // ---------------------  IMPORTS  --------------------- //
 
 import {getCheckedRadioButton, getSelectedOption, getSelectedData, getTotalFromData, getCurrentYear, valueToDateTimeline, getAllDates} from './local_utils.js';
-import { drawChart} from './draw.js';
+import { drawChart, drawGraph} from './draw.js';
 import { Timer } from '../utils.js';
 
 // ---------------------------  MAIN HANDLER ------------------------- //
 
-export const paramsChangedHandler = async () => {
+export const paramsChangedHandler = async () => { 
+
     const svg         = document.getElementById('svg');
     const year        = getCurrentYear();
     const choosenData = getCheckedRadioButton('radio-t');
-    const continent   = getSelectedOption('selectContinent');    
+    const continent   = getSelectedOption('selectContinent');   
+    const representantion  = getCheckedRadioButton('radio-rp');
+    
     
     const lastData = d3.select('svg');
     console.log(lastData);
@@ -28,6 +31,7 @@ export const paramsChangedHandler = async () => {
 
     d3.select('#total-value')
         .text(new Intl.NumberFormat('de-DE').format(getTotalFromData(newData, 'value')));
+    
 }
 
 // ----------------------------  UPDATE CIRCLE RADIUS HANDLERS -------------------- //
