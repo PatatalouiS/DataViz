@@ -3,7 +3,7 @@
 
 // ------------ IMPORT AND CONSTANTS ---------------- //
 
-import { drawMenu, drawLegend, drawChart, drawTimeLine, drawTotal, drawGraph } from './draw.js';
+import { drawMenu, drawLegend, drawChart, drawTimeLine, drawTotal} from './draw.js';
 import { getSelectedData } from './local_utils.js';
 import { paramsChangedHandler } from './handlers.js';
 import { getHOST } from '../utils.js';
@@ -22,9 +22,7 @@ const init = async () => {
     document.getElementById(dataType).checked  = true;
 
     const data = await getSelectedData(continent, year, dataType);
-
     drawChart(data);
-    //drawGraph(data);
     drawLegend();
     drawTotal(data);
     drawTimeLine();

@@ -90,11 +90,25 @@ export const getSelectedData = async (continent, year, dataType) => {
             const value = dataLine[valueKeyName];
             const finalRadius = computeCircleRadius({value}, maxValue);
             delete dataLine[valueKeyName];
+            console.log(countriesNames)
             return Object.assign(dataLine, { value, finalRadius, currentRadius : 0 });  
         } 
         else return {name : country.name, value : 0, currentRadius : 0, finalRadius : 0 };
     });
+    
 }
+
+export const getSelectedDataCountries = async (countries, year, dataType) => {
+    const url = `${dataURL}pollution`;
+
+    let tabdata = [];
+    countries.forEach(pays => {
+        //const data =  await getData(`${url}/${dataType}/bycountry/${pays}/${year}`);
+        tabdata.push(data);
+    });
+}
+
+
 
 // ----------------- DOM-RELATED FUNCTIONS ------------------ //
 
@@ -110,7 +124,7 @@ export const getSelectedOption = idSelect => {
         return selectTag.options[selectTag.value].id;
     }
     else {
-        return Array.from(document.getElementsByClassName('option-continent selected'))
+        return Array.from(document.getElementsByClassName('option-country selected'))
         .map(option => option.innerText);
     }
 }
@@ -125,6 +139,7 @@ export default {
     computeCircleRadius,
     getTotalFromData,
     getSelectedData,
+    getSelectedDataCountries,
     getCurrentYear,
     valueToDiscreteTimeline,
     valueToDateTimeline,

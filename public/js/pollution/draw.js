@@ -285,68 +285,10 @@ export const drawChart = data => {
             });
         
 
+
     }
 };
 
-export const drawGraph = data => {
-     
-    const width        = 1300;
-    const height       = 1000;
-    let tranlatebubble = true;
-
-    const select = getCheckedRadioButton('radio-rp');
-    const type = getCheckedRadioButton('radio-t');
-  
-    const x = d3.scaleLinear()
-        .domain([1970, 2015])
-        .range([0, width - 250]);
-
-    const y = d3.scaleLinear()
-        .domain([0, type == 'total' ? 1000000/*d => {getMaxfromData(d,'value')}*/ : 50])
-        .range([height - 200, 0]);
-
-    const svg = d3.select('#chart')
-        .append('svg')
-        .attr('preserveAspectRatio', 'xMinYMin meet')
-        .attr('viewBox', '0 0 1300 1000')
-        .classed('svg-content', true)
-        .attr('id', 'svg')
-        .append('g')
-        .attr("id","chartgroup")
-        .attr('transform','translate(2,2)')
-    
-    svg.append("g")
-        .attr('id',"graph")
-    
-    svg.append("g")
-        .attr('transform','translate(170,'+ height/1.1 +')')
-        .style('font-weight', 'bold')
-        .style('font-size','20px')
-        .call(d3.axisBottom(x));
-
-    svg.append("g")
-        .attr('transform','translate(170,110)')
-        .style('font-weight', 'bold')
-        .style('font-size','20px')
-        .call(d3.axisLeft(y));
-
-        const circles = svg.selectAll('.node')
-        .data(data)
-        .enter()
-            .append('g')
-            .attr('id', 'cercle')
-     
-    circles.append('circle')
-        .classed('node', true)
-        .attr('class','Pays')
-        .attr("cx", function (d) { return x(d.year); } )
-        .attr("cy", function (d) { return y(d.value); } )
-        .attr('r', '50')
-        .attr('fill', dataLine => computeCircleColor(dataLine/*, getMaxfromData(data, 'value')*/))
-
-
-
-};
 
 export const drawLegend = () => {
     const width    = 1127;
@@ -420,6 +362,5 @@ export default {
     drawLegend,
     drawMenu,
     drawTimeLine,
-    drawTotal,
-    drawGraph,
+    drawTotal
 };

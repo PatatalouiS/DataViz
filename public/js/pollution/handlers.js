@@ -2,7 +2,7 @@
 // ---------------------  IMPORTS  --------------------- //
 
 import {getCheckedRadioButton, getSelectedOption, getSelectedData, getTotalFromData, getCurrentYear, valueToDateTimeline, getAllDates} from './local_utils.js';
-import { drawChart, drawGraph} from './draw.js';
+import { drawChart} from './draw.js';
 import { Timer } from '../utils.js';
 
 // ---------------------------  MAIN HANDLER ------------------------- //
@@ -14,15 +14,17 @@ export const paramsChangedHandler = async () => {
     const choosenData = getCheckedRadioButton('radio-t');
     const continent   = getSelectedOption('selectContinent');   
     const representantion  = getCheckedRadioButton('radio-rp');
-    
-    
+    const countries = getSelectedOption('selectCountry').slice();
+       
     const lastData = d3.select('svg');
     console.log(lastData);
 
     if(svg) d3.select('#chartgroup').remove();
 
+    const newData = getCheckedRadioButton('radio-choice') === 'radio-continent'
+    ?  await getSelectedData(continent, year, choosenData)
+    :  await getSelectedDataCountries(countries, year, choosenData);
     
-    const newData = await getSelectedData(continent, year, choosenData)
     console.log(newData, lastData);
     drawChart(newData, lastData);
 
