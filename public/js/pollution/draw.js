@@ -117,9 +117,12 @@ export const drawTimeLine = () => {
         .attr('transform', 'translate(10,' + (-25) + ')')  
 }
 
+let hauteurGraphPerCapita = 40;
+let hauteurGraphTotal = 1000000;
+
 export const drawChart = data => {
     const width        = 1300;
-    const height       = 1000;
+    const height       = 1100;
     let tranlatebubble = true;
 
     const select = getCheckedRadioButton('radio-rp');
@@ -129,10 +132,28 @@ export const drawChart = data => {
         .domain([1970, 2015])
         .range([0, width - 250]);
 
+    
+    var maxValue = () => (type == 'total') ? hauteurGraphTotal : hauteurGraphPerCapita;
+   
+
     const yscale = d3.scaleLinear()
-        .domain([0, type == 'total' ? 1000000/*d => {getMaxfromData(d,'value')}*/ : 50])
+        .domain([0,maxValue()])
         .range([height - 200, 0]);
 
+    const ysccaleres = value => yscale(value) + 110;
+
+    const posYear = () => {
+        if (getCurrentYear() == '1975') return 290;
+        if (getCurrentYear() == '1985') return 520;
+        if (getCurrentYear() == '1995') return 750;
+        if (getCurrentYear() == '2005') return 980;
+        if (getCurrentYear() == '2010') return 1110;
+        if (getCurrentYear() == '2012') return 1130;
+        if (getCurrentYear() == '2013') return 1140;
+        else return 1150;
+    }
+ 
+    
     // Definition of the force Simulation, especially collapse force
     const s = 0.005;
     const timer = new Timer();
@@ -144,14 +165,18 @@ export const drawChart = data => {
         .on('tick', () => circles.attr('transform', d => {
             if (tranlatebubble){
                 return `translate(${d.x},${d.y})`
-            }else                 
-                return 'translate('+xscale(d.year)+','+yscale(d.value)+')'
+            }else{
+               //console.log('translate('+xscale(d.year)+','+yscale(d.value)+')') 
+               
+               return 'translate('+posYear()+','+ysccaleres(d.value)+')'
+            }                
+                
         }));
 
     const svg = d3.select('#chart')
         .append('svg')
         .attr('preserveAspectRatio', 'xMinYMin meet')
-        .attr('viewBox', '0 0 1300 1000')
+        .attr('viewBox', '0 0 1300 1100')
         .classed('svg-content', true)
         .attr('id', 'svg')
         .append('g')
@@ -191,7 +216,16 @@ export const drawChart = data => {
         .style('font-weight', 'bold')
         .style('font-size','20px')
         .text(d => d.name.replace(/\(.[^(]*\)/g,''))
-        .style('display', d => d.radius < ((select == 'bubble') ? 40 : 70) ? 'none' : '');
+        .style('display', d => d.radius < ((select == 'graph') ? 40 : 70) ? 'none' : '');
+    
+    circles.append('text')
+        .attr('class','titrePaysGraphe')
+        .attr('dx',/* () => (getCurrentYear() == '2010') ? */'-12em'/* : '4em'*/)
+        .attr('fill', 'black')
+        .style('font-weight', 'bold')
+        .style('font-size','20px')
+        .text(d => d.name.replace(/\(.[^(]*\)/g,''))
+        .style('display', () => (select == 'graph')? '' : 'none');
     
     textContainers.append('text')
         .attr('dy', '1.3em')
@@ -210,7 +244,6 @@ export const drawChart = data => {
     /****************** Representation avec graph ****************************/
     console.log(getCheckedRadioButton('radio-rp'))
     if (select == 'graph') {
-        console.log('je suis la')
         tranlatebubble = false;
         svg.append("g")
         .attr('id',"graph")
@@ -226,6 +259,31 @@ export const drawChart = data => {
         .style('font-weight', 'bold')
         .style('font-size','20px')
         .call(d3.axisLeft(yscale));
+
+
+        /*circles.append('circleGraph')
+        .classed('node', true)
+        .attr('class','Pays')
+        .attr()
+        .attr('r', '30')
+        .attr('fill', dataLine => computeCircleColor(dataLine/*, getMaxfromData(data, 'value')*//*))
+        .on('mouseover', showLargeBubble(force, data, timer))
+        .on('mouseout', showInitialBubble(force, data, timer))
+        .transition()
+            .duration(2000)
+            .tween('currentRadius', bubbleTransition(force, data));*/
+
+        d3.select('#button-moins')
+            .on('click', () => {
+                if(type == 'total' && hauteurGraphTotal < 12000000) return (hauteurGraphTotal = hauteurGraphTotal + 100000)
+                if(type =='per-capita' && hauteurGraphPerCapita < 50) return (hauteurGraphPerCapita = hauteurGraphPerCapita + 10)
+                })
+        d3.select('#button-plus')
+            .on('click', () =>{
+                if(type == 'total'&& hauteurGraphTotal > 100000) return (hauteurGraphTotal = hauteurGraphTotal - 100000)
+                if(type =='per-capita' && hauteurGraphPerCapita > 10) return (hauteurGraphPerCapita = hauteurGraphPerCapita - 10)
+            });
+        
 
     }
 };

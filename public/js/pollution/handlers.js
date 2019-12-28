@@ -62,8 +62,9 @@ export const updateRadius = ({newRadius, simulation, data, transitionDuration, i
 export const showLargeBubble = (simulation, data, timer) => (dataTrigger, indexTrigger, nodes) => {
     dataTrigger.fx = dataTrigger.x;
     dataTrigger.fy = dataTrigger.y;
+    const button = getCheckedRadioButton('radio-rp') =='graph';
 
-    if(dataTrigger.finalRadius < (getCheckedRadioButton('radio-rp') =='graph' ? 60 : 40)) {
+    if(dataTrigger.finalRadius < (button ? 60 : 40)) {
         timer.setTimeout(() => {
             dataTrigger.previousRadius = dataTrigger.finalRadius;
             updateRadius({
@@ -81,7 +82,7 @@ export const showLargeBubble = (simulation, data, timer) => (dataTrigger, indexT
     d3.select(nodes[indexTrigger].parentNode)
         .transition()
         .duration(50)
-        .attr('opacity', '0.8')
+        .attr('opacity',() => button ? '1' : '0.8')
 };
 
 export const showInitialBubble = (simulation, data, timer) => (dataTrigger, indexTrigger, nodes) => {
@@ -106,7 +107,7 @@ export const showInitialBubble = (simulation, data, timer) => (dataTrigger, inde
         .transition()
         .duration(50)
         .attr('opacity', '1')
-        .attr('opacity',(select =='graph') ? '0.7' : '1');
+        //.attr('opacity',(select =='graph') ? '0.7' : '1');
 };
 
 // ---------------------   TIMELINE HANDLERS ----------------------- //

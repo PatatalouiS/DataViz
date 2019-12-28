@@ -36,6 +36,13 @@ body{
 .card{
 	margin-bottom: 30px;
 }
+
+.zoom{
+	display: inline;
+	text-align: center;
+	margin-bottom: 10px;
+	margin-top: 10px;	
+}
 /*#general-menu{
 	margin-left: 10px;
 	font-size: 18px;

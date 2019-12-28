@@ -35,7 +35,7 @@ export const computeCircleColor = (dataLine/*, maxValue*/) => {
 export const computeCircleRadius = (dataLine, maxValue) => {
     const {value} = dataLine;
     if(getCheckedRadioButton('radio-rp') == 'graph'){
-        return 50;
+        return 30;
     }
     else {
         const linearScale = d3.scaleSqrt()
