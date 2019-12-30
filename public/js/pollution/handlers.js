@@ -1,38 +1,33 @@
 
 // ---------------------  IMPORTS  --------------------- //
 
-import {getCheckedRadioButton, getSelectedOption, getSelectedData, getTotalFromData, getCurrentYear, valueToDateTimeline, getAllDates} from './local_utils.js';
-import { drawChart} from './draw.js';
+import {    getCheckedRadioButton, getSelectedOption, getSelectedData, 
+            getTotalFromData, getCurrentYear, valueToDateTimeline, updateData } from './local_utils.js';
 import { Timer } from '../utils.js';
 
 // ---------------------------  MAIN HANDLER ------------------------- //
 
-export const paramsChangedHandler = async () => { 
-
-    const svg         = document.getElementById('svg');
+export const paramsChangedHandler = StateApp => async () => { 
     const year        = getCurrentYear();
     const choosenData = getCheckedRadioButton('radio-t');
     const continent   = getSelectedOption('selectContinent');   
     const representantion  = getCheckedRadioButton('radio-rp');
     const countries = getSelectedOption('selectCountry').slice();
        
-    const lastData = d3.select('svg');
-    console.log(lastData);
-
-    if(svg) d3.select('#chartgroup').remove();
-
+    const lastData = Array.from(StateApp.getData());
     const newData = getCheckedRadioButton('radio-choice') === 'radio-continent'
-    ?  await getSelectedData(continent, year, choosenData)
-    :  await getSelectedDataCountries(countries, year, choosenData);
-    
-    console.log(newData, lastData);
-    drawChart(newData, lastData);
+        ?  await getSelectedData(continent, year, choosenData)
+        :  await getSelectedDataCountries(countries, year, choosenData);
+
+    updateData(StateApp, lastData, newData);    
+    console.log(StateApp.getData());
+    updateChart(StateApp);
 
     d3.select('#total-title')
         .text(`Total : ${getSelectedOption('selectContinent')}`);
 
     d3.select('#total-value')
-        .text(new Intl.NumberFormat('de-DE').format(getTotalFromData(newData, 'value')));
+        .text(new Intl.NumberFormat('de-DE').format(getTotalFromData(StateApp.getData(), 'value')));
     
 }
 
@@ -47,13 +42,13 @@ export const updateRadius = ({newRadius, simulation, data, transitionDuration, i
     circleTriggered
         .transition()
         .duration(transitionDuration)
-        .tween('finalRadius', dataLine => {
-            const interpolation = d3.interpolate(dataLine.finalRadius, newRadius);
+        .tween('radius', dataLine => {
+            const interpolation = d3.interpolate(dataLine.radius, newRadius);
             circleTriggered.attr('x', initX);
             circleTriggered.attr('y', initY);
             return time => {
-                dataLine.finalRadius = interpolation(time)
-                circleTriggered.attr('r', dataLine.finalRadius);
+                dataLine.radius = interpolation(time)
+                circleTriggered.attr('r', dataLine.radius);
                 simulation.nodes(data);
             }
         })
@@ -61,18 +56,19 @@ export const updateRadius = ({newRadius, simulation, data, transitionDuration, i
     return Promise.resolve();
 };
 
-export const showLargeBubble = (simulation, data, timer) => (dataTrigger, indexTrigger, nodes) => {
+export const showLargeBubble = StateApp => (dataTrigger, indexTrigger, nodes) => {
+    StateApp.getForce().force('collide', d3.forceCollide(dataLine => dataLine.radius))
     dataTrigger.fx = dataTrigger.x;
     dataTrigger.fy = dataTrigger.y;
     const button = getCheckedRadioButton('radio-rp') =='graph';
 
-    if(dataTrigger.finalRadius < (button ? 60 : 40)) {
-        timer.setTimeout(() => {
-            dataTrigger.previousRadius = dataTrigger.finalRadius;
+    if(dataTrigger.radius < (button ? 60 : 40)) {
+        StateApp.getTimer().setTimeout(() => {
+            dataTrigger.previousRadius = dataTrigger.radius;
             updateRadius({
                 newRadius : 75,
-                simulation,
-                data,
+                simulation : StateApp.getForce(),
+                data : StateApp.getData(),
                 transitionDuration : 400,
                 indexTrigger,
                 nodes
@@ -87,16 +83,17 @@ export const showLargeBubble = (simulation, data, timer) => (dataTrigger, indexT
         .attr('opacity',() => button ? '1' : '0.8')
 };
 
-export const showInitialBubble = (simulation, data, timer) => (dataTrigger, indexTrigger, nodes) => {
+export const showInitialBubble = StateApp => (dataTrigger, indexTrigger, nodes) => {
     dataTrigger.fx = null;
     dataTrigger.fy = null;
-    timer.clearTimeout();
+    StateApp.getTimer().clearTimeout();
+    StateApp.getForce().force('collide', d3.forceCollide(dataLine => dataLine.radius))
 
     if(dataTrigger.hasOwnProperty('previousRadius')) {
         updateRadius({
             newRadius : dataTrigger.previousRadius,
-            simulation,
-            data,
+            simulation : StateApp.getForce(),
+            data : StateApp.getData(),
             transitionDuration : 400,
             indexTrigger, 
             nodes
@@ -114,7 +111,7 @@ export const showInitialBubble = (simulation, data, timer) => (dataTrigger, inde
 
 // ---------------------   TIMELINE HANDLERS ----------------------- //
 
-export const updateTimeLine = (posX, maxValue, timeout = 200) => {
+export const updateTimeLine = (StateApp, posX, maxValue, timeout = 200) => {
     if(!updateTimeLine.manageEventimer) updateTimeLine.manageEventimer = new Timer();
     const lastValue                                                    = Number(d3.select('#handle').attr('cx'));
     const lastYear                                                     = getCurrentYear();
@@ -131,11 +128,11 @@ export const updateTimeLine = (posX, maxValue, timeout = 200) => {
         d3.select('#selected-year')
             .text(newYear);
         updateTimeLine.manageEventimer.clearTimeout();
-        updateTimeLine.manageEventimer.setTimeout(paramsChangedHandler, timeout);
+        updateTimeLine.manageEventimer.setTimeout(paramsChangedHandler(StateApp), timeout);
     } 
 };
 
-export const playButtonHandler = (button, targetValue) => {
+export const playButtonHandler = (StateApp, button, targetValue) => {
     const handle      = d3.select('#handle');
     const transition  = handle.transition();
 
@@ -145,7 +142,7 @@ export const playButtonHandler = (button, targetValue) => {
     } 
     else {
         button.text("Pause");
-        if(getCurrentYear() === '2014') updateTimeLine(0, undefined, 200);
+        if(getCurrentYear() === '2014') updateTimeLine(StateApp, 0, undefined, 200);
         const currentHandlePosition = Number(handle.attr('cx'));
 
         handle.transition()
@@ -153,32 +150,48 @@ export const playButtonHandler = (button, targetValue) => {
             .ease(d3.easeLinear)
             .tween('cx', () => {
                 const interpolation = d3.interpolate(currentHandlePosition, targetValue);
-                return time => { 
-                    updateTimeLine(interpolation(time), targetValue);  
-                } 
+                return time => updateTimeLine(StateApp, interpolation(time), targetValue);  
             })
             .on('end', () => button.text('Play'));
     }
 }
 
-
 // --------------------  ANIMATION DE TRANSITION ------------------- //
 
-export const bubbleTransition = (force, data) => (dataLine, index , nodes) => {
-    const circle                       = d3.select(nodes[index]);
-    const interpolation                = d3.interpolate(dataLine.currentRadius, dataLine.finalRadius);
+export const bubbleTransition = StateApp => (dataLine, index , nodes) => {
+    const circle              = d3.select(nodes[index]);
+    const textOfcircle        = d3.select(nodes[index].parentNode.children[1]);
+    const valueCircle         = d3.select(nodes[index].parentNode.children[1].children[1]);
+    const interpolationRadius = d3.interpolate(dataLine.lastRadius, dataLine.finalRadius);
+    const interpolationColor  = d3.interpolateHcl(dataLine.lastColor, dataLine.finalColor);
+    const interpolationValue  = d3.interpolate(dataLine.lastValue, dataLine.value);
+
     return time => {
-        dataLine.currentRadius = interpolation(time)
-        circle.attr('r', dataLine.currentRadius);
+        dataLine.radius = interpolationRadius(time);
+        circle.attr('r', dataLine.radius);
+        
+        dataLine.color = interpolationColor(time);
+        circle.attr('fill', dataLine.color);
 
-        const textOfcircle = d3.select(nodes[index].parentNode.children[1]);
+        dataLine.showedValue = Math.floor(interpolationValue(time));
+        valueCircle.text(d => new Intl.NumberFormat('de-DE').format(d.showedValue))
+        
+        textOfcircle.style('display', dataLine.radius >= 40 ? '' : 'none');
+        StateApp.getForce().nodes(StateApp.getData()); 
+    };
+};
 
-        if(dataLine.currentRadius >= 40 && textOfcircle.style('display') == 'none' ) {  
-           textOfcircle.style('display', '');    
-        }
-        force.nodes(data);
-    }  
-}
+// --------------------   MISE A JOUR DU GRAPHE --------------------- //
+
+export const updateChart = StateApp => {
+    d3.selectAll('.Pays')
+        .transition()
+            .duration(2000)
+            .tween('radius-value-color', bubbleTransition(StateApp))
+
+    StateApp.getForce().alpha(1).restart();
+    StateApp.getForce().force('collide', d3.forceCollide(dataLine => dataLine.radius))
+};
 
 // ------------------------ EXPORTS --------------------------- //
 
@@ -189,5 +202,6 @@ export default {
     showInitialBubble,
     updateTimeLine,
     playButtonHandler,
-    bubbleTransition
+    bubbleTransition,
+    updateChart
 };

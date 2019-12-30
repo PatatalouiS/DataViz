@@ -1,14 +1,14 @@
 
 // ---------------------  IMPORTS  --------------------- //
 
-import { Timer, dataURL, getData } from '../utils.js';
-import { getTotalFromData, computeCircleColor, getMaxfromData,
+import { dataURL, getData } from '../utils.js';
+import { getTotalFromData, computeCircleColor,
          getAllDates, getSelectedOption, valueToDiscreteTimeline,getCheckedRadioButton,getCurrentYear} from './local_utils.js';
 import {showLargeBubble, showInitialBubble, updateTimeLine, playButtonHandler, bubbleTransition} from './handlers.js'
 
 // ----------------------- DRAWING DOM/SVG FUNCTIONS -------------------- //
 
-export const drawTotal = data => {
+export const drawTotal = StateApp => {
     const width = 366
     const height = 100
 
@@ -40,7 +40,7 @@ export const drawTotal = data => {
         
     pollu.append('text')
         .attr('id', 'total-value')
-        .text(new Intl.NumberFormat('de-DE').format(getTotalFromData(data, 'value')))
+        .text(new Intl.NumberFormat('de-DE').format(getTotalFromData(StateApp.getData(), 'value')))
         .attr('x','60')
         .attr('y','62')
         .style('font-weight', 'bold')
@@ -53,7 +53,7 @@ export const drawTotal = data => {
         .style('font-style', 'italic')
 }
 
-export const drawTimeLine = () => {
+export const drawTimeLine = StateApp => {
     const width              = 366;
     const height             = 120;
     const margin             = {right: 40, left: 40};
@@ -70,7 +70,7 @@ export const drawTimeLine = () => {
         .attr('height',height)
         
     const playButton = d3.select('#play-button')
-        .on('click', () => playButtonHandler(playButton, rangeMax));
+        .on('click', () => playButtonHandler(StateApp, playButton, rangeMax));
   
     const slider = svg.append('g')
         .attr('class','slider')
@@ -86,7 +86,7 @@ export const drawTimeLine = () => {
         .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
         .attr('class', 'track-overlay')
         .call(d3.drag()
-            .on('drag', () => updateTimeLine(valueToDiscreteTimeline(d3.event.x, rangeMax), rangeMax))
+            .on('drag', () => updateTimeLine(StateApp, valueToDiscreteTimeline(d3.event.x, rangeMax), rangeMax))
         );
         
     slider.insert('g','.track-overlay')
@@ -120,9 +120,10 @@ export const drawTimeLine = () => {
 let hauteurGraphPerCapita = 40;
 let hauteurGraphTotal = 1000000;
 
-export const drawChart = data => {
+export const drawChart = StateApp => {
     const width        = 1300;
     const height       = 1100;
+    const data         = StateApp.getData();
     let tranlatebubble = true;
 
     const select = getCheckedRadioButton('radio-rp');
@@ -132,9 +133,7 @@ export const drawChart = data => {
         .domain([1970, 2015])
         .range([0, width - 250]);
 
-    
     var maxValue = () => (type == 'total') ? hauteurGraphTotal : hauteurGraphPerCapita;
-   
 
     const yscale = d3.scaleLinear()
         .domain([0,maxValue()])
@@ -152,26 +151,6 @@ export const drawChart = data => {
         if (getCurrentYear() == '2013') return 1140;
         else return 1150;
     }
- 
-    
-    // Definition of the force Simulation, especially collapse force
-    const s = 0.005;
-    const timer = new Timer();
-    const force = d3.forceSimulation(data)
-        .force('x', d3.forceX(width/2).strength(s))
-        .force('y', d3.forceY(height/2).strength(s))
-        .force('center', d3.forceCenter(width/2, height/2))
-        .force('collide', d3.forceCollide(dataLine => dataLine.finalRadius))
-        .on('tick', () => circles.attr('transform', d => {
-            if (tranlatebubble){
-                return `translate(${d.x},${d.y})`
-            }else{
-               //console.log('translate('+xscale(d.year)+','+yscale(d.value)+')') 
-               
-               return 'translate('+posYear()+','+ysccaleres(d.value)+')'
-            }                
-                
-        }));
 
     const svg = d3.select('#chart')
         .append('svg')
@@ -187,23 +166,39 @@ export const drawChart = data => {
         .data(data)
         .enter()
             .append('g')
-            .attr('id', 'cercle')
+            .attr('class', 'bubble-country')
+
+    // Definition of the force Simulation, especially collapse force
+    const s = 0.005;
+    const force = d3.forceSimulation(data)
+        .force('x', d3.forceX(width/2).strength(s))
+        .force('y', d3.forceY(height/2).strength(s))
+        .force('center', d3.forceCenter(width/2, height/2))
+        .force('collide', d3.forceCollide(dataLine => dataLine.finalRadius))
+        .on('tick', () => circles.attr('transform', d => {
+            return tranlatebubble
+                ? `translate(${d.x},${d.y})`
+                :'translate('+posYear()+','+ysccaleres(d.value)+')';
+                //console.log('translate('+xscale(d.year)+','+yscale(d.value)+')')         
+        }));
+
+    StateApp.setForce(force);
      
     circles.append('circle')
         .classed('node', true)
         .attr('class','Pays')
-        .attr('r', dataLine => dataLine.currentRadius)
-        .attr('fill', dataLine => computeCircleColor(dataLine/*, getMaxfromData(data, 'value')*/))
-        .on('mouseover', showLargeBubble(force, data, timer))
-        .on('mouseout', showInitialBubble(force, data, timer))
+        .attr('r', dataLine => dataLine.radius)
+        .attr('fill', dataLine => dataLine.color)
+        .on('mouseover', showLargeBubble(StateApp))
+        .on('mouseout', showInitialBubble(StateApp))
         .transition()
             .duration(2000)
-            .tween('currentRadius', bubbleTransition(force, data));
+            .tween('currentRadius', bubbleTransition(StateApp));
 
     circles.append('g')
         .attr('class', 'text-description')
         .attr('id', dataLine => `bubble-text-${dataLine.index}`)
-        .style('display', dataLine => dataLine.currentRadius < 40 ? 'none' : '');
+        .style('display', dataLine => dataLine.radius < 40 ? 'none' : '');
         
     const textContainers = d3.selectAll('.text-description');
 
@@ -215,8 +210,8 @@ export const drawChart = data => {
         .attr('fill', 'white')
         .style('font-weight', 'bold')
         .style('font-size','20px')
-        .text(d => d.name.replace(/\(.[^(]*\)/g,''))
-        .style('display', d => d.radius < ((select == 'graph') ? 40 : 70) ? 'none' : '');
+        .text(d => d.name)
+        //.style('display', d => d.radius < ((select == 'graph') ? 40 : 70) ? 'none' : '');
     
     circles.append('text')
         .attr('class','titrePaysGraphe')
@@ -228,12 +223,13 @@ export const drawChart = data => {
         .style('display', () => (select == 'graph')? '' : 'none');
     
     textContainers.append('text')
+        .attr('class', 'valuePays')
         .attr('dy', '1.3em')
+        .attr('fill', 'white')
         .style('text-anchor', 'middle')
         .style('pointer-events', 'none')
-        .attr('fill', 'white')
         .text(d => new Intl.NumberFormat('de-DE').format(d.value))
-        .style('display', d => d.radius < ((select == 'bubble') ? 40 : 70) ? 'none' : '')
+        //.style('display', d => d.radius < ((select == 'bubble') ? 40 : 70) ? 'none' : '')
         .style('font-weight', 'bold')
         .style('font-size','20px')
 
@@ -260,7 +256,6 @@ export const drawChart = data => {
         .style('font-size','20px')
         .call(d3.axisLeft(yscale));
 
-
         /*circles.append('circleGraph')
         .classed('node', true)
         .attr('class','Pays')
@@ -283,9 +278,6 @@ export const drawChart = data => {
                 if(type == 'total'&& hauteurGraphTotal > 100000) return (hauteurGraphTotal = hauteurGraphTotal - 100000)
                 if(type =='per-capita' && hauteurGraphPerCapita > 10) return (hauteurGraphPerCapita = hauteurGraphPerCapita - 10)
             });
-        
-
-
     }
 };
 
@@ -324,16 +316,16 @@ export const drawLegend = () => {
 
 export const drawMenu = async () => {
     const countriesNames = await getData(`${dataURL}utils/countriesnames`);
-    console.log(countriesNames)
-
     const selectTag = document.getElementById('Pays');
 
     countriesNames.forEach(({name}) => {
-                const newOption = document.createElement('option');
-                newOption.innerHTML = name.replace(/\(.[^(]*\)/g,'');
-                newOption.classList = 'option-country'
-                selectTag.appendChild(newOption);
+        const newOption = document.createElement('option');
+        newOption.innerHTML = name.replace(/\(.[^(]*\)/g,'');
+        newOption.classList = 'option-country'
+        selectTag.appendChild(newOption);
     });
+
+   document.getElementById('Continent').children[2].selected = true;
 
     $('.selectpicker').selectpicker('refresh');
 
@@ -351,7 +343,6 @@ export const drawMenu = async () => {
     $("#radio-continent").click(() => {
         $('#selectContinent').prop("disabled", false);
         $("#selectCountry").prop("disabled", true);
-        
     });
 }; 
 

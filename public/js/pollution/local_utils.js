@@ -2,6 +2,8 @@
 // ---------------------  IMPORTS AND CONSTANTS  --------------------- //
 
 import {getData, dataURL, interpolationTabNumber} from '../utils.js';
+import { bubbleTransition } from './handlers.js';
+import countriesNames from './countries.js';
 
 // Define here your valueKey to bind from data Server
 const mainValueKeyNames = {
@@ -71,15 +73,28 @@ export const valueToDateTimeline = (value, maxValue) => {
     return valueToDate(value);
 }
 
-// --------------------  FETCH FUNCTIONS --------------------- //
+export const updateData = (StateApp, lastData, newData) => {
+    StateApp.getData().forEach((dataLine, index) => {
+        dataLine.finalRadius = newData[index].finalRadius;
+        dataLine.lastRadius = lastData[index].radius;
+        dataLine.value = newData[index].value;
+        dataLine.lastValue = lastData[index].showedValue;
+        dataLine.lastColor = dataLine.value === 0 
+            ? newData[index].finalColor
+            : lastData[index].finalColor;
+        dataLine.finalColor = dataLine.value === 0 
+            ? lastData[index].finalColor
+            : newData[index].finalColor;
+    });
+};
+
+// --------------------  FETCH  FUNCTIONS --------------------- //
 
 export const getSelectedData = async (continent, year, dataType) => {
     const url = `${dataURL}pollution`;
-
     const data = continent === 'Top'
         ? await getData(`${url}/${dataType}/top10/${year}`)
         : await getData(`${url}/${dataType}/bycontinent/${continent}/${year}`);
-    const countriesNames = await getData(`${dataURL}utils/countriesnames`);
 
     const valueKeyName = mainValueKeyNames[dataType];
     const maxValue = getMaxfromData(data, valueKeyName);
@@ -89,13 +104,35 @@ export const getSelectedData = async (continent, year, dataType) => {
         if(dataLine) {
             const value = dataLine[valueKeyName];
             const finalRadius = computeCircleRadius({value}, maxValue);
+            const finalColor = computeCircleColor({value});
             delete dataLine[valueKeyName];
-            console.log(countriesNames)
-            return Object.assign(dataLine, { value, finalRadius, currentRadius : 0 });  
+
+            return Object.assign(dataLine, { 
+                value, 
+                lastValue : 0,
+                showedValue : 0,
+                radius : 0,
+                lastRadius : 0,
+                finalRadius,
+                color : '',
+                lastColor : '',
+                finalColor
+            });  
         } 
-        else return {name : country.name, value : 0, currentRadius : 0, finalRadius : 0 };
-    });
-    
+        else return {
+            name : country.name,
+            value : 0,
+            lastValue : 0,
+            showedValue : 0,
+            color : '',
+            radius : 0,
+            lastRadius : 0,
+            finalRadius : 0,
+            color : '',
+            lastColor : '',
+            finalColor : ''
+        };
+    }); 
 }
 
 export const getSelectedDataCountries = async (countries, year, dataType) => {
@@ -108,8 +145,6 @@ export const getSelectedDataCountries = async (countries, year, dataType) => {
     });
 }
 
-
-
 // ----------------- DOM-RELATED FUNCTIONS ------------------ //
 
 export const getCheckedRadioButton = radioClass => {
@@ -121,13 +156,13 @@ export const getCheckedRadioButton = radioClass => {
 export const getSelectedOption = idSelect => {
     const selectTag = document.getElementById(idSelect);
     if(selectTag.id =='selectContinent'){
-        return selectTag.options[selectTag.value].id;
+        return selectTag.options[selectTag.selectedIndex].id;
     }
     else {
-        return Array.from(document.getElementsByClassName('option-country selected'))
+        return Array.from(document.getElementsByClassName('option-continent selected'))
         .map(option => option.innerText);
     }
-}
+};
 
 export const getCurrentYear = () => d3.select('#selected-year').text();
 
@@ -143,6 +178,7 @@ export default {
     getCurrentYear,
     valueToDiscreteTimeline,
     valueToDateTimeline,
-    getSelectedOption
+    getSelectedOption,
+    updateData
 };
 
