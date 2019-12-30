@@ -30,7 +30,6 @@ export const drawTotal = StateApp => {
         .attr('stroke', 'grey')
         .attr('stroke-width','2')
     
-    console.log('je passe ici');
     pollu.append('text')
         .attr('id', 'total-title')
         .text(`Total : ${(getCheckedRadioButton('radio-choice')=='radio-continent') ? getSelectedOption('selectContinent') : getSelectedOption('selectCountry') }`)
