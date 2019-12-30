@@ -73,7 +73,7 @@ export const valueToDateTimeline = (value, maxValue) => {
     return valueToDate(value);
 }
 
-export const updateData = (StateApp, lastData, newData) => {
+export const updateData = (StateApp, lastData, newData, year, continent, countries) => {
     StateApp.getData().forEach((dataLine, index) => {
         dataLine.finalRadius = newData[index].finalRadius;
         dataLine.lastRadius = lastData[index].radius;
@@ -155,7 +155,7 @@ export const getCheckedRadioButton = radioClass => {
 
 export const getSelectedOption = idSelect => {
     const selectTag = document.getElementById(idSelect);
-    if(selectTag.id =='selectContinent'){
+    if(idSelect === 'selectContinent'){
         return selectTag.options[selectTag.selectedIndex].id;
     }
     else {

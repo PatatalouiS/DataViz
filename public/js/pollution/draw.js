@@ -2,8 +2,7 @@
 // ---------------------  IMPORTS  --------------------- //
 
 import { dataURL, getData } from '../utils.js';
-import { getTotalFromData, computeCircleColor,
-         getAllDates, getSelectedOption, valueToDiscreteTimeline,getCheckedRadioButton,getCurrentYear} from './local_utils.js';
+import { getTotalFromData, getAllDates, getSelectedOption, valueToDiscreteTimeline,                     getCheckedRadioButton,getCurrentYear} from './local_utils.js';
 import {showLargeBubble, showInitialBubble, updateTimeLine, playButtonHandler, bubbleTransition} from './handlers.js'
 
 // ----------------------- DRAWING DOM/SVG FUNCTIONS -------------------- //
@@ -11,6 +10,8 @@ import {showLargeBubble, showInitialBubble, updateTimeLine, playButtonHandler, b
 export const drawTotal = StateApp => {
     const width = 366
     const height = 100
+    const total = getTotalFromData(StateApp.getData(), 'value');
+    StateApp.setTotal(total);
 
     const svg = d3.select('#vis')
         .append('svg')
@@ -32,19 +33,18 @@ export const drawTotal = StateApp => {
     
     pollu.append('text')
         .attr('id', 'total-title')
-        .text(`Total : ${(getCheckedRadioButton('radio-choice')=='radio-continent') ? getSelectedOption('selectContinent') : getSelectedOption('selectCountry') }`)
+        .text(`Total : Europe`)
         .attr('x','30')
         .attr('y','30')
         .style('font-weight', 'bold')
         
     pollu.append('text')
         .attr('id', 'total-value')
-        .text(new Intl.NumberFormat('de-DE').format(getTotalFromData(StateApp.getData(), 'value')))
+        .text(new Intl.NumberFormat('de-DE').format(total))
         .attr('x','60')
         .attr('y','62')
         .style('font-weight', 'bold')
     
-    console.log(getCheckedRadioButton('radio-t'))
     pollu.append('text')
         .text(() => getCheckedRadioButton('radio-t') == 'total' ? "*milliers de tonnes de CO2" : "*en tonne par habitant")
         .attr('x','30')
@@ -59,8 +59,6 @@ export const drawTimeLine = StateApp => {
     const rangeMax           = width - margin.left - margin.right;
     const dates              = getAllDates();
     const startDate          = dates[0];
-    const endDate            = dates[dates.length-1];
-    const targetValue        = rangeMax;
 
     const svg = d3.select('#timeLine')
         .append('svg')
@@ -101,13 +99,13 @@ export const drawTimeLine = StateApp => {
             .attr('text-anchor','middle')
             .text(d => d);
         
-    const handle = slider.insert('circle', '.track-overlay')
+    slider.insert('circle', '.track-overlay')
         .attr('id', 'handle')
         .attr('class', 'handle')
         .attr('r', 9)
         .attr('cx', 0);
     
-    const label = slider.append('text')
+    slider.append('text')
         .attr('class','label')
         .attr('id', 'selected-year')
         .attr('text-anchor','middle')
@@ -168,7 +166,7 @@ export const drawChart = StateApp => {
             .attr('class', 'bubble-country')
 
     // Definition of the force Simulation, especially collapse force
-    const s = 0.005;
+    const s = 0.0025;
     const force = d3.forceSimulation(data)
         .force('x', d3.forceX(width/2).strength(s))
         .force('y', d3.forceY(height/2).strength(s))
@@ -192,7 +190,7 @@ export const drawChart = StateApp => {
         .on('mouseout', showInitialBubble(StateApp))
         .transition()
             .duration(2000)
-            .tween('currentRadius', bubbleTransition(StateApp));
+            .tween('radius', bubbleTransition(StateApp));
 
     circles.append('g')
         .attr('class', 'text-description')
@@ -237,7 +235,6 @@ export const drawChart = StateApp => {
         .style('pointer-events', 'none'); 
 
     /****************** Representation avec graph ****************************/
-    console.log(getCheckedRadioButton('radio-rp'))
     if (select == 'graph') {
         tranlatebubble = false;
         svg.append("g")
@@ -279,7 +276,6 @@ export const drawChart = StateApp => {
             });
     }
 };
-
 
 export const drawLegend = () => {
     const width    = 1127;
@@ -324,7 +320,7 @@ export const drawMenu = async () => {
         selectTag.appendChild(newOption);
     });
 
-   document.getElementById('Continent').children[2].selected = true;
+    document.getElementById('Continent').children[2].selected = true;
 
     $('.selectpicker').selectpicker('refresh');
 

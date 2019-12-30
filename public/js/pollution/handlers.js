@@ -8,27 +8,20 @@ import { Timer } from '../utils.js';
 // ---------------------------  MAIN HANDLER ------------------------- //
 
 export const paramsChangedHandler = StateApp => async () => { 
-    const year        = getCurrentYear();
-    const choosenData = getCheckedRadioButton('radio-t');
-    const continent   = getSelectedOption('selectContinent');   
-    const representantion  = getCheckedRadioButton('radio-rp');
-    const countries = getSelectedOption('selectCountry').slice();
+    const year            = getCurrentYear();
+    const choosenData     = getCheckedRadioButton('radio-t');
+    const continent       = getSelectedOption('selectContinent');   
+    const representantion = getCheckedRadioButton('radio-rp');
+    const countries       = getSelectedOption('selectCountry').slice();
        
     const lastData = Array.from(StateApp.getData());
     const newData = getCheckedRadioButton('radio-choice') === 'radio-continent'
         ?  await getSelectedData(continent, year, choosenData)
         :  await getSelectedDataCountries(countries, year, choosenData);
 
-    updateData(StateApp, lastData, newData);    
-    console.log(StateApp.getData());
+    updateData(StateApp, lastData, newData, year, continent);    
     updateChart(StateApp);
-
-    d3.select('#total-title')
-        .text(`Total : ${getSelectedOption('selectContinent')}`);
-
-    d3.select('#total-value')
-        .text(new Intl.NumberFormat('de-DE').format(getTotalFromData(StateApp.getData(), 'value')));
-    
+    updateTotal(StateApp);
 }
 
 // ----------------------------  UPDATE CIRCLE RADIUS HANDLERS -------------------- //
@@ -146,7 +139,7 @@ export const playButtonHandler = (StateApp, button, targetValue) => {
         const currentHandlePosition = Number(handle.attr('cx'));
 
         handle.transition()
-            .duration((targetValue - currentHandlePosition) * 40)
+            .duration((targetValue - currentHandlePosition) * 55)
             .ease(d3.easeLinear)
             .tween('cx', () => {
                 const interpolation = d3.interpolate(currentHandlePosition, targetValue);
@@ -181,7 +174,7 @@ export const bubbleTransition = StateApp => (dataLine, index , nodes) => {
     };
 };
 
-// --------------------   MISE A JOUR DU GRAPHE --------------------- //
+// --------------------   AFTER NEW DATA UPDATE FUNC  --------------------- //
 
 export const updateChart = StateApp => {
     d3.selectAll('.Pays')
@@ -192,6 +185,23 @@ export const updateChart = StateApp => {
     StateApp.getForce().alpha(1).restart();
     StateApp.getForce().force('collide', d3.forceCollide(dataLine => dataLine.radius))
 };
+
+export const updateTotal = StateApp => {
+    const newTotal = getTotalFromData(StateApp.getData(), 'value');
+    const totalDiv = d3.select('#total-value');
+
+    d3.select('#total-title')
+        .text(`Total : ${getSelectedOption('selectContinent')}`);
+
+    totalDiv.transition()
+        .duration(2000)
+        .tween('total', () => {
+            const interpolation = d3.interpolate(StateApp.getTotal(), newTotal);
+            return time => totalDiv.text(new Intl.NumberFormat('de-DE').format(Math.floor(interpolation(time))));
+        })
+        .text()
+        .on('end', () =>  StateApp.setTotal(newTotal));
+}
 
 // ------------------------ EXPORTS --------------------------- //
 
