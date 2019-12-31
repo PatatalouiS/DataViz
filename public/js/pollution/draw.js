@@ -130,8 +130,6 @@ export const drawChart = StateApp => {
         .attr('id', 'svg')
         .append('g')
         .attr("id","chartgroup")
-        .attr('transform','translate(2,2)')
-       
     const circles = svg.selectAll('.node')
         .data(data)
         .enter()
