@@ -74,6 +74,12 @@ app.get('/data/utils/countriesnames', async (req, res) => {
 	sendQueryJSON(queryResult, res);
 });
 
+app.get('/data/utils/countriesnames/total/:year', async (req, res) => {
+	const queryResult = await mysql(/*sql*/`SELECT DISTINCT name FROM GlobalCountriesPollution WHERE year = ? ORDER BY name`,
+	[req.params.year]);
+	sendQueryJSON(queryResult, res);
+});
+
 app.get('/data/pollution/total', async (req, res) => {
 	const queryResult = await mysql(/*sql*/`SELECT * FROM GlobalCountriesPollution ORDER BY name, year`);
 	sendQueryJSON(queryResult, res);
@@ -88,7 +94,6 @@ app.get('/data/pollution/total/bycountry/:country/:year', async (req, res) => {
 	const queryResult = await mysql(/*sql*/`SELECT * FROM GlobalCountriesPollution WHERE name = ? AND year = ?`, [req.params.country, req.params.year]);
 	sendQueryJSON(queryResult, res);  
 });
-
 
 app.get('/data/pollution/total/bycontinent/:continent', async (req, res) => {
 	const queryResult = await mysql(/*sql*/`SELECT name, year, value FROM GlobalCountriesPollution WHERE continent = ?`, [req.params.continent]);

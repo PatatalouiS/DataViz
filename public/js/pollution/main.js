@@ -5,36 +5,52 @@
 
 import { drawMenu, drawLegend, drawChart, drawTimeLine, drawTotal } from './draw.js';
 import { getSelectedData } from './local_utils.js';
-import { paramsChangedHandler } from './handlers.js';
+import { paramsChangedHandler, switchRepresentation } from './handlers.js';
 import { getHOST } from '../utils.js';
 import State from './State.js';
-
+import countriesNames from './countries.js';
 
 const START_VALUES = {
-    continent : 'Europe',
+    place : ['Europe'],
     year      : 1975,
-    dataType  : 'total'
+    dataType  : 'total',
+    placeType : 'byContinent',
+    countries : countriesNames,
+    representation : 'bubble',
+    chartSpecs  : {
+        width : 1300,
+        height : 1100 
+    }
 };
 
 // ------------------- INITIAL STATE OF PAGE ------------- // 
 
 const init = async () => {
-    const {continent, year, dataType}         = START_VALUES;
-    document.getElementById(dataType).checked = true;
-    const data                                = await getSelectedData(continent, year, dataType);
-    const StateApp                            = new State(Object.assign(START_VALUES, { data }));
+    const StateApp                            = new State(START_VALUES);
+    const data                                = await getSelectedData(StateApp);
+    StateApp.setData(data);
 
-    drawMenu();
     drawLegend();
     drawChart(StateApp);
     drawTimeLine(StateApp);
     drawTotal(StateApp);
+    drawMenu(StateApp);
+
+    document.getElementById(StateApp.getDataType()).checked = true;
+    document.getElementById(StateApp.getPlaceType()).checked = true;
+    document.getElementById(StateApp.getRepresentation()).checked = true;
 
     document.getElementById('selectContinent')
-        .addEventListener('change', paramsChangedHandler(StateApp));   
+        .addEventListener('change', paramsChangedHandler(StateApp)); 
+        
+    document.getElementById('selectCountry')
+        .addEventListener('change', paramsChangedHandler(StateApp));
 
     Array.from(document.getElementsByClassName('radio-t'))
         .forEach(element => element.addEventListener('click', paramsChangedHandler(StateApp)));
+
+    Array.from(document.getElementsByClassName('radio-rp'))
+        .forEach(element => element.addEventListener('click', switchRepresentation(StateApp)));
 };
 
 // --------------------   MAIN   ------------------- //

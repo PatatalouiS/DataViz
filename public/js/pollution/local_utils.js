@@ -1,9 +1,7 @@
 
 // ---------------------  IMPORTS AND CONSTANTS  --------------------- //
 
-import {getData, dataURL, interpolationTabNumber} from '../utils.js';
-import { bubbleTransition } from './handlers.js';
-import countriesNames from './countries.js';
+import { getData, dataURL, interpolationTabNumber } from '../utils.js';
 
 // Define here your valueKey to bind from data Server
 const mainValueKeyNames = {
@@ -11,14 +9,14 @@ const mainValueKeyNames = {
     'per-capita': 'valuePerCapita'
 };
 
-const dates = ['1975', '1985', '1995', '2005', '2010', '2012', '2013', '2014'];
+const dates = [1975, 1985, 1995, 2005, 2010, 2012, 2013, 2014];
 
 // ------------------  COMPUTING VALUE, GET PROJECT CONSTANTS  -------------------- //
 
 export const getMainValue = dataType => {
     try {
-        if(!valuesName.hasOwnProperty(dataType)) throw new Error();
-        return valuesName[dataType];
+        if(!mainValueKeyNames.hasOwnProperty(dataType)) throw new Error();
+        return mainValueKeyNames[dataType];
     }
     catch (err) {
         console.err(`There is no MainValue field for dataType '${dataType}'`);
@@ -34,28 +32,27 @@ export const computeCircleColor = (dataLine/*, maxValue*/) => {
     return colorScale(value);
 };
 
-export const computeCircleRadius = (dataLine, maxValue) => {
+export const computeCircleRadius = (dataLine, maxValue, representation) => {
     const {value} = dataLine;
-    if(getCheckedRadioButton('radio-rp') == 'graph'){
-        return 30;
-    }
+    if(value === 0) return 0;
+    else if(representation == 'graph') return 30;
     else {
         const linearScale = d3.scaleSqrt()
             .domain([0, maxValue])
             .range([20, 150]);
         return linearScale(value);
     }    
-}
+};
 
 export const getTotalFromData = (data, field) => {
     return data
         .reduce((total, dataLine) => total + dataLine[field] , 0);
-}
+};
 
 export const getMaxfromData = (data, field) => {
     return data
         .reduce((max, dataLine) => dataLine[field] > max ? dataLine[field] : max, 0);
-}
+};
 
 export const getAllDates = () => dates;
 
@@ -70,10 +67,10 @@ export const valueToDateTimeline = (value, maxValue) => {
     const valueToDate = d3.scaleQuantize()
         .domain([0, maxValue])
         .range(getAllDates())
-    return valueToDate(value);
+    return Number(valueToDate(value));
 }
 
-export const updateData = (StateApp, lastData, newData, year, continent, countries) => {
+export const updateData = (StateApp, lastData, newData) => {
     StateApp.getData().forEach((dataLine, index) => {
         dataLine.finalRadius = newData[index].finalRadius;
         dataLine.lastRadius = lastData[index].radius;
@@ -88,22 +85,36 @@ export const updateData = (StateApp, lastData, newData, year, continent, countri
     });
 };
 
-// --------------------  FETCH  FUNCTIONS --------------------- //
+// --------------------  FETCH AND DATA RELATED FUNCTIONS --------------------- //
 
-export const getSelectedData = async (continent, year, dataType) => {
+export const getSelectedData = async StateApp => {
     const url = `${dataURL}pollution`;
-    const data = continent === 'Top'
-        ? await getData(`${url}/${dataType}/top10/${year}`)
-        : await getData(`${url}/${dataType}/bycontinent/${continent}/${year}`);
+    const { placeType, dataType, place, year } = StateApp.getFetchParams(); 
+    let data;
 
-    const valueKeyName = mainValueKeyNames[dataType];
+    if(place[0] === 'Top') data = await getData(`${url}/${dataType}/top10/${year}`);
+    else if(placeType === 'byContinent') data = await getData(`${url}/${dataType}/bycontinent/${place[0]}/${year}`);
+    else {
+        data = await Promise.all(place.map(async country => {
+            const countryData = await getData(`${url}/${dataType}/bycountry/${country}/${year}`);
+            if(countryData === undefined) alert(`Pas de données existantes pour le pays ${country}, année ${year}`);
+            return countryData;
+        }));
+        data = data.flat();
+    }
+
+    return formatData(data, StateApp);
+};
+
+export const formatData = (data, StateApp) => {
+    const valueKeyName = mainValueKeyNames[StateApp.getDataType()];
     const maxValue = getMaxfromData(data, valueKeyName);
     
-    return countriesNames.map(country => {
+    return StateApp.getCountries().map(country => {
         const dataLine = data.find(dataLine => dataLine.name == country.name);
         if(dataLine) {
             const value = dataLine[valueKeyName];
-            const finalRadius = computeCircleRadius({value}, maxValue);
+            const finalRadius = computeCircleRadius({value}, maxValue, StateApp.getRepresentation());
             const finalColor = computeCircleColor({value});
             delete dataLine[valueKeyName];
 
@@ -133,17 +144,7 @@ export const getSelectedData = async (continent, year, dataType) => {
             finalColor : ''
         };
     }); 
-}
-
-export const getSelectedDataCountries = async (countries, year, dataType) => {
-    const url = `${dataURL}pollution`;
-
-    let tabdata = [];
-    countries.forEach(pays => {
-        //const data =  await getData(`${url}/${dataType}/bycountry/${pays}/${year}`);
-        tabdata.push(data);
-    });
-}
+};
 
 // ----------------- DOM-RELATED FUNCTIONS ------------------ //
 
@@ -156,15 +157,15 @@ export const getCheckedRadioButton = radioClass => {
 export const getSelectedOption = idSelect => {
     const selectTag = document.getElementById(idSelect);
     if(idSelect === 'selectContinent'){
-        return selectTag.options[selectTag.selectedIndex].id;
+        return [selectTag.options[selectTag.selectedIndex].id];
     }
     else {
-        return Array.from(document.getElementsByClassName('option-continent selected'))
+        return Array.from(document.getElementsByClassName('option-country selected'))
         .map(option => option.innerText);
     }
 };
 
-export const getCurrentYear = () => d3.select('#selected-year').text();
+export const getCurrentYear = () => Number(d3.select('#selected-year').text());
 
 // ------------------------ EXPORTS --------------------------- //
 
@@ -174,11 +175,11 @@ export default {
     computeCircleRadius,
     getTotalFromData,
     getSelectedData,
-    getSelectedDataCountries,
     getCurrentYear,
     valueToDiscreteTimeline,
     valueToDateTimeline,
     getSelectedOption,
-    updateData
+    updateData,
+    getMainValue
 };
 

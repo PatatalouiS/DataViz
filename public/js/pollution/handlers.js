@@ -1,32 +1,52 @@
 
 // ---------------------  IMPORTS  --------------------- //
 
-import {    getCheckedRadioButton, getSelectedOption, getSelectedData, 
-            getTotalFromData, getCurrentYear, valueToDateTimeline, updateData } from './local_utils.js';
+import {    getCheckedRadioButton, getSelectedOption, getSelectedData, getMainValue, getMaxfromData,
+            getTotalFromData, getCurrentYear, valueToDateTimeline, updateData, computeCircleRadius } from './local_utils.js';
 import { Timer } from '../utils.js';
+import { drawChart } from './draw.js';
 
-// ---------------------------  MAIN HANDLER ------------------------- //
+// ---------------------------  MAIN HANDLERS ------------------------- //
 
 export const paramsChangedHandler = StateApp => async () => { 
     const year            = getCurrentYear();
-    const choosenData     = getCheckedRadioButton('radio-t');
-    const continent       = getSelectedOption('selectContinent');   
-    const representantion = getCheckedRadioButton('radio-rp');
-    const countries       = getSelectedOption('selectCountry').slice();
-       
-    const lastData = Array.from(StateApp.getData());
-    const newData = getCheckedRadioButton('radio-choice') === 'radio-continent'
-        ?  await getSelectedData(continent, year, choosenData)
-        :  await getSelectedDataCountries(countries, year, choosenData);
+    const dataType        = getCheckedRadioButton('radio-t');
+    const placeType       = getCheckedRadioButton('radio-choice');
+    const place           = placeType === 'byContinent'
+        ? getSelectedOption('selectContinent') 
+        : getSelectedOption('selectCountry');
 
-    updateData(StateApp, lastData, newData, year, continent);    
+    StateApp.setPlace(place);
+    StateApp.setYear(year);
+    StateApp.setDataType(dataType);
+    StateApp.setPlaceType(placeType);
+   
+    const lastData = Array.from(StateApp.getData());
+    const newData = await getSelectedData(StateApp);
+   
+    updateData(StateApp, lastData, newData, year);    
     updateChart(StateApp);
     updateTotal(StateApp);
 }
 
+export const switchRepresentation = StateApp => () => {
+    d3.select('#chartgroup').remove();
+    const representation = getCheckedRadioButton('radio-rp');
+    StateApp.setRepresentation(representation);
+    const maxValue = getMaxfromData(StateApp.getData(), getMainValue(StateApp.getDataType()));
+    StateApp.getData().forEach(dataLine => {
+        dataLine.finalRadius = computeCircleRadius(dataLine, maxValue, representation);
+        if(representation === 'bubble') {
+            dataLine.radius = 0;
+            dataLine.lastRadius = 0;
+        } 
+    });
+    drawChart(StateApp);
+};
+
 // ----------------------------  UPDATE CIRCLE RADIUS HANDLERS -------------------- //
 
-export const updateRadius = ({newRadius, simulation, data, transitionDuration, indexTrigger, nodes}) => { 
+export const updateRadius = ({ newRadius, simulation, data, transitionDuration, indexTrigger, nodes }) => { 
     const circleTriggered = d3.select(nodes[indexTrigger]);
     const dataTrigger = data[indexTrigger];
     const initX = dataTrigger.x;
@@ -50,7 +70,7 @@ export const updateRadius = ({newRadius, simulation, data, transitionDuration, i
 };
 
 export const showLargeBubble = StateApp => (dataTrigger, indexTrigger, nodes) => {
-    StateApp.getForce().force('collide', d3.forceCollide(dataLine => dataLine.radius))
+    StateApp.getForce().force('collide', d3.forceCollide(dataLine => dataLine.radius));
     dataTrigger.fx = dataTrigger.x;
     dataTrigger.fy = dataTrigger.y;
     const button = getCheckedRadioButton('radio-rp') =='graph';
@@ -94,7 +114,7 @@ export const showInitialBubble = StateApp => (dataTrigger, indexTrigger, nodes) 
         delete dataTrigger.previousRadius;
         d3.select(`#bubble-text-${indexTrigger}`).style('display', 'none');
     } 
-    const select = getCheckedRadioButton('radio-rp')
+
     d3.select(nodes[indexTrigger].parentNode)
         .transition()
         .duration(50)
@@ -135,7 +155,7 @@ export const playButtonHandler = (StateApp, button, targetValue) => {
     } 
     else {
         button.text("Pause");
-        if(getCurrentYear() === '2014') updateTimeLine(StateApp, 0, undefined, 200);
+        if(StateApp.getYear() === 2014) updateTimeLine(StateApp, 0, undefined, 200);
         const currentHandlePosition = Number(handle.attr('cx'));
 
         handle.transition()
@@ -174,15 +194,14 @@ export const bubbleTransition = StateApp => (dataLine, index , nodes) => {
     };
 };
 
-// --------------------   AFTER NEW DATA UPDATE FUNC  --------------------- //
+// --------------------   UPDATE AFTER DATA CHANGED FUNCTIONS  --------------------- //
 
 export const updateChart = StateApp => {
     d3.selectAll('.Pays')
         .transition()
             .duration(2000)
             .tween('radius-value-color', bubbleTransition(StateApp))
-
-    StateApp.getForce().alpha(1).restart();
+            .on('end', () => StateApp.getForce().alpha(1).restart())
     StateApp.getForce().force('collide', d3.forceCollide(dataLine => dataLine.radius))
 };
 
@@ -201,7 +220,7 @@ export const updateTotal = StateApp => {
         })
         .text()
         .on('end', () =>  StateApp.setTotal(newTotal));
-}
+};
 
 // ------------------------ EXPORTS --------------------------- //
 

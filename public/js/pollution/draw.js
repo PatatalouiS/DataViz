@@ -1,9 +1,9 @@
 
 // ---------------------  IMPORTS  --------------------- //
 
-import { dataURL, getData } from '../utils.js';
-import { getTotalFromData, getAllDates, getSelectedOption, valueToDiscreteTimeline,                     getCheckedRadioButton,getCurrentYear} from './local_utils.js';
-import {showLargeBubble, showInitialBubble, updateTimeLine, playButtonHandler, bubbleTransition} from './handlers.js'
+import { getTotalFromData, getAllDates, valueToDiscreteTimeline, 
+            getCheckedRadioButton } from './local_utils.js';
+import { showLargeBubble, showInitialBubble, updateTimeLine, playButtonHandler, bubbleTransition } from './handlers.js';
 
 // ----------------------- DRAWING DOM/SVG FUNCTIONS -------------------- //
 
@@ -118,37 +118,10 @@ let hauteurGraphPerCapita = 40;
 let hauteurGraphTotal = 1000000;
 
 export const drawChart = StateApp => {
-    const width        = 1300;
-    const height       = 1100;
-    const data         = StateApp.getData();
-    let tranlatebubble = true;
-
-    const select = getCheckedRadioButton('radio-rp');
-    const type = getCheckedRadioButton('radio-t');
+    const data              = StateApp.getData();
+    const { width, height } = StateApp.getChartSpecs();
+    const representation    = StateApp.getRepresentation();
   
-    const xscale = d3.scaleLinear()
-        .domain([1970, 2015])
-        .range([0, width - 250]);
-
-    var maxValue = () => (type == 'total') ? hauteurGraphTotal : hauteurGraphPerCapita;
-
-    const yscale = d3.scaleLinear()
-        .domain([0,maxValue()])
-        .range([height - 200, 0]);
-
-    const ysccaleres = value => yscale(value) + 110;
-
-    const posYear = () => {
-        if (getCurrentYear() == '1975') return 290;
-        if (getCurrentYear() == '1985') return 520;
-        if (getCurrentYear() == '1995') return 750;
-        if (getCurrentYear() == '2005') return 980;
-        if (getCurrentYear() == '2010') return 1110;
-        if (getCurrentYear() == '2012') return 1130;
-        if (getCurrentYear() == '2013') return 1140;
-        else return 1150;
-    }
-
     const svg = d3.select('#chart')
         .append('svg')
         .attr('preserveAspectRatio', 'xMinYMin meet')
@@ -166,18 +139,13 @@ export const drawChart = StateApp => {
             .attr('class', 'bubble-country')
 
     // Definition of the force Simulation, especially collapse force
-    const s = 0.0025;
+    const s = 0.003;
     const force = d3.forceSimulation(data)
         .force('x', d3.forceX(width/2).strength(s))
         .force('y', d3.forceY(height/2).strength(s))
         .force('center', d3.forceCenter(width/2, height/2))
         .force('collide', d3.forceCollide(dataLine => dataLine.finalRadius))
-        .on('tick', () => circles.attr('transform', d => {
-            return tranlatebubble
-                ? `translate(${d.x},${d.y})`
-                :'translate('+posYear()+','+ysccaleres(d.value)+')';
-                //console.log('translate('+xscale(d.year)+','+yscale(d.value)+')')         
-        }));
+        .on('tick', () => circles.attr('transform', d => `translate(${d.x},${d.y})`));
 
     StateApp.setForce(force);
      
@@ -208,16 +176,15 @@ export const drawChart = StateApp => {
         .style('font-weight', 'bold')
         .style('font-size','20px')
         .text(d => d.name)
-        //.style('display', d => d.radius < ((select == 'graph') ? 40 : 70) ? 'none' : '');
     
     circles.append('text')
         .attr('class','titrePaysGraphe')
-        .attr('dx',/* () => (getCurrentYear() == '2010') ? */'-12em'/* : '4em'*/)
+        .attr('dx', '-12em')
         .attr('fill', 'black')
         .style('font-weight', 'bold')
         .style('font-size','20px')
         .text(d => d.name.replace(/\(.[^(]*\)/g,''))
-        .style('display', () => (select == 'graph')? '' : 'none');
+        .style('display', () => (representation === 'graph')? '' : 'none');
     
     textContainers.append('text')
         .attr('class', 'valuePays')
@@ -226,7 +193,6 @@ export const drawChart = StateApp => {
         .style('text-anchor', 'middle')
         .style('pointer-events', 'none')
         .text(d => new Intl.NumberFormat('de-DE').format(d.value))
-        //.style('display', d => d.radius < ((select == 'bubble') ? 40 : 70) ? 'none' : '')
         .style('font-weight', 'bold')
         .style('font-size','20px')
 
@@ -234,47 +200,69 @@ export const drawChart = StateApp => {
         .text(dataLine => dataLine.name)
         .style('pointer-events', 'none'); 
 
-    /****************** Representation avec graph ****************************/
-    if (select == 'graph') {
-        tranlatebubble = false;
-        svg.append("g")
+    if(representation === 'graph') drawAxisGraph(StateApp, circles);
+};
+
+export const drawAxisGraph = (StateApp, circles) => {
+    const { width, height } = StateApp.getChartSpecs();
+    const dataType          = StateApp.getDataType();
+    const svg               = d3.select('#chartgroup');
+
+    const xscale = d3.scaleLinear()
+    .domain([1970, 2015])
+    .range([0, width - 250]);
+
+    const maxValue = () => (dataType == 'total') ? hauteurGraphTotal : hauteurGraphPerCapita;
+
+    const yscale = d3.scaleLinear()
+    .domain([0,maxValue()])
+    .range([height - 200, 0]);
+
+    const ysccaleres = value => yscale(value) + 110;
+
+    // to interpolate wtf
+    const posYear = () => {
+        switch(StateApp.getYear()) {
+            case 1975 : return 290;
+            case 1985 : return 520;
+            case 1995 : return 750;
+            case 2005 : return 980;
+            case 2010 : return 1110;
+            case 2012 : return 1130;
+            case 2013 : return 1140;
+            default : return 1150;
+        }
+    };
+
+    StateApp.getForce()
+        .on('tick', () => circles.attr('transform', d => 'translate('+posYear()+','+ysccaleres(d.value)+')'));
+    StateApp.getForce().alpha(1).restart();  
+
+    svg.append("g")
         .attr('id',"graph")
-        
-        svg.append("g")
-        .attr('transform','translate(170,'+ height/1.1 +')')
-        .style('font-weight', 'bold')
-        .style('font-size','20px')
-        .call(d3.axisBottom(xscale));
+    
+    svg.append("g")
+    .attr('transform','translate(170,'+ height/1.1 +')')
+    .style('font-weight', 'bold')
+    .style('font-size','20px')
+    .call(d3.axisBottom(xscale));
 
-        svg.append("g")
-        .attr('transform','translate(170,110)')
-        .style('font-weight', 'bold')
-        .style('font-size','20px')
-        .call(d3.axisLeft(yscale));
+    svg.append("g")
+    .attr('transform','translate(170,110)')
+    .style('font-weight', 'bold')
+    .style('font-size','20px')
+    .call(d3.axisLeft(yscale));
 
-        /*circles.append('circleGraph')
-        .classed('node', true)
-        .attr('class','Pays')
-        .attr()
-        .attr('r', '30')
-        .attr('fill', dataLine => computeCircleColor(dataLine/*, getMaxfromData(data, 'value')*//*))
-        .on('mouseover', showLargeBubble(force, data, timer))
-        .on('mouseout', showInitialBubble(force, data, timer))
-        .transition()
-            .duration(2000)
-            .tween('currentRadius', bubbleTransition(force, data));*/
-
-        d3.select('#button-moins')
-            .on('click', () => {
-                if(type == 'total' && hauteurGraphTotal < 12000000) return (hauteurGraphTotal = hauteurGraphTotal + 100000)
-                if(type =='per-capita' && hauteurGraphPerCapita < 50) return (hauteurGraphPerCapita = hauteurGraphPerCapita + 10)
-                })
-        d3.select('#button-plus')
-            .on('click', () =>{
-                if(type == 'total'&& hauteurGraphTotal > 100000) return (hauteurGraphTotal = hauteurGraphTotal - 100000)
-                if(type =='per-capita' && hauteurGraphPerCapita > 10) return (hauteurGraphPerCapita = hauteurGraphPerCapita - 10)
-            });
-    }
+    d3.select('#button-moins')
+        .on('click', () => {
+            if(dataType == 'total' && hauteurGraphTotal < 12000000) return (hauteurGraphTotal = hauteurGraphTotal + 100000)
+            if(dataType =='per-capita' && hauteurGraphPerCapita < 50) return (hauteurGraphPerCapita = hauteurGraphPerCapita + 10)
+            })
+    d3.select('#button-plus')
+        .on('click', () =>{
+            if(dataType == 'total'&& hauteurGraphTotal > 100000) return (hauteurGraphTotal = hauteurGraphTotal - 100000)
+            if(DataType =='per-capita' && hauteurGraphPerCapita > 10) return (hauteurGraphPerCapita = hauteurGraphPerCapita - 10)
+        });
 };
 
 export const drawLegend = () => {
@@ -309,36 +297,23 @@ export const drawLegend = () => {
     }
 };
 
-export const drawMenu = async () => {
-    const countriesNames = await getData(`${dataURL}utils/countriesnames`);
+export const drawMenu = async StateApp => {
     const selectTag = document.getElementById('Pays');
 
-    countriesNames.forEach(({name}) => {
+    StateApp.getCountries().forEach(({name}) => {
         const newOption = document.createElement('option');
         newOption.innerHTML = name.replace(/\(.[^(]*\)/g,'');
         newOption.classList = 'option-country'
         selectTag.appendChild(newOption);
     });
 
-    document.getElementById('Continent').children[2].selected = true;
-
     $('.selectpicker').selectpicker('refresh');
+
+    document.getElementById('Continent').children[2].selected = true;
 
     const selectCountry = document.getElementsByClassName('scountry')[1]
     const selectContinent = document.getElementsByClassName('sContinent')[1];
     const radiocheck = getCheckedRadioButton('radio-choice');
-
-    $("#selectCountry").prop("disabled", true);
-        
-    $("#radio-country").click(() => {
-        $('#selectCountry').prop("disabled", false);
-        $("#selectContinent").prop("disabled", true);
-    });
-
-    $("#radio-continent").click(() => {
-        $('#selectContinent').prop("disabled", false);
-        $("#selectCountry").prop("disabled", true);
-    });
 }; 
 
 // ------------------------ EXPORTS --------------------------- //
