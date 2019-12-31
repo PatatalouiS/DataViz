@@ -130,6 +130,8 @@ export const drawChart = StateApp => {
         .attr('id', 'svg')
         .append('g')
         .attr("id","chartgroup")
+        .attr('transform','translate(2,2)')
+       
     const circles = svg.selectAll('.node')
         .data(data)
         .enter()
@@ -174,7 +176,7 @@ export const drawChart = StateApp => {
         .style('font-weight', 'bold')
         .style('font-size','20px')
         .text(d => d.name)
-        
+       
     textContainers.append('text')
         .attr('class', 'valuePays')
         .attr('dy', '1.3em')
@@ -222,6 +224,14 @@ export const drawAxisGraph = (StateApp, circles) => {
             default : return 1150;
         }
     };
+
+    circles.append('text')
+        .attr('class','titrePaysGraphe')
+        .attr('dx', '-12em')
+        .attr('fill', 'black')
+        .style('font-weight', 'bold')
+        .style('font-size','20px')
+        .text(d => d.name.replace(/\(.[^(]*\)/g,''))
 
     StateApp.getForce()
         .on('tick', () => circles.attr('transform', d => 'translate('+posYear()+','+ysccaleres(d.value)+')'));
