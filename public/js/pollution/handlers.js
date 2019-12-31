@@ -199,9 +199,9 @@ export const bubbleTransition = StateApp => (dataLine, index , nodes) => {
 export const updateChart = StateApp => {
     d3.selectAll('.Pays')
         .transition()
-            .duration(2000)
-            .tween('radius-value-color', bubbleTransition(StateApp))
-            .on('end', () => StateApp.getForce().alpha(1).restart())
+        .duration(2000)
+        .tween('radius-value-color', bubbleTransition(StateApp))
+    StateApp.getForce().alpha(1).restart()
     StateApp.getForce().force('collide', d3.forceCollide(dataLine => dataLine.radius))
 };
 
