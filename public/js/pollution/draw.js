@@ -176,16 +176,7 @@ export const drawChart = StateApp => {
         .style('font-weight', 'bold')
         .style('font-size','20px')
         .text(d => d.name)
-    
-    circles.append('text')
-        .attr('class','titrePaysGraphe')
-        .attr('dx', '-12em')
-        .attr('fill', 'black')
-        .style('font-weight', 'bold')
-        .style('font-size','20px')
-        .text(d => d.name.replace(/\(.[^(]*\)/g,''))
-        .style('display', () => (representation === 'graph')? '' : 'none');
-    
+        
     textContainers.append('text')
         .attr('class', 'valuePays')
         .attr('dy', '1.3em')
