@@ -2,7 +2,8 @@
 // ---------------------  IMPORTS  --------------------- //
 
 import { getTotalFromData, getAllDates, valueToDiscreteTimeline, 
-            getCheckedRadioButton } from './local_utils.js';
+            getCheckedRadioButton, 
+            getCurrentYear} from './local_utils.js';
 import { showLargeBubble, showInitialBubble, updateTimeLine, playButtonHandler, bubbleTransition} from './handlers.js';
 
 // ----------------------- DRAWING DOM/SVG FUNCTIONS -------------------- //
@@ -176,7 +177,7 @@ export const drawChart = StateApp => {
         .attr('class','Pays')
         .attr('r', dataLine => dataLine.radius)
         .attr('fill', dataLine => dataLine.color)
-        .attr('opacity' , () => (representation == 'graph') ? '0.5' : '1')
+        .attr('opacity' , () => (representation == 'graph') ? '0.7' : '1')
         .on('mouseover', showLargeBubble(StateApp))
         .on('mouseout', showInitialBubble(StateApp))
         .transition()
@@ -224,7 +225,7 @@ export const drawChart = StateApp => {
 export const drawAxisGraph = (StateApp, circles) => {
     const { width, height }     = StateApp.getChartSpecs();
     const dataType              = StateApp.getDataType();
-    const svg                   = d3.select('#chartgroup');
+    const svg                     = d3.select('#chartgroup');
     const hauteurGraphTotal     = 1000000;
     const hauteurGraphPerCapita = 50;
     var updateYaxis             = 0;
@@ -269,7 +270,7 @@ export const drawAxisGraph = (StateApp, circles) => {
 
     circles.append('text')
         .attr('class','titrePaysGraphe')
-        .attr('dx', '-11em')
+        .attr('dx', ()  => getCurrentYear() == '1975' ? '2em' : '-11em')
         .attr('fill', 'black')
         .style('font-weight', 'bold')
         .style('font-size','20px')
@@ -316,13 +317,15 @@ export const drawAxisGraph = (StateApp, circles) => {
         })
 
     /*---------------------------------- Zoom et dezoom ---------------------------- */
-
+   
     d3.select('#button-moins')
         .on('click', () => {
             if (data == 'total' && updateYaxis < 11000000) updateYaxis = updateYaxis + 100000;
             if (data == 'per-capita' && updateYaxis < 50) updateYaxis = updateYaxis + 10;
             yscale.domain([0,updateYaxis])
             svg.select(".yaxis")
+            .transition()
+            .duration(750)
             .call(d3.axisLeft(yscale));})
 
     d3.select('#button-plus')
@@ -331,6 +334,8 @@ export const drawAxisGraph = (StateApp, circles) => {
             if (data == 'per-capita' &&  updateYaxis > 10) updateYaxis = updateYaxis - 10;
             yscale.domain([0,updateYaxis])
             svg.select(".yaxis")
+            .transition()
+            .duration(750)
             .call(d3.axisLeft(yscale));
         }); 
     
