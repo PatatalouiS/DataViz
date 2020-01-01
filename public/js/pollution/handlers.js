@@ -27,6 +27,8 @@ export const paramsChangedHandler = StateApp => async () => {
     updateData(StateApp, lastData, newData, year);    
     updateChart(StateApp);
     updateTotal(StateApp);
+    console.log("d  ns le console")
+    console.log(getCheckedRadioButton("radio-t"))
 }
 
 export const switchRepresentation = StateApp => () => {
@@ -93,7 +95,7 @@ export const showLargeBubble = StateApp => (dataTrigger, indexTrigger, nodes) =>
     d3.select(nodes[indexTrigger].parentNode)
         .transition()
         .duration(50)
-        .attr('opacity',() => button ? '1' : '0.8')
+        .attr('opacity', '0.8')
 };
 
 export const showInitialBubble = StateApp => (dataTrigger, indexTrigger, nodes) => {
@@ -101,6 +103,7 @@ export const showInitialBubble = StateApp => (dataTrigger, indexTrigger, nodes) 
     dataTrigger.fy = null;
     StateApp.getTimer().clearTimeout();
     StateApp.getForce().force('collide', d3.forceCollide(dataLine => dataLine.radius))
+    const representation = getCheckedRadioButton("radio-rp")
 
     if(dataTrigger.hasOwnProperty('previousRadius')) {
         updateRadius({
@@ -112,7 +115,7 @@ export const showInitialBubble = StateApp => (dataTrigger, indexTrigger, nodes) 
             nodes
         })
         delete dataTrigger.previousRadius;
-        d3.select(`#bubble-text-${indexTrigger}`).style('display', 'none');
+         d3.select(`#bubble-text-${indexTrigger}`).style('display', 'none');
     } 
 
     d3.select(nodes[indexTrigger].parentNode)
@@ -221,6 +224,8 @@ export const updateTotal = StateApp => {
         .text()
         .on('end', () =>  StateApp.setTotal(newTotal));
 };
+
+
 
 // ------------------------ EXPORTS --------------------------- //
 
