@@ -191,6 +191,7 @@ export const bubbleTransition = StateApp => (dataLine, index , nodes) => {
         
         textOfcircle.style('display', dataLine.radius >= 40 ? '' : 'none');
         StateApp.getForce().nodes(StateApp.getData()); 
+        StateApp.getForce().force('collide', d3.forceCollide(dataLine => dataLine.radius));
     };
 };
 
@@ -200,9 +201,9 @@ export const updateChart = StateApp => {
     d3.selectAll('.Pays')
         .transition()
         .duration(2000)
-        .tween('radius-value-color', bubbleTransition(StateApp))
-    StateApp.getForce().alpha(1).restart()
-    StateApp.getForce().force('collide', d3.forceCollide(dataLine => dataLine.radius))
+        .tween('radius-value-color', bubbleTransition(StateApp));
+    StateApp.getForce().alpha(1).restart();
+    StateApp.getForce().force('collide', d3.forceCollide(dataLine => dataLine.radius));
 };
 
 export const updateTotal = StateApp => {

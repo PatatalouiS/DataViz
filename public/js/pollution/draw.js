@@ -121,6 +121,8 @@ export const drawChart = StateApp => {
     const data              = StateApp.getData();
     const { width, height } = StateApp.getChartSpecs();
     const representation    = StateApp.getRepresentation();
+
+    let sx, sy;
   
     const svg = d3.select('#chart')
         .append('svg')
@@ -128,6 +130,20 @@ export const drawChart = StateApp => {
         .attr('viewBox', '0 0 1300 1100')
         .classed('svg-content', true)
         .attr('id', 'svg')
+        .call(d3.drag()
+            .on('start',() => {
+                sx = d3.event.x;
+                sy = d3.event.y;
+            })    
+            .on('drag', () => {
+                const chart                   = d3.selectAll('#chartgroup');
+                const { x, y } = chart.node().getBBox();
+                const { x : mx, y : my } = d3.event;
+                const dx = mx - sx; 
+                const dy = my - sy; 
+                console.log(chart.node().getBBox(), chart.attr('transform'), dx , dy);
+                chart.attr('transform', `translate(${tx}, ${ty})`); 
+            }))
         .append('g')
         .attr("id","chartgroup")
         .attr('transform','translate(2,2)')
