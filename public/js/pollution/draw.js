@@ -2,8 +2,9 @@
 // ---------------------  IMPORTS  --------------------- //
 
 import { getTotalFromData, getAllDates, valueToDiscreteTimeline, 
-            getCheckedRadioButton } from './local_utils.js';
-import { showLargeBubble, showInitialBubble, updateTimeLine, playButtonHandler, bubbleTransition } from './handlers.js';
+            getCheckedRadioButton, 
+            getCurrentYear} from './local_utils.js';
+import { showLargeBubble, showInitialBubble, updateTimeLine, playButtonHandler, bubbleTransition} from './handlers.js';
 
 // ----------------------- DRAWING DOM/SVG FUNCTIONS -------------------- //
 
@@ -12,6 +13,9 @@ export const drawTotal = StateApp => {
     const height = 100
     const total = getTotalFromData(StateApp.getData(), 'value');
     StateApp.setTotal(total);
+    const description_1 = "*milliers de tonnes de CO2"
+    const description_2 = "*en tonne par habitant"
+    var description = description_1;
 
     const svg = d3.select('#vis')
         .append('svg')
@@ -46,10 +50,30 @@ export const drawTotal = StateApp => {
         .style('font-weight', 'bold')
     
     pollu.append('text')
-        .text(() => getCheckedRadioButton('radio-t') == 'total' ? "*milliers de tonnes de CO2" : "*en tonne par habitant")
+        .attr('id','description')
+        .text(description)
         .attr('x','30')
         .attr('y','90')
         .style('font-style', 'italic')
+
+    d3.select('#total')
+    .on('click', () => { 
+        console.log("Total") 
+        description = description_1;
+        svg.select("#description")
+        .text(description);
+    })
+
+    d3.select('#per-capita')
+    .on('click', () => {
+        console.log("Per capita") 
+        description = description_2;
+        svg.select("#description")
+        .text(description);
+    })
+
+    
+    
 }
 
 export const drawTimeLine = StateApp => {
@@ -114,8 +138,6 @@ export const drawTimeLine = StateApp => {
         .attr('transform', 'translate(10,' + (-25) + ')')  
 }
 
-let hauteurGraphPerCapita = 40;
-let hauteurGraphTotal = 1000000;
 
 export const drawChart = StateApp => {
     const data              = StateApp.getData();
@@ -170,16 +192,19 @@ export const drawChart = StateApp => {
         .attr('class','Pays')
         .attr('r', dataLine => dataLine.radius)
         .attr('fill', dataLine => dataLine.color)
+        .style("border-radius", "5px")
+        .attr('opacity' , () => (representation == 'graph') ? '0.7' : '1')
         .on('mouseover', showLargeBubble(StateApp))
         .on('mouseout', showInitialBubble(StateApp))
         .transition()
             .duration(2000)
             .tween('radius', bubbleTransition(StateApp));
+        
 
     circles.append('g')
         .attr('class', 'text-description')
         .attr('id', dataLine => `bubble-text-${dataLine.index}`)
-        .style('display', dataLine => dataLine.radius < 40 ? 'none' : '');
+        .style('display', dataLine => dataLine.radius < 50 ? 'none' : '');
         
     const textContainers = d3.selectAll('.text-description');
 
@@ -188,20 +213,23 @@ export const drawChart = StateApp => {
         .attr('dy', '.2em')
         .style('text-anchor', 'middle')
         .style('pointer-events', 'none')
-        .attr('fill', 'white')
+        .attr('fill','white')
         .style('font-weight', 'bold')
         .style('font-size','20px')
         .text(d => d.name)
+        .style('display',() => (representation == 'graph') ? 'none' : '')
+        
        
     textContainers.append('text')
         .attr('class', 'valuePays')
-        .attr('dy', '1.3em')
-        .attr('fill', 'white')
+        .attr('dy', () => (representation == 'graph') ? '0.8em' :'1.3em')
+        .attr('fill', () => (representation == 'graph') ? 'balck' : 'white')
         .style('text-anchor', 'middle')
         .style('pointer-events', 'none')
         .text(d => new Intl.NumberFormat('de-DE').format(d.value))
         .style('font-weight', 'bold')
         .style('font-size','20px')
+        
 
     textContainers.append('title')
         .text(dataLine => dataLine.name)
@@ -211,19 +239,35 @@ export const drawChart = StateApp => {
 };
 
 export const drawAxisGraph = (StateApp, circles) => {
-    const { width, height } = StateApp.getChartSpecs();
-    const dataType          = StateApp.getDataType();
-    const svg               = d3.select('#chartgroup');
-
+    const { width, height }     = StateApp.getChartSpecs();
+    const dataType              = StateApp.getDataType();
+    const svg                     = d3.select('#chartgroup');
+    const hauteurGraphTotal     = 1000000;
+    const hauteurGraphPerCapita = 50;
+    var updateYaxis             = 0;
+    var data                    = dataType;
+    var year                    = getCurrentYear();
+    
+    
     const xscale = d3.scaleLinear()
     .domain([1970, 2015])
     .range([0, width - 250]);
+    //.attr('class','Yaxis');
 
-    const maxValue = () => (dataType == 'total') ? hauteurGraphTotal : hauteurGraphPerCapita;
+    const maxValue = (data) => {
+    if (data == 'total') {
+        updateYaxis = hauteurGraphTotal
+        return hauteurGraphTotal}
+    else {
+        updateYaxis = hauteurGraphPerCapita
+        return hauteurGraphPerCapita;
+    } }
+            
 
     const yscale = d3.scaleLinear()
-    .domain([0,maxValue()])
+    .domain([0,maxValue(dataType)])
     .range([height - 200, 0]);
+
 
     const ysccaleres = value => yscale(value) + 110;
 
@@ -243,7 +287,7 @@ export const drawAxisGraph = (StateApp, circles) => {
 
     circles.append('text')
         .attr('class','titrePaysGraphe')
-        .attr('dx', '-12em')
+        .attr('dx', ()  => year == '1975' ? '2em' : '-11em')
         .attr('fill', 'black')
         .style('font-weight', 'bold')
         .style('font-size','20px')
@@ -257,29 +301,66 @@ export const drawAxisGraph = (StateApp, circles) => {
         .attr('id',"graph")
     
     svg.append("g")
+    .attr("class", "xaxis")
     .attr('transform','translate(170,'+ height/1.1 +')')
     .style('font-weight', 'bold')
     .style('font-size','20px')
     .call(d3.axisBottom(xscale));
 
     svg.append("g")
+    .attr("class", "yaxis")
     .attr('transform','translate(170,110)')
     .style('font-weight', 'bold')
     .style('font-size','20px')
     .call(d3.axisLeft(yscale));
 
+    d3.select('#total')
+        .on('click', () => {
+            yscale.domain([0,hauteurGraphTotal])
+            svg.select(".yaxis")
+            .call(d3.axisLeft(yscale))
+            data = 'total';
+            updateYaxis = hauteurGraphTotal;
+        })
+
+
+    d3.select('#per-capita')
+        .on('click', () => {
+            yscale.domain([0,hauteurGraphPerCapita])
+            svg.select(".yaxis")
+            .call(d3.axisLeft(yscale))
+            data = 'per-capita';
+            updateYaxis = hauteurGraphPerCapita;
+        })
+
+    /*---------------------------------- Zoom et dezoom ---------------------------- */
+   
     d3.select('#button-moins')
         .on('click', () => {
-            if(dataType == 'total' && hauteurGraphTotal < 12000000) return (hauteurGraphTotal = hauteurGraphTotal + 100000)
-            if(dataType =='per-capita' && hauteurGraphPerCapita < 50) return (hauteurGraphPerCapita = hauteurGraphPerCapita + 10)
-            })
+            if (data == 'total' && updateYaxis < 11000000) updateYaxis = updateYaxis + 100000;
+            if (data == 'per-capita' && updateYaxis < 50) updateYaxis = updateYaxis + 10;
+            yscale.domain([0,updateYaxis])
+            svg.select(".yaxis")
+            .transition()
+            .duration(750)
+            .call(d3.axisLeft(yscale));})
+
     d3.select('#button-plus')
         .on('click', () =>{
-            if(dataType == 'total'&& hauteurGraphTotal > 100000) return (hauteurGraphTotal = hauteurGraphTotal - 100000)
-            if(DataType =='per-capita' && hauteurGraphPerCapita > 10) return (hauteurGraphPerCapita = hauteurGraphPerCapita - 10)
-        });
+            if (data == 'total' && updateYaxis > 50000) updateYaxis = updateYaxis - 50000;
+            if (data == 'per-capita' &&  updateYaxis > 10) updateYaxis = updateYaxis - 10;
+            yscale.domain([0,updateYaxis])
+            svg.select(".yaxis")
+            .transition()
+            .duration(750)
+            .call(d3.axisLeft(yscale));
+        }); 
+        
+   
+    
 };
-
+    
+ 
 export const drawLegend = () => {
     const width    = 1127;
     const height   = 100;

@@ -27,6 +27,8 @@ export const paramsChangedHandler = StateApp => async () => {
     updateData(StateApp, lastData, newData);    
     updateChart(StateApp);
     updateTotal(StateApp);
+    console.log("d  ns le console")
+    console.log(getCheckedRadioButton("radio-t"))
 }
 
 export const switchRepresentation = StateApp => () => {
@@ -93,7 +95,7 @@ export const showLargeBubble = StateApp => (dataTrigger, indexTrigger, nodes) =>
     d3.select(nodes[indexTrigger].parentNode)
         .transition()
         .duration(50)
-        .attr('opacity',() => button ? '1' : '0.8')
+        .attr('opacity', '0.8')
 };
 
 export const showInitialBubble = StateApp => (dataTrigger, indexTrigger, nodes) => {
@@ -101,6 +103,7 @@ export const showInitialBubble = StateApp => (dataTrigger, indexTrigger, nodes) 
     dataTrigger.fy = null;
     StateApp.getTimer().clearTimeout();
     StateApp.getForce().force('collide', d3.forceCollide(dataLine => dataLine.radius))
+    const representation = getCheckedRadioButton("radio-rp")
 
     if(dataTrigger.hasOwnProperty('previousRadius')) {
         updateRadius({
@@ -112,7 +115,7 @@ export const showInitialBubble = StateApp => (dataTrigger, indexTrigger, nodes) 
             nodes
         })
         delete dataTrigger.previousRadius;
-        d3.select(`#bubble-text-${indexTrigger}`).style('display', 'none');
+         d3.select(`#bubble-text-${indexTrigger}`).style('display', 'none');
     } 
 
     d3.select(nodes[indexTrigger].parentNode)
@@ -186,8 +189,11 @@ export const bubbleTransition = StateApp => (dataLine, index , nodes) => {
         dataLine.color = interpolationColor(time);
         circle.attr('fill', dataLine.color);
 
-        dataLine.showedValue = Math.floor(interpolationValue(time));
-        valueCircle.text(d => new Intl.NumberFormat('de-DE').format(d.showedValue))
+        dataLine.showedValue = StateApp.getDataType() === 'total'
+            ? Math.floor(interpolationValue(time))
+            : interpolationValue(time);
+
+        valueCircle.text(d => new Intl.NumberFormat('de-DE', {maximumSignificantDigits: 3}).format(d.showedValue))
         
         textOfcircle.style('display', dataLine.radius >= 40 ? '' : 'none');
         StateApp.getForce().nodes(StateApp.getData()); 
@@ -198,7 +204,6 @@ export const bubbleTransition = StateApp => (dataLine, index , nodes) => {
 // --------------------   UPDATE AFTER DATA CHANGED FUNCTIONS  --------------------- //
 
 export const updateChart = StateApp => {
-
     d3.selectAll('.Pays')
         .transition()
         .duration(2000)
@@ -223,6 +228,8 @@ export const updateTotal = StateApp => {
         .text()
         .on('end', () =>  StateApp.setTotal(newTotal));
 };
+
+
 
 // ------------------------ EXPORTS --------------------------- //
 

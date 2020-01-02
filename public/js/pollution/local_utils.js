@@ -35,7 +35,7 @@ export const computeCircleColor = (dataLine/*, maxValue*/) => {
 export const computeCircleRadius = (dataLine, maxValue, representation) => {
     const {value} = dataLine;
     if(value === 0) return 0;
-    else if(representation == 'graph') return 60;
+    else if(representation == 'graph') return 20;
     else {
         const linearScale = d3.scaleSqrt()
             .domain([0, maxValue])
