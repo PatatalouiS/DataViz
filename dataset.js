@@ -111,7 +111,7 @@ app.get('/data/pollution/total/top10/:year', async (req, res) => {
 });
 
 app.get('/data/pollution/per-capita/bycountry/:country/:year', async (req, res) => {
-	const queryResult = await mysql(/*sql*/`SELECT * FROM GlobalCountriesPollution WHERE name = ? AND year = ?`, [req.params.country, req.params.year]);
+	const queryResult = await mysql(/*sql*/`SELECT * FROM PerCapitaCountriesPollution WHERE name = ? AND year = ?`, [req.params.country, req.params.year]);
 	sendQueryJSON(queryResult, res);  
 });
 

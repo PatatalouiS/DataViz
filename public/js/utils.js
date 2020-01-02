@@ -26,7 +26,7 @@ export const getData = url => {
         .catch(error => console.error(`Error : here the error object for you : `, error));
 };
 
-export const dataURL = `http://${getHOST()}/data/`;
+export const dataURL = `http://${getHOST()}/data/pollution`;
 
 // ------------------ CLASS TIMER FOR DELAY HANDLERS --------------- //
 

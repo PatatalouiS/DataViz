@@ -88,21 +88,26 @@ export const updateData = (StateApp, lastData, newData) => {
 // --------------------  FETCH AND DATA RELATED FUNCTIONS --------------------- //
 
 export const getSelectedData = async StateApp => {
-    const url = `${dataURL}pollution`;
-    const { placeType, dataType, place, year } = StateApp.getFetchParams(); 
+    const { placeType, dataType, place, year } = StateApp.getFetchParams();
+    const url                                  = `${dataURL}/${dataType}/${placeType}`; 
     let data;
 
-    if(place[0] === 'Top') data = await getData(`${url}/${dataType}/top10/${year}`);
-    else if(placeType === 'byContinent') data = await getData(`${url}/${dataType}/bycontinent/${place[0]}/${year}`);
+    if(placeType === 'Top10') data = await getData(`${url}/${year}`);
+    else if(placeType === 'byContinent') data = await getData(`${url}/${place[0]}/${year}`);
     else {
-        data = await Promise.all(place.map(async country => {
-            const countryData = await getData(`${url}/${dataType}/bycountry/${country}/${year}`);
-            if(countryData === undefined) alert(`Pas de données existantes pour le pays ${country}, année ${year}`);
-            return countryData;
-        }));
-        data = data.flat();
+        data = await Promise.all(place.map(country => getData(`${url}/${country}/${year}`)))
+            .then(tab => tab.flat())
+            .then(data => data.map((dataLine, index) => {
+                if(dataLine === undefined) {
+                    const country = place[index];
+                    alert(`Pas de données existantes pour le pays ${country}, année ${year}`);
+                    document.getElementById(`option-country-${country}`).selected = false;
+                    $('.selectpicker').selectpicker('refresh');
+                }
+                return dataLine;
+            }))
+            .then(data => data.filter(dataLine => dataLine !== undefined))
     }
-
     return formatData(data, StateApp);
 };
 

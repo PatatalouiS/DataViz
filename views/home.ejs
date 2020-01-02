@@ -26,93 +26,96 @@
 
     <div class ='container'> 
         <div class ='row'>
-            <div id='legend' class ='col-lg-8'></div>
+            <div id='legend' class ='col'></div>
         </div>
-        <div class ='row'>
-            <div id='vis' class='col-lg-4'> </div>
-            <div id='chart' class = 'col-lg-8'></div>        
-        </div>
-        <div class ='main-menu'>
-            <div class ='row'>
-                <div id='controls-continent' class="col-lg-4" >
-                    <div class="custom-control custom-radio">
-                        <input type="radio" class="custom-control-input radio-choice" id="byContinent" name="choice"  checked>
-                        <label class="custom-control-label" for="byContinent">Par Continent</label>
-                    </div>
-                    <select class='selectpicker sContinent' data-live-search='true' title='Choose' id='selectContinent' >
-                        <optgroup label='Continent' id='Continent'>
-                            <option id='Asie' class = 'option-continent' value='1' >Asie</option>
-                            <option id='Africa' class = 'option-continent' value='2'>Africa</option>
-                            <option id='Europe' class = 'option-continent' value='3' selected>Europe</option>
-                            <option id='NorthAmerica' class = 'option-continent' value='4'>North America</option>
-                            <option id='SouthAmerica' class = 'option-continent' value='5'>South America</option>
-                            <option id='Oceania' class = 'option-continent' value='6'>Oceania</option>
-                            <option id='Top' class = 'option-continent' value='7'>Top 10</option>
-                        </optgroup>
-                    </select>
-                    <div class="custom-control custom-radio " style='text-align: none'>
-                        <input type="radio" class="custom-control-input radio-choice" id="byCountry" name="choice">
-                        <label class="custom-control-label" for="byCountry">Par pays</label>
-                    </div>
-                    <select class='selectpicker scountry' multiple data-live-search='true' id='selectCountry' >
-                        <optgroup label='Pays' id='Pays' data-max-options='10' >
-                        </optgroup>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <div class ='row'>
-            <div id='timeLine' class='col-lg-4'> 
-                <button id='play-button'>Play</button>
-            </div>
-        </div>
-        
-        <div class ='row'>
-            <div id ='zoom-button' class='zoom  col-lg-4'>
-                <p class ="text-zoom" style="display: inline; padding-right: 10px;" > Zoom</p>
-                <button id='button-moins'>-</button>
-                <button id='button-plus'>+</button>                              
-            </div>
-        </div>
-
-        <div class ='row'>
-            <div class="col-lg-4 " style='text-align: center;'> 
-                <div class="custom-control custom-radio custom-inline">
-                    <input type="radio" class="custom-control-input radio-t menu-input" id="total" name="pollu"  checked>
-                    <label class="custom-control-label" for="total">Pollution par pays</label>
-                </div>
-                <div class="custom-control custom-radio custom-inline">
-                    <input type="radio" class="custom-control-input radio-t menu-input" id="per-capita" name="pollu">
-                    <label class="custom-control-label" for="per-capita">Pollution par habitants</label>
-                </div>
-            </div>
-        </div>
-
-        <div class ='row'>
-            <div class='col-lg-4'>
-                <h3> Choix de la représentation</h3>
-                <div class ="main-img">
-                    <div class ="img">
-                        <img class ="image" src="/static/img/BubbleChart.png" style="margin-bottom: 10px;">
-                        <div class="custom-control custom-radio">
-                            <input type="radio" class="custom-control-input radio-rp" id="bubble" name="repres" checked>
-                            <label class="custom-control-label" for="bubble">Bubble Chart</label>
+        <div class ='row' id='subject'>
+            <div class="col-lg-4" id="side">
+                <div id="row">
+                    <div id='vis' class='row'> </div>
+                    <div class ='row main-menu'>
+                        <div id='controls-continent' class="col" >
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input radio-choice" id="byContinent" name="choice"  checked>
+                                <label class="custom-control-label" for="byContinent">Par Continent</label>
+                            </div>
+                            <select class='selectpicker sContinent' data-live-search='true' title='Choose' id='selectContinent' >
+                                <optgroup label='Continent' id='Continent'>
+                                    <option id='Asie' class = 'option-continent' value='1' >Asie</option>
+                                    <option id='Africa' class = 'option-continent' value='2'>Africa</option>
+                                    <option id='Europe' class = 'option-continent' value='3' selected>Europe</option>
+                                    <option id='NorthAmerica' class = 'option-continent' value='4'>North America</option>
+                                    <option id='SouthAmerica' class = 'option-continent' value='5'>South America</option>
+                                    <option id='Oceania' class = 'option-continent' value='6'>Oceania</option>
+                                </optgroup>
+                            </select>
+                            <div class="custom-control custom-radio " style='text-align: none'>
+                                <input type="radio" class="custom-control-input radio-choice" id="byCountry" name="choice">
+                                <label class="custom-control-label" for="byCountry">Par pays</label>
+                            </div>
+                            <select class='selectpicker scountry' multiple data-live-search='true' id='selectCountry' >
+                                <optgroup label='Pays' id='Pays' data-max-options='10' >
+                                </optgroup>
+                            </select>
+                            <div class="custom-control custom-radio " style='text-align: none'>
+                                <input type="radio" class="custom-control-input radio-choice" id="Top10" name="choice">
+                                <label class="custom-control-label" for="Top10">Top 10</label>
+                            </div>
                         </div>
                     </div>
-                    <div class="img">
-                        <img class ="image custom-inline" src="/static/img/Graph.png">
-                        <div class="custom-control custom-radio">
-                            <input type="radio" class="custom-control-input radio-rp" id="graph" name="repres" >
-                            <label class="custom-control-label" for="graph">Graph</label>
+                    <div class ='row'>
+                        <div id='timeLine' class='col'> 
+                            <button id='play-button'>Play</button>
+                        </div>
+                    </div>
+            
+                    <div class ='row'>
+                        <div id ='zoom-button' class='zoom  col'>
+                            <p class ="text-zoom" style="display: inline; padding-right: 10px;" > Zoom</p>
+                            <button id='button-moins'>-</button>
+                            <button id='button-plus'>+</button>                              
+                        </div>
+                    </div>
+
+                    <div class ='row'>
+                        <div class="col" style='text-align: center;'> 
+                            <div class="custom-control custom-radio custom-inline">
+                                <input type="radio" class="custom-control-input radio-t menu-input" id="total" name="pollu"  checked>
+                                <label class="custom-control-label" for="total">Pollution par pays</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-inline">
+                                <input type="radio" class="custom-control-input radio-t menu-input" id="per-capita" name="pollu">
+                                <label class="custom-control-label" for="per-capita">Pollution par habitants</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class ='row'>
+                        <div class='col'>
+                            <h3> Choix de la représentation</h3>
+                            <div class ="main-img">
+                                <div class ="img">
+                                    <img class ="image" src="/static/img/BubbleChart.png" style="margin-bottom: 10px;">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input radio-rp" id="bubble" name="repres" checked>
+                                        <label class="custom-control-label" for="bubble">Bubble Chart</label>
+                                    </div>
+                                </div>
+                                <div class="img">
+                                    <img class ="image custom-inline" src="/static/img/Graph.png">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input radio-rp" id="graph" name="repres" >
+                                        <label class="custom-control-label" for="graph">Graph</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div id='chart' class = 'col-lg-8'></div>
         </div>
-    </div>
-    
-    
+    </div>        
+                       
     <script type='module' src='/static/js/pollution/main.js'></script>
     
 </body>

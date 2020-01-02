@@ -109,9 +109,19 @@ div.tooltip-donut {
 }
 
 .main-menu{
-	text-align: center;
+	/*text-align: center;*/
 	margin: 15px;
 }
+
+.custom-control.custom-radio {
+	left : 50px;
+	padding : 10px;
+}
+
+.select-picker {
+	align-self: center;
+}
+
 
 .menu-input{
 	vertical-align: middle;

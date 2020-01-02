@@ -24,7 +24,7 @@ export const paramsChangedHandler = StateApp => async () => {
     const lastData = Array.from(StateApp.getData());
     const newData = await getSelectedData(StateApp);
    
-    updateData(StateApp, lastData, newData, year);    
+    updateData(StateApp, lastData, newData);    
     updateChart(StateApp);
     updateTotal(StateApp);
 }
@@ -198,6 +198,7 @@ export const bubbleTransition = StateApp => (dataLine, index , nodes) => {
 // --------------------   UPDATE AFTER DATA CHANGED FUNCTIONS  --------------------- //
 
 export const updateChart = StateApp => {
+
     d3.selectAll('.Pays')
         .transition()
         .duration(2000)

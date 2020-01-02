@@ -11,14 +11,14 @@ import State from './State.js';
 import countriesNames from './countries.js';
 
 const START_VALUES = {
-    place : ['Europe'],
-    year      : 1975,
-    dataType  : 'total',
-    placeType : 'byContinent',
-    countries : countriesNames,
+    place          : ['Europe'],
+    year           : 1975,
+    dataType       : 'total',
+    placeType      : 'byContinent',
+    countries      : countriesNames,
     representation : 'bubble',
-    chartSpecs  : {
-        width : 1300,
+    chartSpecs     : {
+        width  : 1300,
         height : 1100 
     }
 };
@@ -41,14 +41,14 @@ const init = async () => {
     document.getElementById(StateApp.getRepresentation()).checked = true;
 
     document.getElementById('selectContinent')
-        .addEventListener('change', paramsChangedHandler(StateApp)); 
-        
+        .addEventListener('change', paramsChangedHandler(StateApp));    
     document.getElementById('selectCountry')
         .addEventListener('change', paramsChangedHandler(StateApp));
 
     Array.from(document.getElementsByClassName('radio-t'))
         .forEach(element => element.addEventListener('click', paramsChangedHandler(StateApp)));
-
+    Array.from(document.getElementsByClassName('radio-choice'))
+        .forEach(element => element.addEventListener('click', paramsChangedHandler(StateApp)));
     Array.from(document.getElementsByClassName('radio-rp'))
         .forEach(element => element.addEventListener('click', switchRepresentation(StateApp)));
 };

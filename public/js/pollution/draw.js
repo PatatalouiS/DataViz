@@ -142,7 +142,7 @@ export const drawChart = StateApp => {
                 const dx = mx - sx; 
                 const dy = my - sy; 
                 console.log(chart.node().getBBox(), chart.attr('transform'), dx , dy);
-                chart.attr('transform', `translate(${tx}, ${ty})`); 
+                chart.attr('transform', `translate(${dx}, ${dy})`); 
             }))
         .append('g')
         .attr("id","chartgroup")
@@ -315,16 +315,18 @@ export const drawLegend = () => {
 export const drawMenu = async StateApp => {
     const selectTag = document.getElementById('Pays');
 
-    StateApp.getCountries().forEach(({name}) => {
+    StateApp.getCountries().forEach(({ name }) => {
         const newOption = document.createElement('option');
         newOption.innerHTML = name.replace(/\(.[^(]*\)/g,'');
-        newOption.classList = 'option-country'
+        newOption.classList = 'option-country';
+        newOption.id = `option-country-${name}`;
         selectTag.appendChild(newOption);
     });
 
-    $('.selectpicker').selectpicker('refresh');
-
     document.getElementById('Continent').children[2].selected = true;
+    document.getElementById('Pays').children[0].selected = true;
+
+    $('.selectpicker').selectpicker('refresh');
 
     const selectCountry = document.getElementsByClassName('scountry')[1]
     const selectContinent = document.getElementsByClassName('sContinent')[1];
