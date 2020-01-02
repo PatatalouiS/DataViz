@@ -160,6 +160,7 @@ export const drawChart = StateApp => {
         .enter()
             .append('g')
             .attr('class', 'bubble-country')
+            
 
     // Definition of the force Simulation, especially collapse force
     const s = 0.003;
@@ -272,15 +273,18 @@ export const drawAxisGraph = (StateApp, circles) => {
 
     circles.append('text')
         .attr('class','titrePaysGraphe')
-        .attr('dx', ()  => year == '1975' ? '2em' : '-11em')
+        .attr('dx', ()  => year == '1975' ? '2em' : '-10em')
         .attr('fill', 'black')
         .style('font-weight', 'bold')
         .style('font-size','20px')
         .text(d => d.name.replace(/\(.[^(]*\)/g,''))
+        .style('display',d => d.radius != 0 ? '' : 'none')
+
+    d => object.onchange = function(){myScript};
 
     StateApp.getForce()
-        .on('tick', () => circles.attr('transform', d => 'translate('+posYear()+','+ysccaleres(d.value)+')'));
-    StateApp.getForce().alpha(1).restart();  
+        .on('tick', () => circles.transition().duration(200).attr('transform', d => 'translate('+posYear()+','+ysccaleres(d.value)+')'));
+    //StateApp.getForce().alpha(1).restart();  
 
     svg.append("g")
         .attr('id',"graph")
@@ -338,9 +342,7 @@ export const drawAxisGraph = (StateApp, circles) => {
             svg.select(".yaxis")
             .transition()
             .duration(750)
-            .call(d3.axisLeft(yscale));
-        }); 
-        
+            .call(d3.axisLeft(yscale));});       
    
     
 };

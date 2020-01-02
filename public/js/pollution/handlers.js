@@ -27,8 +27,7 @@ export const paramsChangedHandler = StateApp => async () => {
     updateData(StateApp, lastData, newData, year);    
     updateChart(StateApp);
     updateTotal(StateApp);
-    console.log("d  ns le console")
-    console.log(getCheckedRadioButton("radio-t"))
+    
 }
 
 export const switchRepresentation = StateApp => () => {
@@ -68,6 +67,8 @@ export const updateRadius = ({ newRadius, simulation, data, transitionDuration, 
             }
         })
     simulation.alpha(1).restart();
+    console.log(circleTriggered)
+    //d3.select('.titrePaysGraphe').style('display',d => d.radius != 0 ? '' : 'none')
     return Promise.resolve();
 };
 
