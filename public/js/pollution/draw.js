@@ -177,6 +177,7 @@ export const drawChart = StateApp => {
         .attr('class','Pays')
         .attr('r', dataLine => dataLine.radius)
         .attr('fill', dataLine => dataLine.color)
+        .style("border-radius", "5px")
         .attr('opacity' , () => (representation == 'graph') ? '0.7' : '1')
         .on('mouseover', showLargeBubble(StateApp))
         .on('mouseout', showInitialBubble(StateApp))
