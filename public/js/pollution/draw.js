@@ -230,6 +230,7 @@ export const drawAxisGraph = (StateApp, circles) => {
     const hauteurGraphPerCapita = 50;
     var updateYaxis             = 0;
     var data                    = dataType;
+    var year                    = getCurrentYear();
     
     
     const xscale = d3.scaleLinear()
@@ -270,7 +271,7 @@ export const drawAxisGraph = (StateApp, circles) => {
 
     circles.append('text')
         .attr('class','titrePaysGraphe')
-        .attr('dx', ()  => getCurrentYear() == '1975' ? '2em' : '-11em')
+        .attr('dx', ()  => year == '1975' ? '2em' : '-11em')
         .attr('fill', 'black')
         .style('font-weight', 'bold')
         .style('font-size','20px')
@@ -330,7 +331,7 @@ export const drawAxisGraph = (StateApp, circles) => {
 
     d3.select('#button-plus')
         .on('click', () =>{
-            if (data == 'total' && updateYaxis > 100000) updateYaxis = updateYaxis - 100000;
+            if (data == 'total' && updateYaxis > 50000) updateYaxis = updateYaxis - 50000;
             if (data == 'per-capita' &&  updateYaxis > 10) updateYaxis = updateYaxis - 10;
             yscale.domain([0,updateYaxis])
             svg.select(".yaxis")
@@ -338,7 +339,8 @@ export const drawAxisGraph = (StateApp, circles) => {
             .duration(750)
             .call(d3.axisLeft(yscale));
         }); 
-    
+        
+   
     
 };
     
