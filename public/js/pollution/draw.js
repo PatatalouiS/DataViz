@@ -172,11 +172,11 @@ export const drawChart = StateApp => {
         .on('tick', () => circles.attr('transform', d => `translate(${d.x},${d.y})`));
 
     StateApp.setForce(force);
-     
+    var radius = dataLine => dataLine.radius
     circles.append('circle')
         .classed('node', true)
         .attr('class','Pays')
-        .attr('r', dataLine => dataLine.radius)
+        .attr('r', radius)
         .attr('fill', dataLine => dataLine.color)
         .style("border-radius", "5px")
         .attr('opacity' , () => (representation == 'graph') ? '0.7' : '1')
@@ -185,7 +185,28 @@ export const drawChart = StateApp => {
         .transition()
             .duration(2000)
             .tween('radius', bubbleTransition(StateApp));
-        
+      
+    d3.select('#button-moins')
+            .on('click', () => {
+                $( "circle" ).each(function(i) {
+                    var r = $(this).attr('r')
+                    var newR = parseFloat(r) - 10; 
+                    if (r != 0 && $(this).attr('class') == 'Pays' ) {
+                        $(this).attr('r',newR)                          
+                    }                  
+                  });
+            });
+
+    d3.select('#button-plus')
+            .on('click', () => {
+                $( "circle" ).each(function(i) {
+                    var r = $(this).attr('r')
+                    var newR = parseFloat(r) + 10; 
+                    if (r != 0 && $(this).attr('class') == 'Pays')  return $(this).attr('r',newR)                     
+                  });
+            });
+    
+                
 
     circles.append('g')
         .attr('class', 'text-description')
@@ -227,9 +248,9 @@ export const drawChart = StateApp => {
 export const drawAxisGraph = (StateApp, circles) => {
     const { width, height }     = StateApp.getChartSpecs();
     const dataType              = StateApp.getDataType();
-    const svg                     = d3.select('#chartgroup');
+    const svg                   = d3.select('#chartgroup');
     const hauteurGraphTotal     = 1000000;
-    const hauteurGraphPerCapita = 50;
+    const hauteurGraphPerCapita = 60;
     var updateYaxis             = 0;
     var data                    = dataType;
     var year                    = getCurrentYear();
@@ -280,7 +301,7 @@ export const drawAxisGraph = (StateApp, circles) => {
         .text(d => d.name.replace(/\(.[^(]*\)/g,''))
         .style('display',d => d.radius != 0 ? '' : 'none')
 
-    d => object.onchange = function(){myScript};
+    
 
     StateApp.getForce()
         .on('tick', () => circles.transition().duration(200).attr('transform', d => 'translate('+posYear()+','+ysccaleres(d.value)+')'));
@@ -326,8 +347,8 @@ export const drawAxisGraph = (StateApp, circles) => {
    
     d3.select('#button-moins')
         .on('click', () => {
-            if (data == 'total' && updateYaxis < 11000000) updateYaxis = updateYaxis + 100000;
-            if (data == 'per-capita' && updateYaxis < 50) updateYaxis = updateYaxis + 10;
+            if (data == 'total' && updateYaxis < 11000000) (updateYaxis >= 1000000) ? updateYaxis = updateYaxis + 1000000 : updateYaxis = updateYaxis + 100000;
+            if (data == 'per-capita' && updateYaxis < 60) (updateYaxis < 10) ?  updateYaxis = updateYaxis + 5 : updateYaxis = updateYaxis + 10;
             yscale.domain([0,updateYaxis])
             svg.select(".yaxis")
             .transition()
@@ -336,8 +357,8 @@ export const drawAxisGraph = (StateApp, circles) => {
 
     d3.select('#button-plus')
         .on('click', () =>{
-            if (data == 'total' && updateYaxis > 50000) updateYaxis = updateYaxis - 50000;
-            if (data == 'per-capita' &&  updateYaxis > 10) updateYaxis = updateYaxis - 10;
+            if (data == 'total' && updateYaxis > 50000) (updateYaxis > 1000000) ? updateYaxis = updateYaxis - 1000000 : updateYaxis = updateYaxis - 50000 ;
+            if (data == 'per-capita' &&  updateYaxis > 5) (updateYaxis <= 10) ? updateYaxis = updateYaxis - 5 :  updateYaxis = updateYaxis - 10;
             yscale.domain([0,updateYaxis])
             svg.select(".yaxis")
             .transition()

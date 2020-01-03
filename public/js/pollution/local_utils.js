@@ -117,6 +117,7 @@ export const formatData = (data, StateApp) => {
             const finalRadius = computeCircleRadius({value}, maxValue, StateApp.getRepresentation());
             const finalColor = computeCircleColor({value});
             delete dataLine[valueKeyName];
+            
 
             return Object.assign(dataLine, { 
                 value, 
