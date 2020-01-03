@@ -38,10 +38,10 @@ section {
 	margin-top : -30px;
 }
 
-#chart-container {
-	border-top: 1px solid grey;
+#chart {
+	border-top-left-radius: 10px;
 	border-left: 1px solid grey;
-	border-top-left-radius : 10px;
+	border-top: 1px solid grey;
 }
 
 @media screen and (max-width: 980px) {
@@ -49,15 +49,11 @@ section {
 	#chart {	
 		border-bottom-left-radius: 10px;
 		border-bottom-right-radius: 10px;
-	}
-
-	#chart-container {
-		border-left : none;
 		border-top-left-radius : 0px;
+		border-left : none;
 	}
 
 }
-
 
 #banner{
 	background: url(/static/img/banner.jpg);
@@ -79,22 +75,6 @@ section {
 	margin-bottom: 10px;
 	margin-top: 10px;	
 }
-/*#general-menu{
-	margin-left: 10px;
-	font-size: 18px;
-}
-
-
-#controls-continent{
-  margin-bottom: 10px;
-  padding-top: 30px;
-}
-
-#controls-year, #controls-continent{
-  padding-top: 5px;
-  margin-bottom: 5px;
-  margin-left: 30px;	
-}*/
 
 #legend {
 	padding: 35px;

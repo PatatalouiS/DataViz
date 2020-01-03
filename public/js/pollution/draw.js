@@ -1,4 +1,6 @@
 
+'use strict';
+
 // ---------------------  IMPORTS  --------------------- //
 
 import { getTotalFromData, getAllDates, valueToDiscreteTimeline, 

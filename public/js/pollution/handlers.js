@@ -1,9 +1,11 @@
 
+'use strict';
+
 // ---------------------  IMPORTS  --------------------- //
 
 import {    getCheckedRadioButton, getSelectedOption, getSelectedData, getMainValue, getMaxfromData,
             getTotalFromData, getCurrentYear, valueToDateTimeline, updateData, computeCircleRadius } from './local_utils.js';
-import { Timer } from '../utils.js';
+import Timer from './timer.js';
 import { drawChart } from './draw.js';
 
 // ---------------------------  MAIN HANDLERS ------------------------- //

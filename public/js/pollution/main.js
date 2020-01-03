@@ -6,27 +6,26 @@
 import { drawMenu, drawChart, drawTimeLine, drawTotal } from './draw.js';
 import { getSelectedData } from './local_utils.js';
 import { paramsChangedHandler, switchRepresentation } from './handlers.js';
-import { getHOST } from '../utils.js';
-import State from './State.js';
-import countriesNames from './countries.js';
+import State from './state.js';
+import { getData, countriesURL } from '../utils.js';
 
-const START_VALUES = {
+const START_VALUES = async () => ({
     place          : ['Europe'],
     year           : 1975,
     dataType       : 'total',
     placeType      : 'byContinent',
-    countries      : countriesNames,
+    countries      : await getData(countriesURL),   
     representation : 'bubble',
     chartSpecs     : {
         width  : 1500,
         height : 1100 
     }
-};
+});
 
 // ------------------- INITIAL STATE OF PAGE ------------- // 
 
 const init = async () => {
-    const StateApp                            = new State(START_VALUES);
+    const StateApp                            = new State(await START_VALUES());
     const data                                = await getSelectedData(StateApp);
     StateApp.setData(data);
 

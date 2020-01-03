@@ -1,5 +1,7 @@
 
-import { Timer } from "../utils.js";
+'use strict';
+
+import Timer from "./timer.js";
 
 export default class State {
 
@@ -16,6 +18,8 @@ export default class State {
         this.__timer__     = new Timer();
         this.__first__     = true;
         this.__total__     = 0;  
+
+        console.log(this.getCountries());
     }
 
     getData() { return this.__data__ }

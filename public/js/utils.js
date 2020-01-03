@@ -1,5 +1,5 @@
 
-'use strict'
+'use strict';
 
 // ----------------------  SET/GET ENVIRONEMENT -------------------- //
 
@@ -25,38 +25,11 @@ export const getData = url => {
         .catch(error => console.error(`Error : here the error object for you : `, error));
 };
 
-export const dataURL = `http://${getHOST()}/data/pollution`;
+export const URL = `http://${getHOST()}`;
 
-// ------------------ CLASS TIMER FOR DELAY HANDLERS --------------- //
+export const dataURL = `${URL}/data/pollution`;
 
-export class Timer {
-
-    constructor () {
-        this.time = null;
-    }
-
-    setTimeout (callback, delay) {
-        this.time = setTimeout(callback, delay);
-    }
-
-    clearTimeout () {
-        this.time = clearTimeout(this.time)
-        this.time = null;
-    }
-
-    setInterval (callback, delay) {
-        this.time = setInterval(callback, delay);
-    }
-
-    clearInterval () {
-        this.time = clearInterval(this.time);
-        this.time = null;
-    }
-
-    getTime () {
-        return this.time
-    }
-}
+export const countriesURL = `${URL}/data/utils/countriesnames`;
 
 // --------------------- UTILS FUNCTIONS ---------------------- //
 
@@ -80,5 +53,4 @@ export default {
     getData,
     dataURL,
     interpolationTabNumber,
-    Timer
 };

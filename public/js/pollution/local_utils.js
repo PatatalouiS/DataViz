@@ -1,4 +1,6 @@
 
+'use strict';
+
 // ---------------------  IMPORTS AND CONSTANTS  --------------------- //
 
 import { getData, dataURL, interpolationTabNumber } from '../utils.js';
