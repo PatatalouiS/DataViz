@@ -133,34 +133,38 @@ export const drawTimeLine = StateApp => {
         .on('click', () => playButtonHandler(StateApp, d3.select('#play-button'), rangeMax));
 }
 
-
 export const drawChart = StateApp => {
     const data              = StateApp.getData();
     const { width, height } = StateApp.getChartSpecs();
     const representation    = StateApp.getRepresentation();
-
+    const isSVG             = document.getElementById('svg');
     let sx, sy;
-  
-    const svg = d3.select('#chart')
-        .append('svg')
-        .attr('preserveAspectRatio', 'xMinYMin meet')
-        .attr('viewBox', '0 0 1300 1100')
-        .classed('svg-content', true)
-        .attr('id', 'svg')
-        .call(d3.drag()
-            .on('start',() => {
-                sx = d3.event.x;
-                sy = d3.event.y;
-            })    
-            .on('drag', () => {
-                const chart                   = d3.selectAll('#chartgroup');
-                const { x, y } = chart.node().getBBox();
-                const { x : mx, y : my } = d3.event;
-                const dx = mx - sx; 
-                const dy = my - sy; 
-                console.log(chart.node().getBBox(), chart.attr('transform'), dx , dy);
-                chart.attr('transform', `translate(${dx}, ${dy})`); 
-            }))
+
+    if(!isSVG) {
+        d3.select('#chart')
+            .append('svg')
+            .attr('xmlns', 'http://www.w3.org/2000/svg')
+            .attr('version', '1.1')
+            .attr('preserveAspectRatio', 'xMinYMin meet')
+            .attr('viewBox', '0 0 1500 1100')
+            .attr('id', 'svg')
+            .call(d3.drag()
+                .on('start',() => {
+                    sx = d3.event.x;
+                    sy = d3.event.y;
+                })    
+                .on('drag', () => {
+                    const chart                   = d3.selectAll('#chartgroup');
+                    const { x, y } = chart.node().getBBox();
+                    const { x : mx, y : my } = d3.event;
+                    const dx = mx - sx; 
+                    const dy = my - sy; 
+                    console.log(chart.node().getBBox(), chart.attr('transform'), dx , dy);
+                    chart.attr('transform', `translate(${dx}, ${dy})`); 
+                }));
+    }
+
+    const svg = d3.select('#svg') 
         .append('g')
         .attr("id","chartgroup")
         .attr('transform','translate(2,2)')
@@ -352,37 +356,37 @@ export const drawAxisGraph = (StateApp, circles) => {
         }); 
 };
     
-export const drawLegend = () => {
-    const width    = 1127;
-    const height   = 100;
-    const colors   = ['#2ca02c', '#cbdc01','#1f77b4', '#ff7f0e', '#d62728','#8c564b', '#581845'];
-    const legendes = ['Pas polluant','tres peu polluant','Peu polluant','Polluant','Très polluant','Dangereux','Destructeur']
-    const legende = d3.select('#legend')
-        .append('svg')
-        .attr('width', width)
-        .attr('height',height)
-        .attr('id', 'legende');
+// export const drawLegend = () => {
+//     const width    = 1127;
+//     const height   = 50;
+//     const colors   = ['#2ca02c', '#cbdc01','#1f77b4', '#ff7f0e', '#d62728','#8c564b', '#581845'];
+//     const legendes = ['Pas polluant','tres peu polluant','Peu polluant','Polluant','Très polluant','Dangereux','Destructeur']
+//     const legende = d3.select('#legend')
+//         .append('svg')
+//         .attr('width', width)
+//         .attr('height',height)
+//         .attr('id', 'legende');
 
-    var x = 45;   
+//     var x = 45;   
 
-    for( let i = 0; i < colors.length; i++) {
-        legende
-            .append('rect')
-            .attr('width', '150')
-            .attr('height', '30')
-            .attr('x', x)
-            .attr('y','30')
-            .attr('fill', colors[i]);     
-        legende
-            .append('text')
-            .attr('x',x + 75)
-            .attr('y','50')
-            .attr('fill','white')
-            .text(legendes[i])
-            .attr('text-anchor', 'middle');
-            x += 150;     
-    }
-};
+//     for( let i = 0; i < colors.length; i++) {
+//         legende
+//             .append('rect')
+//             .attr('width', '150')
+//             .attr('height', '30')
+//             .attr('x', x)
+//             .attr('y','20')
+//             .attr('fill', colors[i]);     
+//         legende
+//             .append('text')
+//             .attr('x',x + 75)
+//             .attr('y','40')
+//             .attr('fill','white')
+//             .text(legendes[i])
+//             .attr('text-anchor', 'middle');
+//             x += 150;     
+//     }
+// };
 
 export const drawMenu = async StateApp => {
     const selectTag = document.getElementById('Pays');
@@ -409,7 +413,6 @@ export const drawMenu = async StateApp => {
 
 export default {
     drawChart,
-    drawLegend,
     drawMenu,
     drawTimeLine,
     drawTotal

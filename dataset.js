@@ -7,35 +7,11 @@ const express       = require('express');
 const app           = express();
 const cors          = require('cors');
 const mysql         = require('./modules/mysql-promise')(process.env);
-const nanoid        = require('nanoid');
 const sendQueryJSON = require('./modules/utils');
-const multer        = require('multer');
-const fs            = require('fs');
-const upload        = multer({ dest: 'uploads/' });
 
 app.set('view engine', 'ejs');
 app.use('/static', express.static('public'));
 app.use(cors());
-
-// ------- Tests ------- //
-
-// Page test pour BT
-app.get('/bt', async (req, res) => {
-	res.render('bt', {} );
-});
-
-// Page test pour Max
-app.get('/max', async (req, res) => {
-	console.log(nanoid());
-	const countries = await mysql('SELECT DISTINCT name FROM countries ORDER BY name');
-	res.render('max', { countries : countries.map(line => line.name)} );	
-});
-
-//Exécuter des requêtes
-app.get('/query', async (req, res) => {
-		
-	//sendQueryJSON(await mysql(query), res);
-});
 
 // ------- ROUTES DE NAVIGATION -------- //
 
@@ -46,26 +22,6 @@ app.get('/', (req, res) => {
 app.get('/home', async (req, res) => {
 	res.render('home', {});
 });
-
-app.get('/generator', (req, res) => {
-	res.render('generator', {});
-});
-
-// -------  ROUTES POST ---------- //
-
-app.post('/generator', upload.single('json_file'), (req, res) => {
-	const {path} = req.file;
-	let buffer = '';
-	const upload = fs.createReadStream(path, {
-		encoding      : 'utf-8', 
-		highWaterMark : 16 * 1024,
-		emitClose     : true
-	});
-
-	upload.on('data', data => buffer += data);
-	upload.on('end', () => res.json(buffer));
-	upload.on('close', () => fs.unlink(path, error => { if(error) res.end(error)}));
-})
 
 // ------- ROUTES GETDATA POUR FETCH -------- //
 

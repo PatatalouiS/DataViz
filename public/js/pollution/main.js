@@ -3,7 +3,7 @@
 
 // ------------ IMPORT AND CONSTANTS ---------------- //
 
-import { drawMenu, drawLegend, drawChart, drawTimeLine, drawTotal } from './draw.js';
+import { drawMenu, drawChart, drawTimeLine, drawTotal } from './draw.js';
 import { getSelectedData } from './local_utils.js';
 import { paramsChangedHandler, switchRepresentation } from './handlers.js';
 import { getHOST } from '../utils.js';
@@ -18,7 +18,7 @@ const START_VALUES = {
     countries      : countriesNames,
     representation : 'bubble',
     chartSpecs     : {
-        width  : 1300,
+        width  : 1500,
         height : 1100 
     }
 };
@@ -30,7 +30,6 @@ const init = async () => {
     const data                                = await getSelectedData(StateApp);
     StateApp.setData(data);
 
-    drawLegend();
     drawChart(StateApp);
     drawTimeLine(StateApp);
     drawTotal(StateApp);

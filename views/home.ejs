@@ -5,124 +5,195 @@
 <html lang='en-EN'>
 
 <head>
-    <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous'>
-    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css'>
-    <link rel= 'stylesheet' href='/static/css/style_home.css' />
+    <link rel='stylesheet' href='/static/dist/bootstrap/css/bootstrap.min.css'/>
+    <link rel='stylesheet' href='/static/dist/bootstrap-select/css/bootstrap-select.min.css'>
+    <link rel= 'stylesheet' media='screen' href='/static/css/style_home.css' />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta charset='UTF-8'>
-
-    <%- include includes/scripts_env.ejs %>
 </head>
 
 <body>
 
     <header>
-        <div id='banner'>
-            <p id ='titre'>DATA VISUALTION</p>
+        <div class ='container'> 
+            <div class="row" id="header">
+                <div class="col">  
+
+                    <div class='row'>
+                        <div class="col">
+                            <div id="banner">
+                                <p id ='titre'>DATA VISUALISATION</p>
+                            </div>      
+                        </div>
+                    </div>
+
+                    <div class='row'>  
+                        <div class="col">
+                                <p style='font-weight: bold'>Estimation des émissions de CO2 </p>
+                        </div>
+                    </div>
+
+                    <div class='row'>
+                        <div class="col">
+                                <p>
+                                    Dues à la combustion de combustibles fossiles, à la production de ciment et au gaz brûlés à la torchère. En milliers de tonnes de dioxyde de carbone pour lespays ou/et en tonne par habitant 
+                                </p>
+                        </div>
+                    </div>
+                </div>   
+            </div>
         </div>
     </header>
-    
-    <div id='general-menu'>
-        <a href='/generator' class='nav-link' id='generator'>Generator</a>       
-        <div class ='card card-body bg-light'><p style='font-weight: bold'>Estimation des émissions de CO2 </p><p><br> Dues à la combustion de combustibles fossiles, à la production de ciment et au gaz brûlés à la torchère. En milliers de tonnes de dioxyde de carbone pour les
-        pays ou/et en tonne par habitant</p>
-    </div>  
 
-    <div class ='container'> 
-        <div class ='row'>
-            <div id='legend' class ='col'></div>
-        </div>
-        <div class ='row' id='subject'>
-            <div class="col-lg-4" id="side">
-                <div id="row">
-                    <div id='vis' class='row'> </div>
-                    <div class ='row main-menu'>
-                        <div id='controls-continent' class="col" >
-                            <div class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input radio-choice" id="byContinent" name="choice"  checked>
-                                <label class="custom-control-label" for="byContinent">Par Continent</label>
+    <section>
+        <div class='container' id='subject'>
+            <div class ='row'>
+                <div class='col'>
+
+                    <div class="row">
+                        <div class='container'>
+                            <div class='row justify-content-center' id='legend'>    
+                                <div class="col-6 col-md-4 col-lg-2 l" style='background: #2ca02c; height : 30px'> <p class='pl'> Pas polluant </p>  </div>
+                                <div class="col-6 col-md-4 col-lg-2 l" style='background: #cbdc01; height : 30px'> <p class='pl'> Trés peu polluant </p>  </div>
+                                <div class="col-6 col-md-4 col-lg-2 l" style='background: #1f77b4; height : 30px'> <p class='pl'> Peu polluant </p>  </div>
+                                <div class="col-6 col-md-4 col-lg-2 l" style='background: #ff7f0e; height : 30px'> <p class='pl'> Polluant </p>  </div>
+                                <div class="col-6 col-md-4 col-lg-2 l" style='background: #d62728; height : 30px'> <p class='pl'> Trés polluant </p>  </div>
+                                <div class="col-6 col-md-4 col-lg-2 l" style='background: #8c564b; height : 30px'> <p class='pl'> Dangereux </p> </div>
+                                <div class="col-12 col-md-12 col-lg-4 l" style='background: #581845; height : 30px'> <p class='pl'> Destructeur </p> </div>
                             </div>
-                            <select class='selectpicker sContinent' data-live-search='true' title='Choose' id='selectContinent' >
-                                <optgroup label='Continent' id='Continent'>
-                                    <option id='Asie' class = 'option-continent' value='1' >Asie</option>
-                                    <option id='Africa' class = 'option-continent' value='2'>Africa</option>
-                                    <option id='Europe' class = 'option-continent' value='3' selected>Europe</option>
-                                    <option id='NorthAmerica' class = 'option-continent' value='4'>North America</option>
-                                    <option id='SouthAmerica' class = 'option-continent' value='5'>South America</option>
-                                    <option id='Oceania' class = 'option-continent' value='6'>Oceania</option>
-                                </optgroup>
-                            </select>
-                            <div class="custom-control custom-radio " style='text-align: none'>
-                                <input type="radio" class="custom-control-input radio-choice" id="byCountry" name="choice">
-                                <label class="custom-control-label" for="byCountry">Par pays</label>
-                            </div>
-                            <select class='selectpicker scountry' multiple data-live-search='true' id='selectCountry' >
-                                <optgroup label='Pays' id='Pays' data-max-options='10' >
-                                </optgroup>
-                            </select>
-                            <div class="custom-control custom-radio " style='text-align: none'>
-                                <input type="radio" class="custom-control-input radio-choice" id="Top10" name="choice">
-                                <label class="custom-control-label" for="Top10">Top 10</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class ='row'>
-                        <div id='timeLine' class='col'>
-                            <button id='play-button'> Play </button>
-                        </div>
-                    </div>
-            
-                    <div class ='row'>
-                        <div id ='zoom-button' class='zoom  col'>
-                            <p class ="text-zoom" style="display: inline; padding-right: 10px;" > Zoom</p>
-                            <button id='button-moins'>-</button>
-                            <button id='button-plus'>+</button>                              
                         </div>
                     </div>
 
-                    <div class ='row'>
-                        <div class="col" style='text-align: center;'> 
-                            <div class="custom-control custom-radio custom-inline">
-                                <input type="radio" class="custom-control-input radio-t menu-input" id="total" name="pollu"  checked>
-                                <label class="custom-control-label" for="total">Pollution par pays</label>
+                    <div class="row fluid" id='first-line'>
+
+                        <div class="col-lg-4">  
+                             <div class="row">
+                                <div class='col'>
+                                    <div id='vis' class='row'></div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class = 'row'>
-                        <div class="col" style='text-align: center;'> 
-                            <div class="custom-control custom-radio custom-inline">
-                                <input type="radio" class="custom-control-input radio-t menu-input" id="per-capita" name="pollu">
-                                <label class="custom-control-label" for="per-capita">Pollution par habitants</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class ='row'>
-                        <div class='col'>
-                            <h3> Choix de la représentation</h3>
-                            <div class ="main-img">
-                                <div class ="img">
-                                    <img class ="image" src="/static/img/BubbleChart.png" style="margin-bottom: 10px;">
-                                    <div class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input radio-rp" id="bubble" name="repres" checked>
-                                        <label class="custom-control-label" for="bubble">Bubble Chart</label>
+
+                        <div class="col-lg-8">  
+                            <div class="row">
+                                <div class="col" style='text-align: center;'> 
+                                    <div class="custom-control custom-radio custom-inline type">
+                                        <input type="radio" class="custom-control-input radio-t menu-input" id="total" name="pollu"  checked>
+                                        <label class="custom-control-label" for="total">Pollution par pays</label>
                                     </div>
                                 </div>
-                                <div class="img">
-                                    <img class ="image custom-inline" src="/static/img/Graph.png">
-                                    <div class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input radio-rp" id="graph" name="repres" >
-                                        <label class="custom-control-label" for="graph">Graph</label>
+                                <div class='col'>
+                                    <div class="custom-control custom-radio custom-inline type">
+                                        <input type="radio" class="custom-control-input radio-t menu-input" id="per-capita" name="pollu">
+                                        <label class="custom-control-label" for="per-capita">Pollution par habitants</label>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                     </div>
+                
+                    <div class="row" id="main-content">
+                        <div class="col-lg-4">
+
+                            <div class ='row main-menu justify-content-center'>
+                                <div id='controls-continent' class="col" >
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input radio-choice" id="byContinent" name="choice"  checked>
+                                        <label class="custom-control-label" for="byContinent">Par Continent</label>
+                                    </div>
+
+                                    <select class='selectpicker' data-live-search='true' title='Choose' id='selectContinent' >
+                                        <optgroup label='Continent' id='Continent'>
+                                            <option id='Asie' class = 'option-continent' value='1' >Asie</option>
+                                            <option id='Africa' class = 'option-continent' value='xs-6'>Africa</option>
+                                            <option id='Europe' class = 'option-continent' value='3' selected>Europe</option>
+                                            <option id='NorthAmerica' class = 'option-continent' value='4'>North America</option>
+                                            <option id='SouthAmerica' class = 'option-continent' value='5'>South America</option>
+                                            <option id='Oceania' class = 'option-continent' value='6'>Oceania</option>
+                                        </optgroup>
+                                    </select>
+
+                                    <div class="custom-control custom-radio " style='text-align: none'>
+                                        <input type="radio" class="custom-control-input radio-choice" id="byCountry" name="choice">
+                                        <label class="custom-control-label" for="byCountry">Par pays</label>
+                                    </div>
+
+                                    <select class='selectpicker' multiple data-live-search='true' id='selectCountry' >
+                                        <optgroup label='Pays' id='Pays' data-max-options='10' >
+                                        </optgroup>
+                                    </select>
+                            
+
+                                    <div class="custom-control custom-radio " style='text-align: none'>
+                                        <input type="radio" class="custom-control-input radio-choice" id="Top10" name="choice">
+                                        <label class="custom-control-label" for="Top10">Top 10</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class ='row'>
+                                <div id='timeLine' class='col'>
+                                    <button id='play-button'> Play </button>
+                                </div>
+                            </div>
+                        
+                            <div class ='row'>
+                                <div id ='zoom-button' class='zoom  col'>
+                                    <p class ="text-zoom" style="display: inline; padding-right: 10px;" > Zoom</p>
+                                    <button id='button-moins'>-</button>
+                                    <button id='button-plus'>+</button>                              
+                                </div>
+                            </div>
+
+                            <div class ='row'>
+                                <div class='col'>
+                                    <h3> Choix de la représentation</h3>
+                                    <div class ="main-img">
+                                        <div class ="img">
+                                            <img class ="image" src="/static/img/BubbleChart.png" style="margin-bottom: 10px;">
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" class="custom-control-input radio-rp" id="bubble" name="repres" checked>
+                                                <label class="custom-control-label" for="bubble">Bubble Chart</label>
+                                            </div>
+                                        </div>
+                                        <div class="img">
+                                            <img class ="image custom-inline" src="/static/img/Graph.png">
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" class="custom-control-input radio-rp" id="graph" name="repres" >
+                                                <label class="custom-control-label" for="graph">Graph</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class = 'col-lg-8' id='chart-container'>
+                            <div id="chart"></div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
-            <div id='chart' class = 'col-lg-8'></div>
         </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col" id='footer'>   
+                    Projet pour l'UE LIFPROJET, UCBL1
+                    <br>
+                    JEAUSEAU Baptiste P1509933
+                    <br>
+                    OLIVIE Maxime P1710179
+                </div>
+            </div>
+        </div>
+    </footer>
+
     </div>
-    <script type='module' src='/static/js/pollution/main.js'></script>
-</body>
+    <%- include includes/scripts_env.ejs %>
+</section>
 </html>
 
