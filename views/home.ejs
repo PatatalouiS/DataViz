@@ -1,12 +1,13 @@
 
-<!DOCTYPE html>
-<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='fr'>
+<!DOCTYPE svg PUBLIC “-//W3C//DTD SVG 1.1//EN”
+“http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd”> 
 
 <head>
     <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
     <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous'>
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css'>
     <link rel= 'stylesheet' href='/static/css/style_home.css' />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <%- include includes/scripts_env.ejs %>
 </head>
 
@@ -63,8 +64,8 @@
                         </div>
                     </div>
                     <div class ='row'>
-                        <div id='timeLine' class='col'> 
-                            <button id='play-button'>Play</button>
+                        <div id='timeLine' class='col'>
+                            <button id='play-button'> Play </button>
                         </div>
                     </div>
             
@@ -82,13 +83,16 @@
                                 <input type="radio" class="custom-control-input radio-t menu-input" id="total" name="pollu"  checked>
                                 <label class="custom-control-label" for="total">Pollution par pays</label>
                             </div>
+                        </div>
+                    </div>
+                    <div class = 'row'>
+                        <div class="col" style='text-align: center;'> 
                             <div class="custom-control custom-radio custom-inline">
                                 <input type="radio" class="custom-control-input radio-t menu-input" id="per-capita" name="pollu">
                                 <label class="custom-control-label" for="per-capita">Pollution par habitants</label>
                             </div>
                         </div>
                     </div>
-
                     <div class ='row'>
                         <div class='col'>
                             <h3> Choix de la représentation</h3>

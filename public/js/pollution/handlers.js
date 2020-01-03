@@ -193,11 +193,11 @@ export const bubbleTransition = StateApp => (dataLine, index , nodes) => {
             ? Math.floor(interpolationValue(time))
             : interpolationValue(time);
 
-        valueCircle.text(d => new Intl.NumberFormat('de-DE', {maximumSignificantDigits: 3}).format(d.showedValue))
+        valueCircle.text(d => new Intl.NumberFormat('de-DE', {maximumFractionDigits: 1}).format(d.showedValue))
         
         textOfcircle.style('display', dataLine.radius >= 40 ? '' : 'none');
         StateApp.getForce().nodes(StateApp.getData()); 
-        StateApp.getForce().force('collide', d3.forceCollide(dataLine => dataLine.radius));
+        //StateApp.getForce().force('collide', d3.forceCollide(dataLine => dataLine.radius));
     };
 };
 

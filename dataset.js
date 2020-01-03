@@ -8,9 +8,9 @@ const app          = express();
 const cors         = require('cors');
 const mysql        = require('./modules/mysql-promise')(process.env);
 const nanoid       = require('nanoid');
-import {sendQueryJSON} from './modules/utils.js';
-import multer from 'multer';
-import fs from 'fs';
+const sendQueryJSON = require('./modules/utils');
+const multer = require('multer');
+const fs = require('fs');
 const upload = multer({ dest: 'uploads/' });
 
 app.set('view engine', 'ejs');

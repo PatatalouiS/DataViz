@@ -1,7 +1,7 @@
 
 'use strict';
 
-export const sendQueryJSON = (queryResult, res) => {
+const sendQueryJSON = (queryResult, res) => {
     res.setHeader('Content-Type', 'application/json');
     
     if(queryResult.length !== 0) res.json(queryResult)
@@ -13,5 +13,7 @@ export const sendQueryJSON = (queryResult, res) => {
             });
     }
 };
+
+module.exports = sendQueryJSON;
 
 

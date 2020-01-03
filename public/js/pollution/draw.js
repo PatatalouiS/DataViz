@@ -15,12 +15,12 @@ export const drawTotal = StateApp => {
     StateApp.setTotal(total);
     const description_1 = "*milliers de tonnes de CO2"
     const description_2 = "*en tonne par habitant"
-    var description = description_1;
 
     const svg = d3.select('#vis')
         .append('svg')
         .attr('width', width)
         .attr('height',height)
+        .attr('id', 'total-text')
 
     const pollu = svg
         .append('g')
@@ -51,29 +51,22 @@ export const drawTotal = StateApp => {
     
     pollu.append('text')
         .attr('id','description')
-        .text(description)
+        .text(description_1)
         .attr('x','30')
         .attr('y','90')
         .style('font-style', 'italic')
 
     d3.select('#total')
     .on('click', () => { 
-        console.log("Total") 
-        description = description_1;
         svg.select("#description")
-        .text(description);
-    })
+            .text(description_1);
+    });
 
     d3.select('#per-capita')
     .on('click', () => {
-        console.log("Per capita") 
-        description = description_2;
         svg.select("#description")
-        .text(description);
-    })
-
-    
-    
+            .text(description_2);
+    });
 }
 
 export const drawTimeLine = StateApp => {
@@ -85,13 +78,12 @@ export const drawTimeLine = StateApp => {
     const startDate          = dates[0];
 
     const svg = d3.select('#timeLine')
-        .append('svg')
+        .insert('svg', ':first-child')
         .attr('id', 'timeline')
+        .attr('xmlns', 'http://www.w3.org/2000/svg')
+        .attr('version', '1.1')
         .attr('width', width)
         .attr('height',height)
-        
-    const playButton = d3.select('#play-button')
-        .on('click', () => playButtonHandler(StateApp, playButton, rangeMax));
   
     const slider = svg.append('g')
         .attr('class','slider')
@@ -135,7 +127,10 @@ export const drawTimeLine = StateApp => {
         .attr('text-anchor','middle')
         .attr('year', '1975')
         .text(startDate)
-        .attr('transform', 'translate(10,' + (-25) + ')')  
+        .attr('transform', 'translate(10,' + (-25) + ')');
+
+    d3.select('#play-button')
+        .on('click', () => playButtonHandler(StateApp, d3.select('#play-button'), rangeMax));
 }
 
 
@@ -355,12 +350,8 @@ export const drawAxisGraph = (StateApp, circles) => {
             .duration(750)
             .call(d3.axisLeft(yscale));
         }); 
-        
-   
-    
 };
     
- 
 export const drawLegend = () => {
     const width    = 1127;
     const height   = 100;
