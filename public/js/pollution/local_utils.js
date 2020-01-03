@@ -108,6 +108,7 @@ export const getSelectedData = async StateApp => {
             }))
             .then(data => data.filter(dataLine => dataLine !== undefined))
     }
+    console.log(data);
     return formatData(data, StateApp);
 };
 

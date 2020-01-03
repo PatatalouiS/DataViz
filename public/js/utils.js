@@ -11,8 +11,8 @@ const getMODE = () => {
 export const getHOST = () => {
     return document.getElementById('MODE')
         .getAttribute('data-row') === 'development'
-            ? 'localhost:8080'
-            : 'lifprojet.patatalouis.fr';
+            ? '192.168.1.82:8080'
+            : 'patatalouis.fr';
 }
 
 // ----------------------  FETCH GET QUERY --> JSON ------------------------- //
@@ -22,7 +22,6 @@ export const getData = url => {
     return fetch(url)
         .then(response => response.json())
         .then(data => {if(data.err) throw data; return data})
-        .then(data => {if(getMODE() === 'development') return data;})
         .catch(error => console.error(`Error : here the error object for you : `, error));
 };
 

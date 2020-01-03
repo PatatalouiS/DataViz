@@ -55,7 +55,4 @@ const init = async () => {
 
 // --------------------   MAIN   ------------------- //
 
-document.addEventListener('DOMContentLoaded', () => {
-    if(getHOST() !== 'localhost:8080') console.log = () => {};
-    init();
-});
+document.addEventListener('DOMContentLoaded', init);

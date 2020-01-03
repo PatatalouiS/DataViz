@@ -1,17 +1,17 @@
 
 'use strict'
 
-const dotenv       = require('dotenv').config();
-const {PORT, MODE} = process.env;
-const express      = require('express');
-const app          = express();
-const cors         = require('cors');
-const mysql        = require('./modules/mysql-promise')(process.env);
-const nanoid       = require('nanoid');
+const dotenv        = require('dotenv').config();
+const {PORT, MODE}  = process.env;
+const express       = require('express');
+const app           = express();
+const cors          = require('cors');
+const mysql         = require('./modules/mysql-promise')(process.env);
+const nanoid        = require('nanoid');
 const sendQueryJSON = require('./modules/utils');
-const multer = require('multer');
-const fs = require('fs');
-const upload = multer({ dest: 'uploads/' });
+const multer        = require('multer');
+const fs            = require('fs');
+const upload        = multer({ dest: 'uploads/' });
 
 app.set('view engine', 'ejs');
 app.use('/static', express.static('public'));
@@ -125,7 +125,6 @@ app.get('/data/pollution/per-capita/top10/:year', async (req, res) => {
 	const queryResult = await mysql(/*sql*/ `SELECT name, year, valuePerCapita FROM PerCapitaCountriesPollution WHERE year = ? ORDER BY valuePerCapita DESC LIMIT 0,10`, [req.params.year]);
 	sendQueryJSON(queryResult, res);
 });
-
 
 // ----------  LISTEN ---------- //
 
