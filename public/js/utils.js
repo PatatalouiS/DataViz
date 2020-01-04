@@ -11,7 +11,7 @@ const getMODE = () => {
 export const getHOST = () => {
     return document.getElementById('MODE')
         .getAttribute('data-row') === 'development'
-            ? '192.168.1.82:8080'
+            ? 'localhost:8080'
             : 'patatalouis.fr';
 }
 
