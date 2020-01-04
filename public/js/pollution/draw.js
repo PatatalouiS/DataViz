@@ -140,7 +140,6 @@ export const drawChart = StateApp => {
     const { width, height } = StateApp.getChartSpecs();
     const representation    = StateApp.getRepresentation();
     const isSVG             = document.getElementById('svg');
-    let sx, sy;
 
     if(!isSVG) {
         d3.select('#chart')
@@ -150,20 +149,7 @@ export const drawChart = StateApp => {
             .attr('preserveAspectRatio', 'xMinYMin meet')
             .attr('viewBox', '0 0 1500 1100')
             .attr('id', 'svg')
-            .call(d3.drag()
-                .on('start',() => {
-                    sx = d3.event.x;
-                    sy = d3.event.y;
-                })    
-                .on('drag', () => {
-                    const chart                   = d3.selectAll('#chartgroup');
-                    const { x, y } = chart.node().getBBox();
-                    const { x : mx, y : my } = d3.event;
-                    const dx = mx - sx; 
-                    const dy = my - sy; 
-                    console.log(chart.node().getBBox(), chart.attr('transform'), dx , dy);
-                    chart.attr('transform', `translate(${dx}, ${dy})`); 
-                }));
+            .call(d3.zoom().on('zoom', () => d3.select('#chartgroup').attr('transform', d3.event.transform)));
     }
 
     const svg = d3.select('#svg') 

@@ -44,6 +44,11 @@ section {
 	border-top: 1px solid grey;
 }
 
+#svg {
+	height: 100%;
+	width: 100%;
+}
+
 @media screen and (max-width: 980px) {
 
 	#chart {	
@@ -51,6 +56,10 @@ section {
 		border-bottom-right-radius: 10px;
 		border-top-left-radius : 0px;
 		border-left : none;
+	}
+
+	#svg {
+		height: 400px;
 	}
 
 }
