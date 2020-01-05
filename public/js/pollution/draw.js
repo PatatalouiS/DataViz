@@ -80,11 +80,10 @@ export const drawTimeLine = StateApp => {
     const startDate          = dates[0];
 
     const svg = d3.select('#timeLine')
-        .insert('svg', ':first-child')
+        .append('svg', ':first-child')
         .attr('id', 'timeline')
         .attr('xmlns', 'http://www.w3.org/2000/svg')
         .attr('version', '1.1')
-        //.attr('viewBox', '0 0 366 120')
         .attr('width', width)
         .attr('height',height)
   

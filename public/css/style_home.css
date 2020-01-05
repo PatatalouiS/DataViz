@@ -217,27 +217,19 @@ h3 {
 	text-align: center;
 }
 
-/************** Style TimeLine *****/
-
-#play-button {
-	position: absolute;
-	top: 90px;
-	left: 170px;
-	background: #f08080;
-	padding-right: 26px;
-	border-radius: 3px;
-	border: none;
-	color: white;
-	margin: 0;
-	padding: 0 12px;
-	/*width: 60px;*/
-	cursor: pointer;
-	/*height: 30px;*/
+#zoom {
+	margin : 10px;
 }
 
-#play-button:hover {
-	background-color: #696969;
-}    
+/************** Style TimeLine *****/ 
+
+#play-button {
+	width: 75px;
+	height: 30px;
+	padding-top: -10px;
+	padding-bottom: 30px;
+	margin-top : -20px;
+}
 
 
 .track,.track-inset,.track-overlay {
