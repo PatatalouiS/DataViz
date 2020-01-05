@@ -25,11 +25,10 @@ export const getMainValue = dataType => {
     }
 }
 
-export const computeCircleColor = (dataLine/*, maxValue*/) => {
+export const computeCircleColor = (dataLine, dataType) => {
     const {value} = dataLine;
-    const type = getCheckedRadioButton('radio-t')
     const colorScale = d3.scaleQuantize()
-        .domain([0,type == 'total' ? 1000000 : 25])
+        .domain([0, dataType === 'total' ? 1000000 : 25])
         .range(['#2ca02c','#cbdc01', '#1f77b4','#ff7f0e', '#d62728', '#8c564b','#581845']);
     return colorScale(value);
 };
@@ -123,7 +122,7 @@ export const formatData = (data, StateApp) => {
         if(dataLine) {
             const value = dataLine[valueKeyName];
             const finalRadius = computeCircleRadius({value}, maxValue, StateApp.getRepresentation());
-            const finalColor = computeCircleColor({value});
+            const finalColor = computeCircleColor({value}, StateApp.getDataType());
             delete dataLine[valueKeyName];
 
             return Object.assign(dataLine, { 
