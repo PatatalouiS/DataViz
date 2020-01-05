@@ -1,4 +1,3 @@
-
 'use strict';
 
 import Timer from "./timer.js";
