@@ -35,6 +35,12 @@
             </div>        
         </div>
     </section>
+    <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">Simple collapsible</button>
+    <div id="demo" class="collapse">
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+      sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+      quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    </div>
 
     <section id='main'>
         <div class='container' id='subject'>
@@ -124,12 +130,14 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>                        
-                            <div class ='row' id='zoom'>
-                                <div class='zoom  col'>
-                                    <p class ="text-zoom" style="display: inline; padding-right: 10px;" > Zoom (Graph)</p>
-                                    <button id='button-moins' class='btn btn-info'> <i class='fas fa-search-minus'></i> </button>
-                                    <button id='button-plus' class='btn btn-info'> <i class='fas fa-search-plus'></i> </button>                              
+                            </div> 
+                            <div id="cllp" class="collapse">                      
+                                <div class ='row' id='zoom'>                                
+                                    <div class='zoom  col'>
+                                        <p class ="text-zoom"> Zoom</p>
+                                        <button id='button-moins' class='btn btn-info'> <i class='fas fa-search-minus'></i> </button>
+                                        <button id='button-plus' class='btn btn-info'> <i class='fas fa-search-plus'></i> </button>                              
+                                    </div>
                                 </div>
                             </div>
                             <div class ='row'>
@@ -141,7 +149,7 @@
                                                 <img class ="image" src="/static/img/BubbleChart.png" style="margin-bottom: 10px;">
                                             </label>
                                             <div class="custom-control custom-radio">
-                                                <input type="radio" class="custom-control-input radio-rp" id="bubble" name="repres" checked>
+                                                <input type="radio" class="custom-control-input radio-rp" id="bubble" name="repres" data-toggle="collapse" data-target="#cllp" checked>
                                                 <label class="custom-control-label" for="bubble">Bubble Chart</label>
                                             </div>
                                         </div>
@@ -150,7 +158,7 @@
                                                 <img class ="image custom-inline" src="/static/img/Graph.png">
                                             </label>
                                             <div class="custom-control custom-radio">
-                                                <input type="radio" class="custom-control-input radio-rp" id="graph" name="repres" >
+                                                <input type="radio" class="custom-control-input radio-rp" id="graph" name="repres"  data-toggle="collapse" data-target="#cllp">
                                                 <label class="custom-control-label" for="graph">Graph</label>
                                             </div>
                                         </div>

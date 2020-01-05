@@ -66,9 +66,17 @@ body{
 
 .zoom{
 	display: inline;
-	text-align: center;
+	
 	margin-bottom: 10px;
 	margin-top: 10px;	
+}
+
+.collapse{
+	text-align: center;
+}
+.text-zoom{
+	display: inline;
+	padding-right: 10px;
 }
 
 #legend {
