@@ -3,34 +3,32 @@
 
 // ------------ IMPORT AND CONSTANTS ---------------- //
 
-import { drawMenu, drawLegend, drawChart, drawTimeLine, drawTotal } from './draw.js';
+import { drawMenu, drawChart, drawTimeLine, drawTotal } from './draw.js';
 import { getSelectedData } from './local_utils.js';
 import { paramsChangedHandler, switchRepresentation } from './handlers.js';
-import { getHOST } from '../utils.js';
-import State from './State.js';
-import countriesNames from './countries.js';
+import State from './state.js';
+import { getData, countriesURL } from '../utils.js';
 
-const START_VALUES = {
-    place : ['Europe'],
-    year      : 1975,
-    dataType  : 'total',
-    placeType : 'byContinent',
-    countries : countriesNames,
+const START_VALUES = async () => ({
+    place          : ['Europe'],
+    year           : 1975,
+    dataType       : 'total',
+    placeType      : 'byContinent',
+    countries      : await getData(countriesURL),   
     representation : 'bubble',
-    chartSpecs  : {
-        width : 1300,
+    chartSpecs     : {
+        width  : 1500,
         height : 1100 
     }
-};
+});
 
 // ------------------- INITIAL STATE OF PAGE ------------- // 
 
 const init = async () => {
-    const StateApp                            = new State(START_VALUES);
+    const StateApp                            = new State(await START_VALUES());
     const data                                = await getSelectedData(StateApp);
     StateApp.setData(data);
 
-    drawLegend();
     drawChart(StateApp);
     drawTimeLine(StateApp);
     drawTotal(StateApp);
@@ -41,21 +39,18 @@ const init = async () => {
     document.getElementById(StateApp.getRepresentation()).checked = true;
 
     document.getElementById('selectContinent')
-        .addEventListener('change', paramsChangedHandler(StateApp)); 
-        
+        .addEventListener('change', paramsChangedHandler(StateApp));    
     document.getElementById('selectCountry')
         .addEventListener('change', paramsChangedHandler(StateApp));
 
     Array.from(document.getElementsByClassName('radio-t'))
         .forEach(element => element.addEventListener('click', paramsChangedHandler(StateApp)));
-
+    Array.from(document.getElementsByClassName('radio-choice'))
+        .forEach(element => element.addEventListener('click', paramsChangedHandler(StateApp)));
     Array.from(document.getElementsByClassName('radio-rp'))
         .forEach(element => element.addEventListener('click', switchRepresentation(StateApp)));
 };
 
 // --------------------   MAIN   ------------------- //
 
-document.addEventListener('DOMContentLoaded', () => {
-    if(getHOST() !== 'localhost:8080') console.log = () => {};
-    init();
-});
+document.addEventListener('DOMContentLoaded', init);

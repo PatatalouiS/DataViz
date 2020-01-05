@@ -1,5 +1,5 @@
 
-'use strict'
+'use strict';
 
 // ----------------------  SET/GET ENVIRONEMENT -------------------- //
 
@@ -12,7 +12,7 @@ export const getHOST = () => {
     return document.getElementById('MODE')
         .getAttribute('data-row') === 'development'
             ? 'localhost:8080'
-            : 'lifprojet.patatalouis.fr';
+            : 'patatalouis.fr';
 }
 
 // ----------------------  FETCH GET QUERY --> JSON ------------------------- //
@@ -22,42 +22,14 @@ export const getData = url => {
     return fetch(url)
         .then(response => response.json())
         .then(data => {if(data.err) throw data; return data})
-        .then(data => {if(getMODE() === 'development') return data;})
         .catch(error => console.error(`Error : here the error object for you : `, error));
 };
 
-export const dataURL = `http://${getHOST()}/data/`;
+export const URL = `http://${getHOST()}`;
 
-// ------------------ CLASS TIMER FOR DELAY HANDLERS --------------- //
+export const dataURL = `${URL}/data/pollution`;
 
-export class Timer {
-
-    constructor () {
-        this.time = null;
-    }
-
-    setTimeout (callback, delay) {
-        this.time = setTimeout(callback, delay);
-    }
-
-    clearTimeout () {
-        this.time = clearTimeout(this.time)
-        this.time = null;
-    }
-
-    setInterval (callback, delay) {
-        this.time = setInterval(callback, delay);
-    }
-
-    clearInterval () {
-        this.time = clearInterval(this.time);
-        this.time = null;
-    }
-
-    getTime () {
-        return this.time
-    }
-}
+export const countriesURL = `${URL}/data/utils/countriesnames`;
 
 // --------------------- UTILS FUNCTIONS ---------------------- //
 
@@ -81,5 +53,4 @@ export default {
     getData,
     dataURL,
     interpolationTabNumber,
-    Timer
 };

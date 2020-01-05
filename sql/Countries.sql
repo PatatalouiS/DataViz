@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS Countries (
     `continent` VARCHAR(12) CHARACTER SET utf8
 );
 
-INSERT INTO countries VALUES
+INSERT INTO Countries VALUES
     (0,'Afghanistan','Asie'),
     (1,'Albania','Europe'),
     (2,'Algeria','Africa'),

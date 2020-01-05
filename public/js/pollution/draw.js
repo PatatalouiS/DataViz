@@ -1,4 +1,6 @@
 
+'use strict';
+
 // ---------------------  IMPORTS  --------------------- //
 
 import { getTotalFromData, getAllDates, valueToDiscreteTimeline, 
@@ -15,12 +17,12 @@ export const drawTotal = StateApp => {
     StateApp.setTotal(total);
     const description_1 = "*milliers de tonnes de CO2"
     const description_2 = "*en tonne par habitant"
-    var description = description_1;
 
     const svg = d3.select('#vis')
         .append('svg')
         .attr('width', width)
         .attr('height',height)
+        .attr('id', 'total-text')
 
     const pollu = svg
         .append('g')
@@ -51,47 +53,39 @@ export const drawTotal = StateApp => {
     
     pollu.append('text')
         .attr('id','description')
-        .text(description)
+        .text(description_1)
         .attr('x','30')
         .attr('y','90')
         .style('font-style', 'italic')
 
     d3.select('#total')
     .on('click', () => { 
-        console.log("Total") 
-        description = description_1;
         svg.select("#description")
-        .text(description);
-    })
+            .text(description_1);
+    });
 
     d3.select('#per-capita')
     .on('click', () => {
-        console.log("Per capita") 
-        description = description_2;
         svg.select("#description")
-        .text(description);
-    })
-
-    
-    
+            .text(description_2);
+    });
 }
 
 export const drawTimeLine = StateApp => {
-    const width              = 366;
-    const height             = 120;
+    const width              = 300;
+    const height             = 90;
     const margin             = {right: 40, left: 40};
     const rangeMax           = width - margin.left - margin.right;
     const dates              = getAllDates();
     const startDate          = dates[0];
 
     const svg = d3.select('#timeLine')
-        .append('svg')
+        .append('svg', ':first-child')
         .attr('id', 'timeline')
+        .attr('xmlns', 'http://www.w3.org/2000/svg')
+        .attr('version', '1.1')
         .attr('width', width)
         .attr('height',height)
-        
-    const playButton = d3.select('#play-button')
-        .on('click', () => playButtonHandler(StateApp, playButton, rangeMax));
   
     const slider = svg.append('g')
         .attr('class','slider')
@@ -135,22 +129,30 @@ export const drawTimeLine = StateApp => {
         .attr('text-anchor','middle')
         .attr('year', '1975')
         .text(startDate)
-        .attr('transform', 'translate(10,' + (-25) + ')')  
-}
+        .attr('transform', 'translate(0,' + (-15) + ')');
 
+    d3.select('#play-button')
+        .on('click', () => playButtonHandler(StateApp, d3.select('#play-button'), rangeMax));
+}
 
 export const drawChart = StateApp => {
     const data              = StateApp.getData();
     const { width, height } = StateApp.getChartSpecs();
     const representation    = StateApp.getRepresentation();
-    
-  
-    const svg = d3.select('#chart')
-        .append('svg')
-        .attr('preserveAspectRatio', 'xMinYMin meet')
-        .attr('viewBox', '0 0 1300 1100')
-        .classed('svg-content', true)
-        .attr('id', 'svg')
+    const isSVG             = document.getElementById('svg');
+
+    if(!isSVG) {
+        d3.select('#chart')
+            .append('svg')
+            .attr('xmlns', 'http://www.w3.org/2000/svg')
+            .attr('version', '1.1')
+            .attr('preserveAspectRatio', 'xMinYMin meet')
+            .attr('viewBox', '0 0 1500 1100')
+            .attr('id', 'svg')
+            .call(d3.zoom().on('zoom', () => d3.select('#chartgroup').attr('transform', d3.event.transform)));
+    }
+
+    const svg = d3.select('#svg') 
         .append('g')
         .attr("id","chartgroup")
         .attr('transform','translate(2,2)')
@@ -380,57 +382,25 @@ export const drawAxisGraph = (StateApp, circles) => {
             svg.select(".yaxis")
             .transition()
             .duration(750)
-            .call(d3.axisLeft(yscale));});       
-   
-    
-};
-    
- 
-export const drawLegend = () => {
-    const width    = 1127;
-    const height   = 100;
-    const colors   = ['#2ca02c', '#cbdc01','#1f77b4', '#ff7f0e', '#d62728','#8c564b', '#581845'];
-    const legendes = ['Pas polluant','tres peu polluant','Peu polluant','Polluant','Très polluant','Dangereux','Destructeur']
-    const legende = d3.select('#legend')
-        .append('svg')
-        .attr('width', width)
-        .attr('height',height)
-        .attr('id', 'legende');
-
-    var x = 45;   
-
-    for( let i = 0; i < colors.length; i++) {
-        legende
-            .append('rect')
-            .attr('width', '150')
-            .attr('height', '30')
-            .attr('x', x)
-            .attr('y','30')
-            .attr('fill', colors[i]);     
-        legende
-            .append('text')
-            .attr('x',x + 75)
-            .attr('y','50')
-            .attr('fill','white')
-            .text(legendes[i])
-            .attr('text-anchor', 'middle');
-            x += 150;     
-    }
+            .call(d3.axisLeft(yscale));
+        });
 };
 
 export const drawMenu = async StateApp => {
     const selectTag = document.getElementById('Pays');
 
-    StateApp.getCountries().forEach(({name}) => {
+    StateApp.getCountries().forEach(({ name }) => {
         const newOption = document.createElement('option');
         newOption.innerHTML = name.replace(/\(.[^(]*\)/g,'');
-        newOption.classList = 'option-country'
+        newOption.classList = 'option-country';
+        newOption.id = `option-country-${name}`;
         selectTag.appendChild(newOption);
     });
 
-    $('.selectpicker').selectpicker('refresh');
-
     document.getElementById('Continent').children[2].selected = true;
+    document.getElementById('Pays').children[0].selected = true;
+
+    $('.selectpicker').selectpicker('refresh');
 
     const selectCountry = document.getElementsByClassName('scountry')[1]
     const selectContinent = document.getElementsByClassName('sContinent')[1];
@@ -441,7 +411,6 @@ export const drawMenu = async StateApp => {
 
 export default {
     drawChart,
-    drawLegend,
     drawMenu,
     drawTimeLine,
     drawTotal

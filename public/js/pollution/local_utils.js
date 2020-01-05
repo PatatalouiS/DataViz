@@ -1,4 +1,6 @@
 
+'use strict';
+
 // ---------------------  IMPORTS AND CONSTANTS  --------------------- //
 
 import { getData, dataURL, interpolationTabNumber } from '../utils.js';
@@ -23,11 +25,10 @@ export const getMainValue = dataType => {
     }
 }
 
-export const computeCircleColor = (dataLine/*, maxValue*/) => {
+export const computeCircleColor = (dataLine, dataType) => {
     const {value} = dataLine;
-    const type = getCheckedRadioButton('radio-t')
     const colorScale = d3.scaleQuantize()
-        .domain([0,type == 'total' ? 1000000 : 25])
+        .domain([0, dataType === 'total' ? 1000000 : 25])
         .range(['#2ca02c','#cbdc01', '#1f77b4','#ff7f0e', '#d62728', '#8c564b','#581845']);
     return colorScale(value);
 };
@@ -88,21 +89,27 @@ export const updateData = (StateApp, lastData, newData) => {
 // --------------------  FETCH AND DATA RELATED FUNCTIONS --------------------- //
 
 export const getSelectedData = async StateApp => {
-    const url = `${dataURL}pollution`;
-    const { placeType, dataType, place, year } = StateApp.getFetchParams(); 
+    const { placeType, dataType, place, year } = StateApp.getFetchParams();
+    const url                                  = `${dataURL}/${dataType}/${placeType}`; 
     let data;
 
-    if(place[0] === 'Top') data = await getData(`${url}/${dataType}/top10/${year}`);
-    else if(placeType === 'byContinent') data = await getData(`${url}/${dataType}/bycontinent/${place[0]}/${year}`);
+    if(placeType === 'Top10') data = await getData(`${url}/${year}`);
+    else if(placeType === 'byContinent') data = await getData(`${url}/${place[0]}/${year}`);
     else {
-        data = await Promise.all(place.map(async country => {
-            const countryData = await getData(`${url}/${dataType}/bycountry/${country}/${year}`);
-            if(countryData === undefined) alert(`Pas de données existantes pour le pays ${country}, année ${year}`);
-            return countryData;
-        }));
-        data = data.flat();
+        data = await Promise.all(place.map(country => getData(`${url}/${country}/${year}`)))
+            .then(tab => tab.flat())
+            .then(data => data.map((dataLine, index) => {
+                if(dataLine === undefined) {
+                    const country = place[index];
+                    alert(`Pas de données existantes pour le pays ${country}, année ${year}`);
+                    document.getElementById(`option-country-${country}`).selected = false;
+                    $('.selectpicker').selectpicker('refresh');
+                }
+                return dataLine;
+            }))
+            .then(data => data.filter(dataLine => dataLine !== undefined))
     }
-
+    console.log(data);
     return formatData(data, StateApp);
 };
 
@@ -117,7 +124,7 @@ export const formatData = (data, StateApp) => {
         if(dataLine) {
             const value = dataLine[valueKeyName];
             const finalRadius = computeCircleRadius({value}, maxValue, StateApp.getRepresentation());
-            const finalColor = computeCircleColor({value});
+            const finalColor = computeCircleColor({value}, StateApp.getDataType());
             delete dataLine[valueKeyName];
             
 

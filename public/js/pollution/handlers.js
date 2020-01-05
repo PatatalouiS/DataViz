@@ -1,9 +1,11 @@
 
+'use strict';
+
 // ---------------------  IMPORTS  --------------------- //
 
 import {    getCheckedRadioButton, getSelectedOption, getSelectedData, getMainValue, getMaxfromData,
             getTotalFromData, getCurrentYear, valueToDateTimeline, updateData, computeCircleRadius } from './local_utils.js';
-import { Timer } from '../utils.js';
+import Timer from './timer.js';
 import { drawChart } from './draw.js';
 
 // ---------------------------  MAIN HANDLERS ------------------------- //
@@ -23,7 +25,7 @@ export const paramsChangedHandler = StateApp => async () => {
     const lastData = Array.from(StateApp.getData());
     const newData = await getSelectedData(StateApp);
    
-    updateData(StateApp, lastData, newData, year);    
+    updateData(StateApp, lastData, newData);    
     updateChart(StateApp);
     updateTotal(StateApp);
     
@@ -200,11 +202,15 @@ export const bubbleTransition = StateApp => (dataLine, index , nodes) => {
         dataLine.color = interpolationColor(time);
         circle.attr('fill', dataLine.color);
 
-        dataLine.showedValue = Math.floor(interpolationValue(time));
-        valueCircle.text(d => new Intl.NumberFormat('de-DE').format(d.showedValue))
+        dataLine.showedValue = StateApp.getDataType() === 'total'
+            ? Math.floor(interpolationValue(time))
+            : interpolationValue(time);
+
+        valueCircle.text(d => new Intl.NumberFormat('de-DE', {maximumFractionDigits: 1}).format(d.showedValue))
         
         textOfcircle.style('display', dataLine.radius >= 40 ? '' : 'none');
         StateApp.getForce().nodes(StateApp.getData()); 
+        //StateApp.getForce().force('collide', d3.forceCollide(dataLine => dataLine.radius));
     };
 };
 
@@ -214,9 +220,9 @@ export const updateChart = StateApp => {
     d3.selectAll('.Pays')
         .transition()
         .duration(2000)
-        .tween('radius-value-color', bubbleTransition(StateApp))
-    StateApp.getForce().alpha(1).restart()
-    StateApp.getForce().force('collide', d3.forceCollide(dataLine => dataLine.radius))
+        .tween('radius-value-color', bubbleTransition(StateApp));
+    StateApp.getForce().alpha(1).restart();
+    StateApp.getForce().force('collide', d3.forceCollide(dataLine => dataLine.radius));
 };
 
 export const updateTotal = StateApp => {
