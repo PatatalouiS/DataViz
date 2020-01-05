@@ -4,7 +4,7 @@
 import { getTotalFromData, getAllDates, valueToDiscreteTimeline, 
             getCheckedRadioButton, 
             getCurrentYear} from './local_utils.js';
-import { showLargeBubble, showInitialBubble, updateTimeLine, playButtonHandler, bubbleTransition} from './handlers.js';
+import { showLargeBubble, showInitialBubble, updateTimeLine, playButtonHandler, bubbleTransition,GetEveryYears} from './handlers.js';
 
 // ----------------------- DRAWING DOM/SVG FUNCTIONS -------------------- //
 
@@ -171,12 +171,11 @@ export const drawChart = StateApp => {
         .force('collide', d3.forceCollide(dataLine => dataLine.finalRadius))
         .on('tick', () => circles.attr('transform', d => `translate(${d.x},${d.y})`));
 
-    StateApp.setForce(force);
-    var radius = dataLine => dataLine.radius
+    StateApp.setForce(force); 
     circles.append('circle')
         .classed('node', true)
         .attr('class','Pays')
-        .attr('r', radius)
+        .attr('r', dataLine => dataLine.radius)
         .attr('fill', dataLine => dataLine.color)
         .style("border-radius", "5px")
         .attr('opacity' , () => (representation == 'graph') ? '0.7' : '1')
@@ -185,27 +184,6 @@ export const drawChart = StateApp => {
         .transition()
             .duration(2000)
             .tween('radius', bubbleTransition(StateApp));
-      
-    d3.select('#button-moins')
-            .on('click', () => {
-                $( "circle" ).each(function(i) {
-                    var r = $(this).attr('r')
-                    var newR = parseFloat(r) - 10; 
-                    if (r != 0 && $(this).attr('class') == 'Pays' ) {
-                        $(this).attr('r',newR)                          
-                    }                  
-                  });
-            });
-
-    d3.select('#button-plus')
-            .on('click', () => {
-                $( "circle" ).each(function(i) {
-                    var r = $(this).attr('r')
-                    var newR = parseFloat(r) + 10; 
-                    if (r != 0 && $(this).attr('class') == 'Pays')  return $(this).attr('r',newR)                     
-                  });
-            });
-    
                 
 
     circles.append('g')
@@ -254,6 +232,10 @@ export const drawAxisGraph = (StateApp, circles) => {
     var updateYaxis             = 0;
     var data                    = dataType;
     var year                    = getCurrentYear();
+    var datas                   = StateApp.getData();
+    
+    
+    
     
     
     const xscale = d3.scaleLinear()
@@ -323,6 +305,41 @@ export const drawAxisGraph = (StateApp, circles) => {
     .style('font-weight', 'bold')
     .style('font-size','20px')
     .call(d3.axisLeft(yscale));
+
+
+
+  /*var valueline = (year,value) =>  {
+        console.log("je rentre dans data line")
+        d3.line()
+    .x(function() { console.log ("je rentre@@@@@@") 
+            return xscale(year); })
+    .y(function() { console.log(value)
+        return yscale(value); });}*/
+    var lines = d3.line()
+        .x(function(d) { 
+            console.log("youhou")
+            return xscale(d.year) })
+        .y(function(d) { return yscale(d.value) })
+
+    
+    
+
+    const line = svg.select('.node')
+        .data(datas)
+        .enter()
+            .append('g')
+            .attr('class', 'line')
+ 
+    
+    line.append("path")
+      .attr("fill", "none")
+      .attr("stroke", "steelblue")
+      .attr("stroke-width", 1.5)
+      .attr("d", d => {
+        if(d.year != 0&& d.value != 0){ console.log("je passe ici")
+            console.log(d.year)
+            console.log(d.value)
+            return lines}})
 
     d3.select('#total')
         .on('click', () => {
