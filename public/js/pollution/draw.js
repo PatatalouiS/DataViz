@@ -6,7 +6,7 @@
 import { getTotalFromData, getAllDates, valueToDiscreteTimeline, 
             getCheckedRadioButton, 
             getCurrentYear} from './local_utils.js';
-import { showLargeBubble, showInitialBubble, updateTimeLine, playButtonHandler, bubbleTransition} from './handlers.js';
+import { showLargeBubble, showInitialBubble, updateTimeLine, playButtonHandler, bubbleTransition,GetEveryYears} from './handlers.js';
 
 // ----------------------- DRAWING DOM/SVG FUNCTIONS -------------------- //
 
@@ -162,6 +162,7 @@ export const drawChart = StateApp => {
         .enter()
             .append('g')
             .attr('class', 'bubble-country')
+            
 
     // Definition of the force Simulation, especially collapse force
     const s = 0.003;
@@ -172,8 +173,7 @@ export const drawChart = StateApp => {
         .force('collide', d3.forceCollide(dataLine => dataLine.finalRadius))
         .on('tick', () => circles.attr('transform', d => `translate(${d.x},${d.y})`));
 
-    StateApp.setForce(force);
-     
+    StateApp.setForce(force); 
     circles.append('circle')
         .classed('node', true)
         .attr('class','Pays')
@@ -186,7 +186,7 @@ export const drawChart = StateApp => {
         .transition()
             .duration(2000)
             .tween('radius', bubbleTransition(StateApp));
-        
+                
 
     circles.append('g')
         .attr('class', 'text-description')
@@ -228,12 +228,16 @@ export const drawChart = StateApp => {
 export const drawAxisGraph = (StateApp, circles) => {
     const { width, height }     = StateApp.getChartSpecs();
     const dataType              = StateApp.getDataType();
-    const svg                     = d3.select('#chartgroup');
+    const svg                   = d3.select('#chartgroup');
     const hauteurGraphTotal     = 1000000;
-    const hauteurGraphPerCapita = 50;
+    const hauteurGraphPerCapita = 60;
     var updateYaxis             = 0;
     var data                    = dataType;
     var year                    = getCurrentYear();
+    var datas                   = StateApp.getData();
+    
+    
+    
     
     
     const xscale = d3.scaleLinear()
@@ -274,15 +278,18 @@ export const drawAxisGraph = (StateApp, circles) => {
 
     circles.append('text')
         .attr('class','titrePaysGraphe')
-        .attr('dx', ()  => year == '1975' ? '2em' : '-11em')
+        .attr('dx', ()  => year == '1975' ? '2em' : '-10em')
         .attr('fill', 'black')
         .style('font-weight', 'bold')
         .style('font-size','20px')
         .text(d => d.name.replace(/\(.[^(]*\)/g,''))
+        .style('display',d => d.radius != 0 ? '' : 'none')
+
+    
 
     StateApp.getForce()
-        .on('tick', () => circles.attr('transform', d => 'translate('+posYear()+','+ysccaleres(d.value)+')'));
-    StateApp.getForce().alpha(1).restart();  
+        .on('tick', () => circles.transition().duration(200).attr('transform', d => 'translate('+posYear()+','+ysccaleres(d.value)+')'));
+    //StateApp.getForce().alpha(1).restart();  
 
     svg.append("g")
         .attr('id',"graph")
@@ -300,6 +307,41 @@ export const drawAxisGraph = (StateApp, circles) => {
     .style('font-weight', 'bold')
     .style('font-size','20px')
     .call(d3.axisLeft(yscale));
+
+
+
+  /*var valueline = (year,value) =>  {
+        console.log("je rentre dans data line")
+        d3.line()
+    .x(function() { console.log ("je rentre@@@@@@") 
+            return xscale(year); })
+    .y(function() { console.log(value)
+        return yscale(value); });}*/
+    var lines = d3.line()
+        .x(function(d) { 
+            console.log("youhou")
+            return xscale(d.year) })
+        .y(function(d) { return yscale(d.value) })
+
+    
+    
+
+    const line = svg.select('.node')
+        .data(datas)
+        .enter()
+            .append('g')
+            .attr('class', 'line')
+ 
+    
+    line.append("path")
+      .attr("fill", "none")
+      .attr("stroke", "steelblue")
+      .attr("stroke-width", 1.5)
+      .attr("d", d => {
+        if(d.year != 0&& d.value != 0){ console.log("je passe ici")
+            console.log(d.year)
+            console.log(d.value)
+            return lines}})
 
     d3.select('#total')
         .on('click', () => {
@@ -319,29 +361,6 @@ export const drawAxisGraph = (StateApp, circles) => {
             data = 'per-capita';
             updateYaxis = hauteurGraphPerCapita;
         })
-
-    /*---------------------------------- Zoom et dezoom ---------------------------- */
-   
-    d3.select('#button-moins')
-        .on('click', () => {
-            if (data == 'total' && updateYaxis < 11000000) updateYaxis = updateYaxis + 100000;
-            if (data == 'per-capita' && updateYaxis < 50) updateYaxis = updateYaxis + 10;
-            yscale.domain([0,updateYaxis])
-            svg.select(".yaxis")
-            .transition()
-            .duration(750)
-            .call(d3.axisLeft(yscale));})
-
-    d3.select('#button-plus')
-        .on('click', () =>{
-            if (data == 'total' && updateYaxis > 50000) updateYaxis = updateYaxis - 50000;
-            if (data == 'per-capita' &&  updateYaxis > 10) updateYaxis = updateYaxis - 10;
-            yscale.domain([0,updateYaxis])
-            svg.select(".yaxis")
-            .transition()
-            .duration(750)
-            .call(d3.axisLeft(yscale));
-        }); 
 };
 
 export const drawMenu = async StateApp => {
@@ -360,9 +379,27 @@ export const drawMenu = async StateApp => {
 
     $('.selectpicker').selectpicker('refresh');
 
-    const selectCountry = document.getElementsByClassName('scountry')[1]
-    const selectContinent = document.getElementsByClassName('sContinent')[1];
-    const radiocheck = getCheckedRadioButton('radio-choice');
+    d3.select('#button-moins')
+        .on('click', () => {
+            if (data == 'total' && updateYaxis < 11000000) (updateYaxis >= 1000000) ? updateYaxis = updateYaxis + 1000000 : updateYaxis = updateYaxis + 100000;
+            if (data == 'per-capita' && updateYaxis < 60) (updateYaxis < 10) ?  updateYaxis = updateYaxis + 5 : updateYaxis = updateYaxis + 10;
+            yscale.domain([0,updateYaxis])
+            svg.select(".yaxis")
+            .transition()
+            .duration(750)
+            .call(d3.axisLeft(yscale));
+    })
+
+    d3.select('#button-plus')
+        .on('click', () =>{
+            if (data == 'total' && updateYaxis > 50000) (updateYaxis > 1000000) ? updateYaxis = updateYaxis - 1000000 : updateYaxis = updateYaxis - 50000 ;
+            if (data == 'per-capita' &&  updateYaxis > 5) (updateYaxis <= 10) ? updateYaxis = updateYaxis - 5 :  updateYaxis = updateYaxis - 10;
+            yscale.domain([0,updateYaxis])
+            svg.select(".yaxis")
+            .transition()
+            .duration(750)
+            .call(d3.axisLeft(yscale));
+    });  
 }; 
 
 // ------------------------ EXPORTS --------------------------- //

@@ -17,7 +17,6 @@ export const paramsChangedHandler = StateApp => async () => {
     const place           = placeType === 'byContinent'
         ? getSelectedOption('selectContinent') 
         : getSelectedOption('selectCountry');
-
     StateApp.setPlace(place);
     StateApp.setYear(year);
     StateApp.setDataType(dataType);
@@ -29,9 +28,19 @@ export const paramsChangedHandler = StateApp => async () => {
     updateData(StateApp, lastData, newData);    
     updateChart(StateApp);
     updateTotal(StateApp);
-    console.log("d  ns le console")
-    console.log(getCheckedRadioButton("radio-t"))
+    
 }
+
+export const GetEveryYears = (StateApp,newyear) => async () => { 
+
+    StateApp.setYear(newyear);
+   
+    const lastData = Array.from(StateApp.getData());
+    const newData = await getSelectedData(StateApp);
+    updateData(StateApp, lastData, newData, newyear);
+    updateTotal(StateApp);    
+}
+
 
 export const switchRepresentation = StateApp => () => {
     d3.select('#chartgroup').remove();
@@ -70,6 +79,8 @@ export const updateRadius = ({ newRadius, simulation, data, transitionDuration, 
             }
         })
     simulation.alpha(1).restart();
+    console.log(circleTriggered)
+    //d3.select('.titrePaysGraphe').style('display',d => d.radius != 0 ? '' : 'none')
     return Promise.resolve();
 };
 
@@ -243,5 +254,6 @@ export default {
     updateTimeLine,
     playButtonHandler,
     bubbleTransition,
+    GetEveryYears,
     updateChart
 };

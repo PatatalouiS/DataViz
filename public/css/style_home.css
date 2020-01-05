@@ -36,9 +36,7 @@ body{
 }
 
 #chart {
-	border-top-left-radius: 10px;
-	border-left: 1px solid grey;
-	border-top: 1px solid grey;
+	border : 5px solid grey;
 	padding-left: 0px;
 	padding-right: 0px;
 }
@@ -46,6 +44,7 @@ body{
 #svg {
 	height: 100%;
 	width: 100%;
+	
 }
 
 @media screen and (max-width: 980px) {
@@ -54,7 +53,7 @@ body{
 		border-bottom-left-radius: 10px;
 		border-bottom-right-radius: 10px;
 		border-top-left-radius : 0px;
-		border-left : none;
+		border :  5px solid grey;
 	}
 
 	#svg {

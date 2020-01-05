@@ -116,7 +116,7 @@ export const getSelectedData = async StateApp => {
 export const formatData = (data, StateApp) => {
     const valueKeyName = mainValueKeyNames[StateApp.getDataType()];
     const maxValue = getMaxfromData(data, valueKeyName);
-    
+ 
     return StateApp.getCountries().map(country => {
         const dataLine = data.find(dataLine => dataLine.name == country.name);
         if(dataLine) {
@@ -124,6 +124,7 @@ export const formatData = (data, StateApp) => {
             const finalRadius = computeCircleRadius({value}, maxValue, StateApp.getRepresentation());
             const finalColor = computeCircleColor({value}, StateApp.getDataType());
             delete dataLine[valueKeyName];
+            
 
             return Object.assign(dataLine, { 
                 value, 
