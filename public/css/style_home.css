@@ -17,13 +17,6 @@ body{
 	padding: 20px;
 }
 
-#footer{
-	text-align: center;
-	padding: 40px;
-	margin-top: 10px;
-	color : #5F5C5B;
-}
-
 #subject {
 	border-radius : 10px;
 	border : solid 0px ;
@@ -46,18 +39,15 @@ body{
 }
 
 @media screen and (max-width: 980px) {
-
 	#chart {	
 		border-bottom-left-radius: 10px;
 		border-bottom-right-radius: 10px;
 		border-top-left-radius : 0px;
 		border-left : none;
 	}
-
 	#svg {
 		height: 400px;
 	}
-
 }
 
 #banner{
@@ -220,7 +210,7 @@ h3 {
 	margin : 10px;
 }
 
-/************** Style TimeLine *****/ 
+/************** Style TimeLine ******************/ 
 
 #play-button {
 	width: 75px;
@@ -264,4 +254,14 @@ h3 {
 	text-align: center;
 	align-items: center;
 	align-content: center;
+}
+
+/***************************************/
+
+
+#footer{
+	text-align: center;
+	padding: 40px;
+	margin-top: 10px;
+	color : #5F5C5B;
 }

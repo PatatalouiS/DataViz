@@ -1,15 +1,13 @@
 
 'use strict';
 
-// ---------------------  IMPORTS  --------------------- //
-
+// ------------------------ IMPORTS ---------------------------------------------- //
 import {    getCheckedRadioButton, getSelectedOption, getSelectedData, getMainValue, getMaxfromData,
             getTotalFromData, getCurrentYear, valueToDateTimeline, updateData, computeCircleRadius } from './local_utils.js';
 import Timer from './timer.js';
 import { drawChart } from './draw.js';
 
-// ---------------------------  MAIN HANDLERS ------------------------- //
-
+// ------------------------ MAIN HANDLERS ------------------------- //
 export const paramsChangedHandler = StateApp => async () => { 
     const year            = getCurrentYear();
     const dataType        = getCheckedRadioButton('radio-t');
@@ -27,20 +25,8 @@ export const paramsChangedHandler = StateApp => async () => {
    
     updateData(StateApp, lastData, newData);    
     updateChart(StateApp);
-    updateTotal(StateApp);
-    
-}
-
-export const GetEveryYears = (StateApp,newyear) => async () => { 
-
-    StateApp.setYear(newyear);
-   
-    const lastData = Array.from(StateApp.getData());
-    const newData = await getSelectedData(StateApp);
-    updateData(StateApp, lastData, newData, newyear);
     updateTotal(StateApp);    
-}
-
+};
 
 export const switchRepresentation = StateApp => () => {
     d3.select('#chartgroup').remove();
@@ -57,8 +43,7 @@ export const switchRepresentation = StateApp => () => {
     drawChart(StateApp);
 };
 
-// ----------------------------  UPDATE CIRCLE RADIUS HANDLERS -------------------- //
-
+// ----------------------- UPDATE CIRCLE RADIUS HANDLERS -------------------- //
 export const updateRadius = ({ newRadius, simulation, data, transitionDuration, indexTrigger, nodes }) => { 
     const circleTriggered = d3.select(nodes[indexTrigger]);
     const dataTrigger = data[indexTrigger];
@@ -80,7 +65,6 @@ export const updateRadius = ({ newRadius, simulation, data, transitionDuration, 
         })
     simulation.alpha(1).restart();
     console.log(circleTriggered)
-    //d3.select('.titrePaysGraphe').style('display',d => d.radius != 0 ? '' : 'none')
     return Promise.resolve();
 };
 
@@ -116,7 +100,6 @@ export const showInitialBubble = StateApp => (dataTrigger, indexTrigger, nodes) 
     dataTrigger.fy = null;
     StateApp.getTimer().clearTimeout();
     StateApp.getForce().force('collide', d3.forceCollide(dataLine => dataLine.radius))
-    const representation = getCheckedRadioButton("radio-rp")
 
     if(dataTrigger.hasOwnProperty('previousRadius')) {
         updateRadius({
@@ -135,11 +118,9 @@ export const showInitialBubble = StateApp => (dataTrigger, indexTrigger, nodes) 
         .transition()
         .duration(50)
         .attr('opacity', '1')
-        //.attr('opacity',(select =='graph') ? '0.7' : '1');
 };
 
-// ---------------------   TIMELINE HANDLERS ----------------------- //
-
+// ----------------------- TIMELINE HANDLERS ------------------------------------- //
 export const updateTimeLine = (StateApp, posX, maxValue, timeout = 200) => {
     if(!updateTimeLine.manageEventimer) updateTimeLine.manageEventimer = new Timer();
     const lastValue                                                    = Number(d3.select('#handle').attr('cx'));
@@ -185,8 +166,7 @@ export const playButtonHandler = (StateApp, button, targetValue) => {
     }
 }
 
-// --------------------  ANIMATION DE TRANSITION ------------------- //
-
+// ----------------------- ANIMATION OF TRANSITION ------------------------------- //
 export const bubbleTransition = StateApp => (dataLine, index , nodes) => {
     const circle              = d3.select(nodes[index]);
     const textOfcircle        = d3.select(nodes[index].parentNode.children[1]);
@@ -209,13 +189,11 @@ export const bubbleTransition = StateApp => (dataLine, index , nodes) => {
         valueCircle.text(d => new Intl.NumberFormat('de-DE', {maximumFractionDigits: 1}).format(d.showedValue))
         
         textOfcircle.style('display', dataLine.radius >= 40 ? '' : 'none');
-        StateApp.getForce().nodes(StateApp.getData()); 
-        //StateApp.getForce().force('collide', d3.forceCollide(dataLine => dataLine.radius));
+        StateApp.getForce().nodes(StateApp.getData());
     };
 };
 
-// --------------------   UPDATE AFTER DATA CHANGED FUNCTIONS  --------------------- //
-
+// ------------------------ UPDATE AFTER DATA CHANGED FUNCTIONS  ----------------- //
 export const updateChart = StateApp => {
     d3.selectAll('.Pays')
         .transition()
@@ -243,8 +221,7 @@ export const updateTotal = StateApp => {
 };
 
 
-
-// ------------------------ EXPORTS --------------------------- //
+// ------------------------ EXPORTS ---------------------------------------------- //
 
 export default {
     paramsChangedHandler,
@@ -254,6 +231,5 @@ export default {
     updateTimeLine,
     playButtonHandler,
     bubbleTransition,
-    GetEveryYears,
     updateChart
 };

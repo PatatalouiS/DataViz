@@ -1,6 +1,8 @@
 
 'use strict';
 
+// ------------------------------- TIMER CLASS -------------------------------------------//
+
 export default class Timer {
 
     constructor () {
