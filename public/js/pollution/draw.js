@@ -319,32 +319,10 @@ export const drawAxisGraph = (StateApp, circles) => {
             data = 'per-capita';
             updateYaxis = hauteurGraphPerCapita;
         })
-
-    /*---------------------------------- Zoom et dezoom ---------------------------- */
-   
-    d3.select('#button-moins')
-        .on('click', () => {
-            if (data == 'total' && updateYaxis < 11000000) (updateYaxis >= 1000000) ? updateYaxis = updateYaxis + 1000000 : updateYaxis = updateYaxis + 100000;
-            if (data == 'per-capita' && updateYaxis < 60) (updateYaxis < 10) ?  updateYaxis = updateYaxis + 5 : updateYaxis = updateYaxis + 10;
-            yscale.domain([0,updateYaxis])
-            svg.select(".yaxis")
-            .transition()
-            .duration(750)
-            .call(d3.axisLeft(yscale));})
-
-    d3.select('#button-plus')
-        .on('click', () =>{
-            if (data == 'total' && updateYaxis > 50000) (updateYaxis > 1000000) ? updateYaxis = updateYaxis - 1000000 : updateYaxis = updateYaxis - 50000 ;
-            if (data == 'per-capita' &&  updateYaxis > 5) (updateYaxis <= 10) ? updateYaxis = updateYaxis - 5 :  updateYaxis = updateYaxis - 10;
-            yscale.domain([0,updateYaxis])
-            svg.select(".yaxis")
-            .transition()
-            .duration(750)
-            .call(d3.axisLeft(yscale));
-        });
 };
 
 // ----------------------- DRAWING MENU CHOICE COUNTRY/CONTINENT ----------------- //
+
 export const drawMenu = async StateApp => {
     const selectTag = document.getElementById('Pays');
 
@@ -360,7 +338,7 @@ export const drawMenu = async StateApp => {
     document.getElementById('Pays').children[0].selected = true;
 
     $('.selectpicker').selectpicker('refresh');
-}; 
+};
 
 // ------------------------ EXPORTS ---------------------------------------------- //
 

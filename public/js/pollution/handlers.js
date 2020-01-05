@@ -25,14 +25,15 @@ export const paramsChangedHandler = StateApp => async () => {
    
     updateData(StateApp, lastData, newData);    
     updateChart(StateApp);
-    updateTotal(StateApp);    
+    updateTotal(StateApp);   
 };
 
 export const switchRepresentation = StateApp => () => {
     d3.select('#chartgroup').remove();
     const representation = getCheckedRadioButton('radio-rp');
     StateApp.setRepresentation(representation);
-    const maxValue = getMaxfromData(StateApp.getData(), getMainValue(StateApp.getDataType()));
+    console.log(getMainValue(StateApp.getDataType()), StateApp.getDataType());
+    const maxValue = getMaxfromData(StateApp.getData(), 'value');
     StateApp.getData().forEach(dataLine => {
         dataLine.finalRadius = computeCircleRadius(dataLine, maxValue, representation);
         if(representation === 'bubble') {
@@ -219,9 +220,6 @@ export const updateTotal = StateApp => {
         .text()
         .on('end', () =>  StateApp.setTotal(newTotal));
 };
-
-
-// ------------------------ EXPORTS ---------------------------------------------- //
 
 export default {
     paramsChangedHandler,
