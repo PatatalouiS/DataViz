@@ -10,20 +10,17 @@ body{
 	left:0;
 }
 
-section {
-	padding-bottom: 30px;
-}
-
-#header {
+#head-description {
 	background-color: rgba(255, 255, 255, 0.85);
 	border-radius: 10px;
-	margin-top: 20px;
-	padding: 10px;
+	margin-top: 10px;
+	padding: 20px;
 }
 
 #footer{
 	text-align: center;
 	padding: 40px;
+	margin-top: 10px;
 	color : #5F5C5B;
 }
 
@@ -188,7 +185,7 @@ div.tooltip-donut {
 }
 
 #timeline {
-	top : -20px;
+	top : -10px;
 }
 
 .image{

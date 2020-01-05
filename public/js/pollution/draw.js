@@ -72,8 +72,8 @@ export const drawTotal = StateApp => {
 }
 
 export const drawTimeLine = StateApp => {
-    const width              = 366;
-    const height             = 120;
+    const width              = 300;
+    const height             = 90;
     const margin             = {right: 40, left: 40};
     const rangeMax           = width - margin.left - margin.right;
     const dates              = getAllDates();
@@ -84,6 +84,7 @@ export const drawTimeLine = StateApp => {
         .attr('id', 'timeline')
         .attr('xmlns', 'http://www.w3.org/2000/svg')
         .attr('version', '1.1')
+        //.attr('viewBox', '0 0 366 120')
         .attr('width', width)
         .attr('height',height)
   
@@ -129,7 +130,7 @@ export const drawTimeLine = StateApp => {
         .attr('text-anchor','middle')
         .attr('year', '1975')
         .text(startDate)
-        .attr('transform', 'translate(10,' + (-25) + ')');
+        .attr('transform', 'translate(0,' + (-15) + ')');
 
     d3.select('#play-button')
         .on('click', () => playButtonHandler(StateApp, d3.select('#play-button'), rangeMax));
@@ -343,38 +344,6 @@ export const drawAxisGraph = (StateApp, circles) => {
             .call(d3.axisLeft(yscale));
         }); 
 };
-    
-// export const drawLegend = () => {
-//     const width    = 1127;
-//     const height   = 50;
-//     const colors   = ['#2ca02c', '#cbdc01','#1f77b4', '#ff7f0e', '#d62728','#8c564b', '#581845'];
-//     const legendes = ['Pas polluant','tres peu polluant','Peu polluant','Polluant','Très polluant','Dangereux','Destructeur']
-//     const legende = d3.select('#legend')
-//         .append('svg')
-//         .attr('width', width)
-//         .attr('height',height)
-//         .attr('id', 'legende');
-
-//     var x = 45;   
-
-//     for( let i = 0; i < colors.length; i++) {
-//         legende
-//             .append('rect')
-//             .attr('width', '150')
-//             .attr('height', '30')
-//             .attr('x', x)
-//             .attr('y','20')
-//             .attr('fill', colors[i]);     
-//         legende
-//             .append('text')
-//             .attr('x',x + 75)
-//             .attr('y','40')
-//             .attr('fill','white')
-//             .text(legendes[i])
-//             .attr('text-anchor', 'middle');
-//             x += 150;     
-//     }
-// };
 
 export const drawMenu = async StateApp => {
     const selectTag = document.getElementById('Pays');
