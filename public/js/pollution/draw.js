@@ -1,15 +1,17 @@
 
 'use strict';
 
-// ---------------------  IMPORTS  --------------------- //
+// ------------------------------- IMPORTS ------------------------------------- //
 
 import { getTotalFromData, getAllDates, valueToDiscreteTimeline, 
-            getCheckedRadioButton, 
+            getMaxfromData, 
             getCurrentYear} from './local_utils.js';
-import { showLargeBubble, showInitialBubble, updateTimeLine, playButtonHandler, bubbleTransition,GetEveryYears} from './handlers.js';
+import { showLargeBubble, showInitialBubble, updateTimeLine, playButtonHandler, bubbleTransition} from './handlers.js';
 
-// ----------------------- DRAWING DOM/SVG FUNCTIONS -------------------- //
+// ----------------------- DRAWING DOM/SVG FUNCTIONS --------------------------- //
 
+
+// ----------------------- DRAWING CASE WITH TOTAL ----------------------------- //
 export const drawTotal = StateApp => {
     const width = 366
     const height = 100
@@ -71,6 +73,7 @@ export const drawTotal = StateApp => {
     });
 }
 
+// ----------------------- DRAWING TIME ---------------------------------------- //
 export const drawTimeLine = StateApp => {
     const width              = 300;
     const height             = 90;
@@ -134,6 +137,8 @@ export const drawTimeLine = StateApp => {
     d3.select('#play-button')
         .on('click', () => playButtonHandler(StateApp, d3.select('#play-button'), rangeMax));
 }
+
+// ----------------------- MAIN DRAWING (SVG & BUUBLE) ------------------------- //
 
 export const drawChart = StateApp => {
     const data              = StateApp.getData();
@@ -225,6 +230,7 @@ export const drawChart = StateApp => {
     if(representation === 'graph') drawAxisGraph(StateApp, circles);
 };
 
+// ----------------------- DRAWING GRAPH ---------------------------------------- //
 export const drawAxisGraph = (StateApp, circles) => {
     const { width, height }     = StateApp.getChartSpecs();
     const dataType              = StateApp.getDataType();
@@ -234,29 +240,18 @@ export const drawAxisGraph = (StateApp, circles) => {
     var updateYaxis             = 0;
     var data                    = dataType;
     var year                    = getCurrentYear();
-    var datas                   = StateApp.getData();
-    
-    
-    
+    var datas                   = StateApp.getData();   
+    var maxValueType            = getMaxfromData(StateApp.getData(), 'value')
+    updateYaxis                 = maxValueType;
     
     
     const xscale = d3.scaleLinear()
     .domain([1970, 2015])
     .range([0, width - 250]);
-    //.attr('class','Yaxis');
-
-    const maxValue = (data) => {
-    if (data == 'total') {
-        updateYaxis = hauteurGraphTotal
-        return hauteurGraphTotal}
-    else {
-        updateYaxis = hauteurGraphPerCapita
-        return hauteurGraphPerCapita;
-    } }
-            
+           
 
     const yscale = d3.scaleLinear()
-    .domain([0,maxValue(dataType)])
+    .domain([0,maxValueType])
     .range([height - 200, 0]);
 
 
@@ -283,9 +278,7 @@ export const drawAxisGraph = (StateApp, circles) => {
         .style('font-weight', 'bold')
         .style('font-size','20px')
         .text(d => d.name.replace(/\(.[^(]*\)/g,''))
-        .style('display',d => d.radius != 0 ? '' : 'none')
-
-    
+        .style('display',d => d.radius != 0 ? '' : 'none')    
 
     StateApp.getForce()
         .on('tick', () => circles.transition().duration(200).attr('transform', d => 'translate('+posYear()+','+ysccaleres(d.value)+')'));
@@ -307,41 +300,6 @@ export const drawAxisGraph = (StateApp, circles) => {
     .style('font-weight', 'bold')
     .style('font-size','20px')
     .call(d3.axisLeft(yscale));
-
-
-
-  /*var valueline = (year,value) =>  {
-        console.log("je rentre dans data line")
-        d3.line()
-    .x(function() { console.log ("je rentre@@@@@@") 
-            return xscale(year); })
-    .y(function() { console.log(value)
-        return yscale(value); });}*/
-    var lines = d3.line()
-        .x(function(d) { 
-            console.log("youhou")
-            return xscale(d.year) })
-        .y(function(d) { return yscale(d.value) })
-
-    
-    
-
-    const line = svg.select('.node')
-        .data(datas)
-        .enter()
-            .append('g')
-            .attr('class', 'line')
- 
-    
-    line.append("path")
-      .attr("fill", "none")
-      .attr("stroke", "steelblue")
-      .attr("stroke-width", 1.5)
-      .attr("d", d => {
-        if(d.year != 0&& d.value != 0){ console.log("je passe ici")
-            console.log(d.year)
-            console.log(d.value)
-            return lines}})
 
     d3.select('#total')
         .on('click', () => {
@@ -386,6 +344,7 @@ export const drawAxisGraph = (StateApp, circles) => {
         });
 };
 
+// ----------------------- DRAWING MENU CHOICE COUNTRY/CONTINENT ----------------- //
 export const drawMenu = async StateApp => {
     const selectTag = document.getElementById('Pays');
 
@@ -401,13 +360,9 @@ export const drawMenu = async StateApp => {
     document.getElementById('Pays').children[0].selected = true;
 
     $('.selectpicker').selectpicker('refresh');
-
-    const selectCountry = document.getElementsByClassName('scountry')[1]
-    const selectContinent = document.getElementsByClassName('sContinent')[1];
-    const radiocheck = getCheckedRadioButton('radio-choice');
 }; 
 
-// ------------------------ EXPORTS --------------------------- //
+// ------------------------ EXPORTS ---------------------------------------------- //
 
 export default {
     drawChart,

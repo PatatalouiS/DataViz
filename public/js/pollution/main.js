@@ -1,7 +1,8 @@
 
 'use strict';
 
-// ------------ IMPORT AND CONSTANTS ---------------- //
+
+// ---------------------- IMPORTS AND CONSTANTS ---------------------------------- //
 
 import { drawMenu, drawChart, drawTimeLine, drawTotal } from './draw.js';
 import { getSelectedData } from './local_utils.js';
@@ -22,7 +23,7 @@ const START_VALUES = async () => ({
     }
 });
 
-// ------------------- INITIAL STATE OF PAGE ------------- // 
+// ------------------- INITIAL STATE OF PAGE ------------------------------------ // 
 
 const init = async () => {
     const StateApp                            = new State(await START_VALUES());
@@ -51,6 +52,6 @@ const init = async () => {
         .forEach(element => element.addEventListener('click', switchRepresentation(StateApp)));
 };
 
-// --------------------   MAIN   ------------------- //
+// --------------------- MAIN ---------------------------------------------------- //
 
 document.addEventListener('DOMContentLoaded', init);

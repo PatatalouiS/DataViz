@@ -2,6 +2,9 @@
 
 import Timer from "./timer.js";
 
+
+// ------------------------------- STATE CLASS -------------------------------------------//
+
 export default class State {
 
     constructor({place, year, data, dataType, placeType, chartSpecs, countries, representation}) {

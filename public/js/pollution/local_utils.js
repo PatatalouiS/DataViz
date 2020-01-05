@@ -1,8 +1,7 @@
 
 'use strict';
 
-// ---------------------  IMPORTS AND CONSTANTS  --------------------- //
-
+// ---------------------  IMPORTS AND CONSTANTS  --------------------------------- //
 import { getData, dataURL, interpolationTabNumber } from '../utils.js';
 
 // Define here your valueKey to bind from data Server
@@ -13,7 +12,7 @@ const mainValueKeyNames = {
 
 const dates = [1975, 1985, 1995, 2005, 2010, 2012, 2013, 2014];
 
-// ------------------  COMPUTING VALUE, GET PROJECT CONSTANTS  -------------------- //
+// -------------------- COMPUTING VALUE, GET PROJECT CONSTANTS  -------------------- //
 
 export const getMainValue = dataType => {
     try {
@@ -25,6 +24,7 @@ export const getMainValue = dataType => {
     }
 }
 
+// -------------------- ASSIGN COLOR AT CIRCLE -------------------------------------//
 export const computeCircleColor = (dataLine, dataType) => {
     const {value} = dataLine;
     const colorScale = d3.scaleQuantize()
@@ -33,6 +33,7 @@ export const computeCircleColor = (dataLine, dataType) => {
     return colorScale(value);
 };
 
+// -------------------- ASSIGN RADIUS AT CIRCLE -------------------------------------//
 export const computeCircleRadius = (dataLine, maxValue, representation) => {
     const {value} = dataLine;
     if(value === 0) return 0;
@@ -86,7 +87,7 @@ export const updateData = (StateApp, lastData, newData) => {
     });
 };
 
-// --------------------  FETCH AND DATA RELATED FUNCTIONS --------------------- //
+// ---------------------- FETCH AND DATA RELATED FUNCTIONS --------------------------- //
 
 export const getSelectedData = async StateApp => {
     const { placeType, dataType, place, year } = StateApp.getFetchParams();
@@ -109,15 +110,12 @@ export const getSelectedData = async StateApp => {
             }))
             .then(data => data.filter(dataLine => dataLine !== undefined))
     }
-    console.log(data);
     return formatData(data, StateApp);
 };
 
 export const formatData = (data, StateApp) => {
     const valueKeyName = mainValueKeyNames[StateApp.getDataType()];
-    const maxValue = getMaxfromData(data, valueKeyName);
-
-    
+    const maxValue = getMaxfromData(data, valueKeyName);    
     
     return StateApp.getCountries().map(country => {
         const dataLine = data.find(dataLine => dataLine.name == country.name);
@@ -127,7 +125,6 @@ export const formatData = (data, StateApp) => {
             const finalColor = computeCircleColor({value}, StateApp.getDataType());
             delete dataLine[valueKeyName];
             
-
             return Object.assign(dataLine, { 
                 value, 
                 lastValue : 0,
@@ -156,7 +153,7 @@ export const formatData = (data, StateApp) => {
     }); 
 };
 
-// ----------------- DOM-RELATED FUNCTIONS ------------------ //
+// ---------------------- DOM-RELATED FUNCTIONS -------------------------------------- //
 
 export const getCheckedRadioButton = radioClass => {
     return Array.from(document.getElementsByClassName(radioClass))
@@ -177,7 +174,7 @@ export const getSelectedOption = idSelect => {
 
 export const getCurrentYear = () => Number(d3.select('#selected-year').text());
 
-// ------------------------ EXPORTS --------------------------- //
+// ------------------------ EXPORTS ---------------------------------------------- //
 
 export default {
     getCheckedRadioButton,

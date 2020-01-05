@@ -1,12 +1,7 @@
 
 'use strict';
 
-// ----------------------  SET/GET ENVIRONEMENT -------------------- //
-
-const getMODE = () => {
-    return document.getElementById('MODE')
-        .getAttribute('data-row');
-}
+// ------------------------ SET/GET ENVIRONEMENT ----------------------------------- //
 
 export const getHOST = () => {
     return document.getElementById('MODE')
@@ -15,7 +10,7 @@ export const getHOST = () => {
             : 'patatalouis.fr';
 }
 
-// ----------------------  FETCH GET QUERY --> JSON ------------------------- //
+// ----------------------- FETCH GET QUERY --> JSON ------------------------------- //
 
 export const getData = url => {
     console.log(`Ressource demandée : ${url}`);
@@ -31,7 +26,7 @@ export const dataURL = `${URL}/data/pollution`;
 
 export const countriesURL = `${URL}/data/utils/countriesnames`;
 
-// --------------------- UTILS FUNCTIONS ---------------------- //
+// ----------------------- UTILS FUNCTIONS --------------------------------------- //
 
 export const interpolationTabNumber = (number, start, end, round = false) => {
     const range = (end-start);
@@ -46,7 +41,7 @@ export const interpolationTabNumber = (number, start, end, round = false) => {
     return [start].concat(values).concat([end]);
 };
 
-// ------------------------ EXPORTS -------------------------- //
+// ------------------------ EXPORTS ---------------------------------------------- //
 
 export default {
     getHOST,
