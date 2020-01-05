@@ -34,6 +34,7 @@ export const computeCircleColor = (dataLine, dataType) => {
 };
 
 export const computeCircleRadius = (dataLine, maxValue, representation) => {
+    console.log(representation, maxValue);
     const {value} = dataLine;
     if(value === 0) return 0;
     else if(representation == 'graph') return 20;
@@ -50,7 +51,7 @@ export const getTotalFromData = (data, field) => {
         .reduce((total, dataLine) => total + dataLine[field] , 0);
 };
 
-export const getMaxfromData = (data, field) => {
+export const getMaxfromData = (data, field = 'value') => {
     return data
         .reduce((max, dataLine) => dataLine[field] > max ? dataLine[field] : max, 0);
 };
