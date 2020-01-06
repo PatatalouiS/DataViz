@@ -60,17 +60,19 @@ export const drawTotal = StateApp => {
         .attr('y','90')
         .style('font-style', 'italic')
 
-    d3.select('#total')
+    /*d3.select('#total')
     .on('click', () => { 
+        console.log("coucou TOTAL")
         svg.select("#description")
             .text(description_1);
     });
 
     d3.select('#per-capita')
     .on('click', () => {
+        console.log("coucou PER-CAPITA")
         svg.select("#description")
             .text(description_2);
-    });
+    });*/
 }
 
 // ----------------------- DRAWING TIME ---------------------------------------- //

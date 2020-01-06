@@ -25,7 +25,7 @@ export const paramsChangedHandler = StateApp => async () => {
    
     updateData(StateApp, lastData, newData);    
     updateChart(StateApp);
-    updateTotal(StateApp);   
+    updateTotal(StateApp);    
 };
 
 export const switchRepresentation = StateApp => () => {

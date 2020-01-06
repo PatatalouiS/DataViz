@@ -85,6 +85,14 @@ export const updateData = (StateApp, lastData, newData) => {
             ? lastData[index].finalColor
             : newData[index].finalColor;
     });
+
+    const dataType = StateApp.getDataType();
+    const selecting = (descrpt) =>{ return d3.select("#description").text(descrpt)}
+    const description_1 = "*milliers de tonnes de CO2"
+    const description_2 = "*en tonne par habitant"
+
+    if (dataType === "per-capita")  selecting(description_2)
+    else  selecting(description_1)
 };
 
 // ---------------------- FETCH AND DATA RELATED FUNCTIONS --------------------------- //

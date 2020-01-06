@@ -26,7 +26,7 @@ app.get('/home', async (req, res) => {
 // ------- ROUTES GETDATA POUR FETCH -------- //
 
 app.get('/data/utils/countriesnames', async (req, res) => {
-	const queryResult = await mysql(/*sql*/`SELECT DISTINCT name FROM Countries ORDER BY name`);
+	const queryResult = await mysql(/*sql*/`SELECT DISTINCT name FROM countries ORDER BY name`);
 	sendQueryJSON(queryResult, res);
 });
 
