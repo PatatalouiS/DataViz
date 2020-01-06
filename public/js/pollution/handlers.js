@@ -218,9 +218,10 @@ export const updateChart = StateApp => {
 };
 
 export const updateTotal = StateApp => {
-    const totalDiv  = d3.select('#total-value');
-    const lastTotal = Number(d3.select('#total-value').text().replace(/\./g, ''));
-    const newTotal  = StateApp.getTotal();
+    const totalDiv     = d3.select('#total-value');
+    const dataType     = StateApp.getDataType();
+    const lastTotal    = Number(d3.select('#total-value').text().replace(/\./g, ''));
+    const newTotal     = StateApp.getTotal();
     const newPlaceText = computePlaceText(StateApp);
 
     d3.select('#total-title')
@@ -232,6 +233,9 @@ export const updateTotal = StateApp => {
             const interpolation = d3.interpolate(lastTotal, newTotal);
             return time => totalDiv.text(new Intl.NumberFormat('de-DE').format(Math.floor(interpolation(time))));
         });
+    
+    d3.select("#description")
+        .text(dataType === 'per-capita' ? '*en tonne par habitant' : '*milliers de tonnes de CO2');
 };
 
 export default {
