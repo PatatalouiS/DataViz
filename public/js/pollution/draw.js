@@ -15,8 +15,7 @@ import { showLargeBubble, showInitialBubble, updateTimeLine, playButtonHandler, 
 export const drawTotal = StateApp => {
     const width = 366
     const height = 100
-    const total = getTotalFromData(StateApp.getData(), 'value');
-    StateApp.setTotal(total);
+    const total = StateApp.getTotal();
     const description_1 = "*milliers de tonnes de CO2"
 
     const svg = d3.select('#vis')

@@ -46,7 +46,7 @@ export const computeCircleRadius = (dataLine, maxValue, representation) => {
     }    
 };
 
-export const getTotalFromData = (data, field) => {
+export const getTotalFromData = (data, field = 'value') => {
     return data
         .reduce((total, dataLine) => total + dataLine[field] , 0);
 };
