@@ -2,8 +2,8 @@
 'use strict';
 
 // ------------------------ IMPORTS ---------------------------------------------- //
-import {    getCheckedRadioButton, getSelectedOption, getSelectedData, getMainValue, getMaxfromData,
-            getTotalFromData, getCurrentYear, valueToDateTimeline, updateData, computeCircleRadius } from './local_utils.js';
+import {    getCheckedRadioButton, getSelectedOption, getSelectedData, getMaxfromData,
+            getTotalFromData, getCurrentYear, valueToDateTimeline, updateData, computeCircleRadius, computePlaceText } from './local_utils.js';
 import Timer from './timer.js';
 import { drawChart } from './draw.js';
 
@@ -15,17 +15,20 @@ export const paramsChangedHandler = StateApp => async () => {
     const place           = placeType === 'byContinent'
         ? getSelectedOption('selectContinent') 
         : getSelectedOption('selectCountry');
+
     StateApp.setPlace(place);
     StateApp.setYear(year);
     StateApp.setDataType(dataType);
     StateApp.setPlaceType(placeType);
-   
+
     const lastData = Array.from(StateApp.getData());
     const newData = await getSelectedData(StateApp);
+    
+    StateApp.setTotal(getTotalFromData(newData));
    
     updateData(StateApp, lastData, newData);    
     updateChart(StateApp);
-    updateTotal(StateApp);    
+    updateTotal(StateApp);  
 };
 
 export const switchRepresentation = StateApp => () => {
@@ -64,7 +67,6 @@ export const updateRadius = ({ newRadius, simulation, data, transitionDuration, 
             }
         })
     simulation.alpha(1).restart();
-    //console.log(circleTriggered)
     return Promise.resolve();
 };
 
@@ -187,7 +189,6 @@ export const bubbleTransition = StateApp => (dataLine, index , nodes) => {
             : interpolationValue(time);
 
         valueCircle.text(d => new Intl.NumberFormat('de-DE', {maximumFractionDigits: 1}).format(d.showedValue))
-        
         textOfcircle.style('display', dataLine.radius >= 40 ? '' : 'none');            
 
         StateApp.getForce().nodes(StateApp.getData());
@@ -196,44 +197,41 @@ export const bubbleTransition = StateApp => (dataLine, index , nodes) => {
 
 // ------------------------ UPDATE AFTER DATA CHANGED FUNCTIONS  ----------------- //
 export const updateChart = StateApp => {
-    const titrePaysGraphe      = d3.selectAll('.titrePaysGraphe');
-    const representation      = StateApp.getRepresentation();
-
+    const titrePaysGraphe = d3.selectAll('.titrePaysGraphe');
+    const representation  = StateApp.getRepresentation();
+    const year            = StateApp.getYear();
 
     d3.selectAll('.Pays')
         .transition()
         .duration(2000)
         .tween('radius-value-color', bubbleTransition(StateApp))
-        .on('end', () => {
-            if(representation === 'graph')
-            titrePaysGraphe.style('display', dataLine => dataLine.radius > 0 ? '' : 'none');
-        }); 
+    
+    if(representation === 'graph') {
+        titrePaysGraphe.style('display', dataLine => dataLine.radius > 0 ? '' : 'none');
+        (year > 2005) 
+            ? titrePaysGraphe.attr('dx','-12em')
+            : titrePaysGraphe.attr('dx','2em');
+    }
 
     StateApp.getForce().alpha(1).restart();
     StateApp.getForce().force('collide', d3.forceCollide(dataLine => dataLine.radius));        
 };
 
 export const updateTotal = StateApp => {
-    const newTotal  = getTotalFromData(StateApp.getData(), 'value');
     const totalDiv  = d3.select('#total-value');
-    const year      = StateApp.getYear();
+    const lastTotal = Number(d3.select('#total-value').text().replace(/\./g, ''));
+    const newTotal  = StateApp.getTotal();
+    const newPlaceText = computePlaceText(StateApp);
 
     d3.select('#total-title')
-        .text(`Total : ${getSelectedOption('selectContinent')}`);
+        .text(`Total : ${newPlaceText}`);
 
     totalDiv.transition()
         .duration(2000)
         .tween('total', () => {
-            const interpolation = d3.interpolate(StateApp.getTotal(), newTotal);
+            const interpolation = d3.interpolate(lastTotal, newTotal);
             return time => totalDiv.text(new Intl.NumberFormat('de-DE').format(Math.floor(interpolation(time))));
-        })
-        .text()
-        .on('end', () =>  StateApp.setTotal(newTotal));
-
-    (year > 2005) 
-        ? d3.selectAll('.titrePaysGraphe').attr('dx','-12em')
-        :d3.selectAll('.titrePaysGraphe').attr('dx','2em')
-    
+        });
 };
 
 export default {

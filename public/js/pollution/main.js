@@ -5,7 +5,7 @@
 // ---------------------- IMPORTS AND CONSTANTS ---------------------------------- //
 
 import { drawMenu, drawChart, drawTimeLine, drawTotal } from './draw.js';
-import { getSelectedData } from './local_utils.js';
+import { getSelectedData, getMaxfromData, getTotalFromData } from './local_utils.js';
 import { paramsChangedHandler, switchRepresentation } from './handlers.js';
 import State from './state.js';
 import { getData, countriesURL } from '../utils.js';
@@ -29,6 +29,7 @@ const init = async () => {
     const StateApp                            = new State(await START_VALUES());
     const data                                = await getSelectedData(StateApp);
     StateApp.setData(data);
+    StateApp.setTotal(getTotalFromData(data));
 
     drawChart(StateApp);
     drawTimeLine(StateApp);
