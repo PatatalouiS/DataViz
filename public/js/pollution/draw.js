@@ -224,7 +224,7 @@ export const drawAxisGraph = (StateApp, circles) => {
     const dataType              = StateApp.getDataType();
     const svg                   = d3.select('#chartgroup');
     const hauteurGraphTotal     = 1000000;
-    const hauteurGraphPerCapita = 60;
+    const hauteurGraphPerCapita = 70;
     var updateYaxis             = 0;
     var data                    = dataType;
     var year                    = getCurrentYear();  
@@ -308,7 +308,7 @@ export const drawAxisGraph = (StateApp, circles) => {
     d3.select('#button-moins')
         .on('click', () => {
             if (data == 'total' && updateYaxis < 11000000) (updateYaxis >= 1000000) ? updateYaxis = updateYaxis + 1000000 : updateYaxis = updateYaxis + 100000;
-            if (data == 'per-capita' && updateYaxis < 60) (updateYaxis < 10) ?  updateYaxis = updateYaxis + 5 : updateYaxis = updateYaxis + 10;
+            if (data == 'per-capita' && updateYaxis < 70) (updateYaxis < 10) ?  updateYaxis = updateYaxis + 5 : updateYaxis = updateYaxis + 10;
             yscale.domain([0,updateYaxis])
             svg.select(".yaxis")
             .transition()
