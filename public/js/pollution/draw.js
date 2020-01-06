@@ -307,7 +307,10 @@ export const drawAxisGraph = (StateApp, circles) => {
 
     d3.select('#button-moins')
         .on('click', () => {
-            if (data == 'total' && updateYaxis < 11000000) (updateYaxis >= 1000000) ? updateYaxis = updateYaxis + 1000000 : updateYaxis = updateYaxis + 100000;
+            if (data == 'total' && updateYaxis < 11000000){
+                if (updateYaxis >= 1000000) updateYaxis = updateYaxis + 10000000;
+                if ( updateYaxis > 100000) updateYaxis = updateYaxis + 50000;
+                else updateYaxis = updateYaxis + 10000}
             if (data == 'per-capita' && updateYaxis < 70) (updateYaxis < 10) ?  updateYaxis = updateYaxis + 5 : updateYaxis = updateYaxis + 10;
             yscale.domain([0,updateYaxis])
             svg.select(".yaxis")
@@ -318,7 +321,10 @@ export const drawAxisGraph = (StateApp, circles) => {
         });
     d3.select('#button-plus')
         .on('click', () =>{
-            if (data == 'total' && updateYaxis > 50000) (updateYaxis > 1000000) ? updateYaxis = updateYaxis - 1000000 : updateYaxis = updateYaxis - 50000 ;
+            if (data == 'total' && updateYaxis > 4000){
+                if (updateYaxis > 1000000) updateYaxis = updateYaxis - 1000000;
+                if ( updateYaxis > 100000) updateYaxis = updateYaxis - 50000;
+                else updateYaxis = updateYaxis - 10000;}
             if (data == 'per-capita' &&  updateYaxis > 5) (updateYaxis <= 10) ? updateYaxis = updateYaxis - 5 :  updateYaxis = updateYaxis - 10;
             yscale.domain([0,updateYaxis])
             svg.select(".yaxis")
