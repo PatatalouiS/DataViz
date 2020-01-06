@@ -2,8 +2,8 @@
 'use strict';
 
 // ------------------------ IMPORTS ---------------------------------------------- //
-import {    getCheckedRadioButton, getSelectedOption, getSelectedData, getMainValue, getMaxfromData,
-            getTotalFromData, getCurrentYear, valueToDateTimeline, updateData, computeCircleRadius } from './local_utils.js';
+import {    getCheckedRadioButton, getSelectedOption, getSelectedData, getMaxfromData,
+            getTotalFromData, getCurrentYear, valueToDateTimeline, updateData, computeCircleRadius, computePlaceText } from './local_utils.js';
 import Timer from './timer.js';
 import { drawChart } from './draw.js';
 
@@ -221,9 +221,10 @@ export const updateTotal = StateApp => {
     const totalDiv  = d3.select('#total-value');
     const lastTotal = Number(d3.select('#total-value').text().replace(/\./g, ''));
     const newTotal  = StateApp.getTotal();
+    const newPlaceText = computePlaceText(StateApp);
 
     d3.select('#total-title')
-        .text(`Total : ${getSelectedOption('selectContinent')}`);
+        .text(`Total : ${newPlaceText}`);
 
     totalDiv.transition()
         .duration(2000)

@@ -24,6 +24,16 @@ export const getMainValue = dataType => {
     }
 }
 
+export const computePlaceText = StateApp => {
+    const placeType = StateApp.getPlaceType();
+
+    return ({
+        'Top10' : 'Top10',
+        'byCountry' : 'Sélection Pays',
+        'byContinent' : StateApp.getPlace()[0]
+    })[placeType];
+}
+
 // -------------------- ASSIGN COLOR AT CIRCLE -------------------------------------//
 export const computeCircleColor = (dataLine, dataType) => {
     const {value} = dataLine;
@@ -195,6 +205,7 @@ export default {
     valueToDateTimeline,
     getSelectedOption,
     updateData,
-    getMainValue
+    getMainValue,
+    computePlaceText
 };
 
