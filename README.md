@@ -37,7 +37,7 @@
 <h5> <u>Première Méthode :</u> </h5> <br>
 <p>
 	La plus simple, est simplement d'accéder à l'application via le lien suivant : 
-	<a href='http://www.patatalouis.fr'> <u>  Cliquez ici ! </u> </a>  <br>
+	<a href='http://lifprojet.patatalouis.fr'> <u>  Cliquez ici ! </u> </a>  <br>
 	Cela vous affranchira d'une étape fastidieuse d'installation des différentes dépendances,<br>
 	nombreuses pour ce projet.
 </p>	
