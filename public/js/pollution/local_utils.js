@@ -35,7 +35,6 @@ export const computeCircleColor = (dataLine, dataType) => {
 
 // -------------------- ASSIGN RADIUS AT CIRCLE -------------------------------------//
 export const computeCircleRadius = (dataLine, maxValue, representation) => {
-    console.log(representation, maxValue);
     const {value} = dataLine;
     if(value === 0) return 0;
     else if(representation == 'graph') return 20;

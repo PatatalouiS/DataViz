@@ -32,7 +32,6 @@ export const switchRepresentation = StateApp => () => {
     d3.select('#chartgroup').remove();
     const representation = getCheckedRadioButton('radio-rp');
     StateApp.setRepresentation(representation);
-    console.log(getMainValue(StateApp.getDataType()), StateApp.getDataType());
     const maxValue = getMaxfromData(StateApp.getData(), 'value');
     StateApp.getData().forEach(dataLine => {
         dataLine.finalRadius = computeCircleRadius(dataLine, maxValue, representation);
@@ -189,19 +188,29 @@ export const bubbleTransition = StateApp => (dataLine, index , nodes) => {
 
         valueCircle.text(d => new Intl.NumberFormat('de-DE', {maximumFractionDigits: 1}).format(d.showedValue))
         
-        textOfcircle.style('display', dataLine.radius >= 40 ? '' : 'none');
+        textOfcircle.style('display', dataLine.radius >= 40 ? '' : 'none');            
+
         StateApp.getForce().nodes(StateApp.getData());
     };
 };
 
 // ------------------------ UPDATE AFTER DATA CHANGED FUNCTIONS  ----------------- //
 export const updateChart = StateApp => {
+    const titrePaysGraphe      = d3.selectAll('.titrePaysGraphe');
+    const representation      = StateApp.getRepresentation();
+
+
     d3.selectAll('.Pays')
         .transition()
         .duration(2000)
-        .tween('radius-value-color', bubbleTransition(StateApp));
+        .tween('radius-value-color', bubbleTransition(StateApp))
+        .on('end', () => {
+            if(representation === 'graph')
+            titrePaysGraphe.style('display', dataLine => dataLine.radius > 0 ? '' : 'none');
+        }); 
+
     StateApp.getForce().alpha(1).restart();
-    StateApp.getForce().force('collide', d3.forceCollide(dataLine => dataLine.radius));
+    StateApp.getForce().force('collide', d3.forceCollide(dataLine => dataLine.radius));        
 };
 
 export const updateTotal = StateApp => {

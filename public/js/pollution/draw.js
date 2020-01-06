@@ -257,17 +257,16 @@ export const drawAxisGraph = (StateApp, circles) => {
 
     const ysccaleres = value => yscale(value) + 110;
 
-    // to interpolate wtf
     const posYear = () => {
         switch(StateApp.getYear()) {
-            case 1975 : return 290;
-            case 1985 : return 520;
-            case 1995 : return 750;
-            case 2005 : return 980;
-            case 2010 : return 1110;
-            case 2012 : return 1130;
-            case 2013 : return 1140;
-            default : return 1150;
+            case 1975 : return 310;
+            case 1985 : return 580;
+            case 1995 : return 860;
+            case 2005 : return 1150;
+            case 2010 : return 1285;
+            case 2012 : return 1320;
+            case 2013 : return 1360;
+            default : return 1390;
         }
     };
 
@@ -278,11 +277,10 @@ export const drawAxisGraph = (StateApp, circles) => {
         .style('font-weight', 'bold')
         .style('font-size','20px')
         .text(d => d.name.replace(/\(.[^(]*\)/g,''))
-        .style('display',d => d.radius != 0 ? '' : 'none')    
+        .style('display',d => d.radius != 0 ? '' : 'none')
 
     StateApp.getForce()
-        .on('tick', () => circles.transition().duration(200).attr('transform', d => 'translate('+posYear()+','+ysccaleres(d.value)+')'));
-    //StateApp.getForce().alpha(1).restart();  
+        .on('tick', () => circles.transition().duration(150).attr('transform', d => 'translate('+posYear()+','+ysccaleres(d.value)+')')); 
 
     svg.append("g")
         .attr('id',"graph")

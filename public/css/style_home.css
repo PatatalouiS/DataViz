@@ -29,9 +29,11 @@ body{
 }
 
 #chart {
-	border : 5px solid grey;
+	border : 3px solid grey;
 	padding-left: 0px;
 	padding-right: 0px;
+	border-bottom-right-radius: 10px;
+	border-top-left-radius: 10px;
 }
 
 #svg {
@@ -45,7 +47,6 @@ body{
 		border-bottom-left-radius: 10px;
 		border-bottom-right-radius: 10px;
 		border-top-left-radius : 0px;
-		border :  5px solid grey;
 	}
 	#svg {
 		height: 400px;
