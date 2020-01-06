@@ -18,7 +18,6 @@ export const drawTotal = StateApp => {
     const total = getTotalFromData(StateApp.getData(), 'value');
     StateApp.setTotal(total);
     const description_1 = "*milliers de tonnes de CO2"
-    const description_2 = "*en tonne par habitant"
 
     const svg = d3.select('#vis')
         .append('svg')
@@ -60,19 +59,6 @@ export const drawTotal = StateApp => {
         .attr('y','90')
         .style('font-style', 'italic')
 
-    /*d3.select('#total')
-    .on('click', () => { 
-        console.log("coucou TOTAL")
-        svg.select("#description")
-            .text(description_1);
-    });
-
-    d3.select('#per-capita')
-    .on('click', () => {
-        console.log("coucou PER-CAPITA")
-        svg.select("#description")
-            .text(description_2);
-    });*/
 }
 
 // ----------------------- DRAWING TIME ---------------------------------------- //
@@ -241,8 +227,7 @@ export const drawAxisGraph = (StateApp, circles) => {
     const hauteurGraphPerCapita = 60;
     var updateYaxis             = 0;
     var data                    = dataType;
-    var year                    = getCurrentYear();
-    var datas                   = StateApp.getData();   
+    var year                    = getCurrentYear();  
     var maxValueType            = getMaxfromData(StateApp.getData(), 'value')
     updateYaxis                 = maxValueType;
     
@@ -274,7 +259,7 @@ export const drawAxisGraph = (StateApp, circles) => {
 
     circles.append('text')
         .attr('class','titrePaysGraphe')
-        .attr('dx', ()  => year == '1975' ? '2em' : '-10em')
+        .attr('dx', ()  => year >  2005 ? '-10em' : '2em')
         .attr('fill', 'black')
         .style('font-weight', 'bold')
         .style('font-size','20px')

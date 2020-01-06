@@ -64,7 +64,7 @@ export const updateRadius = ({ newRadius, simulation, data, transitionDuration, 
             }
         })
     simulation.alpha(1).restart();
-    console.log(circleTriggered)
+    //console.log(circleTriggered)
     return Promise.resolve();
 };
 
@@ -214,9 +214,10 @@ export const updateChart = StateApp => {
 };
 
 export const updateTotal = StateApp => {
-    const newTotal = getTotalFromData(StateApp.getData(), 'value');
-    const totalDiv = d3.select('#total-value');
-
+    const newTotal  = getTotalFromData(StateApp.getData(), 'value');
+    const totalDiv  = d3.select('#total-value');
+    const year      = StateApp.getYear();
+    
     d3.select('#total-title')
         .text(`Total : ${getSelectedOption('selectContinent')}`);
 
@@ -228,6 +229,11 @@ export const updateTotal = StateApp => {
         })
         .text()
         .on('end', () =>  StateApp.setTotal(newTotal));
+
+    (year > 2005) 
+        ? d3.selectAll('.titrePaysGraphe').attr('dx','-10em')
+        :d3.selectAll('.titrePaysGraphe').attr('dx','2em')
+    
 };
 
 export default {
