@@ -217,7 +217,7 @@ export const updateTotal = StateApp => {
     const newTotal  = getTotalFromData(StateApp.getData(), 'value');
     const totalDiv  = d3.select('#total-value');
     const year      = StateApp.getYear();
-    
+
     d3.select('#total-title')
         .text(`Total : ${getSelectedOption('selectContinent')}`);
 
@@ -231,7 +231,7 @@ export const updateTotal = StateApp => {
         .on('end', () =>  StateApp.setTotal(newTotal));
 
     (year > 2005) 
-        ? d3.selectAll('.titrePaysGraphe').attr('dx','-10em')
+        ? d3.selectAll('.titrePaysGraphe').attr('dx','-12em')
         :d3.selectAll('.titrePaysGraphe').attr('dx','2em')
     
 };

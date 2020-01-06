@@ -313,8 +313,9 @@ export const drawAxisGraph = (StateApp, circles) => {
             svg.select(".yaxis")
             .transition()
             .duration(750)
-            .call(d3.axisLeft(yscale));})
-
+            .call(d3.axisLeft(yscale));
+            circles.transition().duration(150).attr('transform', d => 'translate('+posYear()+','+ysccaleres(d.value)+')')
+        });
     d3.select('#button-plus')
         .on('click', () =>{
             if (data == 'total' && updateYaxis > 50000) (updateYaxis > 1000000) ? updateYaxis = updateYaxis - 1000000 : updateYaxis = updateYaxis - 50000 ;
@@ -324,6 +325,7 @@ export const drawAxisGraph = (StateApp, circles) => {
             .transition()
             .duration(750)
             .call(d3.axisLeft(yscale));
+            circles.transition().duration(150).attr('transform', d => 'translate('+posYear()+','+ysccaleres(d.value)+')')
         });
 };
 
