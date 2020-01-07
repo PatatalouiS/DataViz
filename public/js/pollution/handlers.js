@@ -164,7 +164,7 @@ export const playButtonHandler = (StateApp, button, targetValue) => {
                 const interpolation = d3.interpolate(currentHandlePosition, targetValue);
                 return time => updateTimeLine(StateApp, interpolation(time), targetValue);  
             })
-            .on('end', () => button.text('Play'));
+            .on('end', () => $('#play-button').toggleClass('fa-play fa-pause'));
     }
 }
 
