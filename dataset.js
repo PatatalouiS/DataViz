@@ -15,7 +15,7 @@ app.use(cors());
 
 // ------- ROUTES DE NAVIGATION -------- //
 
-app.get('/', (req, res) => {
+app.get('/index', (req, res) => {
 	res.render('index', {});
 });
 

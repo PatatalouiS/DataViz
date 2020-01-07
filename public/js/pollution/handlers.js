@@ -147,13 +147,13 @@ export const updateTimeLine = (StateApp, posX, maxValue, timeout = 200) => {
 export const playButtonHandler = (StateApp, button, targetValue) => {
     const handle      = d3.select('#handle');
     const transition  = handle.transition();
-
-    if(button.text() === "Pause") {  
+    if(button.attr('class') === "btn btn-primary fa fa-pause") {  
         transition.duration(0);
-        button.text("Play");
+        $('#play-button').toggleClass('fa-pause fa-play')
+
     } 
     else {
-        button.text("Pause");
+        $('#play-button').toggleClass('fa-play fa-pause')
         if(StateApp.getYear() === 2014) updateTimeLine(StateApp, 0, undefined, 200);
         const currentHandlePosition = Number(handle.attr('cx'));
 
