@@ -16,17 +16,17 @@ app.use(cors());
 // ------- ROUTES DE NAVIGATION -------- //
 
 app.get('/', (req, res) => {
-	res.render('index', {});
+	res.render('home', {});
 });
 
-app.get('/home', async (req, res) => {
-	res.render('home', {});
+app.get('/index', async (req, res) => {
+	res.render('index', {});
 });
 
 // ------- ROUTES GETDATA POUR FETCH -------- //
 
 app.get('/data/utils/countriesnames', async (req, res) => {
-	const queryResult = await mysql(/*sql*/`SELECT DISTINCT name FROM countries ORDER BY name`);
+	const queryResult = await mysql(/*sql*/`SELECT DISTINCT name FROM Countries ORDER BY name`);
 	sendQueryJSON(queryResult, res);
 });
 

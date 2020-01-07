@@ -7,7 +7,7 @@ export const getHOST = () => {
     return document.getElementById('MODE')
         .getAttribute('data-row') === 'development'
             ? 'localhost:8080'
-            : 'patatalouis.fr';
+            : 'lifprojet.patatalouis.fr';
 }
 
 // ----------------------- FETCH GET QUERY --> JSON ------------------------------- //
