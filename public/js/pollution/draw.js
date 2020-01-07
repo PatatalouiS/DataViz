@@ -263,7 +263,7 @@ export const drawAxisGraph = (StateApp, circles) => {
         .style('font-weight', 'bold')
         .style('font-size','20px')
         .text(d => d.name.replace(/\(.[^(]*\)/g,''))
-        .style('display',d => d.radius != 0 ? '' : 'none')
+        .style('display',d => d.finalRadius != 0 ? '' : 'none')
 
     StateApp.getForce()
         .on('tick', () => circles.transition().duration(150).attr('transform', d => 'translate('+posYear()+','+ysccaleres(d.value)+')')); 

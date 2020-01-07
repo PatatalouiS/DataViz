@@ -207,10 +207,8 @@ export const updateChart = StateApp => {
         .tween('radius-value-color', bubbleTransition(StateApp))
     
     if(representation === 'graph') {
-        titrePaysGraphe.style('display', dataLine => dataLine.radius > 0 ? '' : 'none');
-        (year > 2005) 
-            ? titrePaysGraphe.attr('dx','-12em')
-            : titrePaysGraphe.attr('dx','2em');
+        titrePaysGraphe.attr('dx', year > 2005 ? '-12em' : '2em');
+        titrePaysGraphe.style('display', dataLine => dataLine.finalRadius > 0 ? '' : 'none');
     }
 
     StateApp.getForce().alpha(1).restart();
